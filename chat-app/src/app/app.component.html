@@ -1,0 +1,13 @@
+<div [ngSwitch]="EnterAs">
+  <div class="center" *ngSwitchCase="'NA'">
+    <h1>Enter chat</h1>
+    <button type="button" (click)="EnterChatUser()" name="button" class="button">User</button>
+    <button type="button" (click)="EnterChatGuest()" name="button" class="button">Guest</button>
+  </div>
+  <div *ngSwitchCase="'User'">
+    <app-login [EnterAs]="EnterAs"></app-login>
+  </div>
+  <div *ngSwitchCase="'Guest'">
+    <app-login [EnterAs]="EnterAs"></app-login>
+  </div>
+</div>

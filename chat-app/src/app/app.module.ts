@@ -1,0 +1,36 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
+
+
+import { AppComponent } from './app.component';
+import { ChatBoxComponent } from './chat-box/chat-box.component';
+import { HeadingComponent } from './heading/heading.component';
+import { ChatWindowComponent } from './chat-window/chat-window.component';
+import { HttpModule } from '@angular/http'
+import { LoginComponent } from './login/login.component';
+import 'rxjs';
+
+const ROUTES:Routes = [
+  {path: 'chat', component: ChatBoxComponent}
+]
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ChatBoxComponent,
+    HeadingComponent,
+    ChatWindowComponent,
+    LoginComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    HttpModule,
+    RouterModule.forRoot(ROUTES)
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }

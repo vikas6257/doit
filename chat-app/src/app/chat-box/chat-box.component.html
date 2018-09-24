@@ -1,0 +1,48 @@
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<app-heading></app-heading>
+
+<div class="container">
+  <div class= "well">
+
+      <div class="row">
+
+        <div class="col-md-6">
+          <h3> <span class="label label-info">Select Gender</span></h3>
+          <label class="radio-inline"><input type="radio" name="optradio" checked>Male</label>
+          <label class="radio-inline"><input type="radio" name="optradio">Female</label>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class = "row">
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
+          <button type = "button" class="btn btn-success btn-lg" [disabled] = "chat_start_status" (click)="set_start_chat_status()" name="button">Start Chat</button>
+        </div>
+
+        <div class="col-md-4">
+          <button type = "button" class="btn btn-danger btn-lg" [disabled] = "chat_end_status" (click)="set_end_chat_status()" name="button">End Chat</button>
+        </div>
+      </div>
+
+  </div>
+</div>
+
+
+<app-chat-window></app-chat-window>
+
+
+</body>
+</html>
