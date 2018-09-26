@@ -1,6 +1,5 @@
-<p>{{login_status}}</p>
 <div *ngIf = "login_status" class="center">
-  <form novalidate [formGroup]="form" (ngSubmit)="AddUser(form)"  href = "/chat" #user_form="ngForm">
+  <form novalidate [formGroup]="form" (ngSubmit)="AddUser(form)"  #user_form="ngForm">
     <div [ngSwitch]="EnterAs">
       <div *ngSwitchCase="'User'">
 
@@ -8,14 +7,15 @@
 
         <input class="box" type="password" name="" value="" formControlName="password" required placeholder="Password" autocomplete="current-password">
 
-        <button type="submit" name="login" [disabled]="!user_form.form.valid"><a routerLink="/chat">Login</a></button>
+        <button type="submit" name="login" [disabled]="!user_form.form.valid">Login</button>
     </div>
 
    </div>
   </form>
+  <div *ngIf = "login_error_status" class="center">
+    <p>Username or password is wrong.</p>
+  </div>
 </div>
-
-<p>{{login_status}}</p>
 
 <div *ngIf = "chat_box_status">
   <router-outlet></router-outlet>
