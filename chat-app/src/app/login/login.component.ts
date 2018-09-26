@@ -3,13 +3,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import {Http, Headers } from '@angular/http';
 import { Login } from '../login';
 import { map } from 'rxjs/operators';
-import { Routes, RouterModule, Router } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { ChatBoxComponent } from '../chat-box/chat-box.component';
-
-const ROUTES:Routes = [
-  {path: 'chat', component: ChatBoxComponent}
-]
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -19,19 +13,15 @@ const ROUTES:Routes = [
 })
 
 
-@NgModule({
-imports: [
-  RouterModule.forRoot(ROUTES)
-]})
 
 export class LoginComponent implements OnInit {
 
   form: FormGroup;
   @Input() EnterAs:string;
-  constructor(private http: Http) { }
-  login_status = true;
-  login_error_status = false;
-  chat_box_status = false;
+  constructor(private http: Http, private router: Router) { }
+  login_status:boolean = true;
+  login_error_status:boolean = false;
+  chat_box_status:boolean = false;
 
   AddUser(form) {
     console.log(form.value);
@@ -48,9 +38,10 @@ export class LoginComponent implements OnInit {
       this.chat_box_status = res['status']
       });
 
-      if(this.chat_box_status == true) {
+      if(this.chat_box_status = true) {
         this.login_status = false;
-        this.login_error_status = true;
+        this.login_error_status = false;
+        this.router.navigate(['/chat']);
       }
       else {
         this.login_status = true;
