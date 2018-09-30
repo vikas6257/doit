@@ -2,14 +2,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
-
 import { AppComponent } from './app.component';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { HeadingComponent } from './heading/heading.component';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
 import { HttpModule } from '@angular/http'
 import { LoginComponent } from './login/login.component';
+import { WebsocketService } from './websocket.service'
+import { ChatserviceService } from './chatservice.service'
 import 'rxjs';
 
 const ROUTES:Routes = [
@@ -30,7 +30,10 @@ const ROUTES:Routes = [
     HttpModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [],
+  providers: [
+    WebsocketService,
+    ChatserviceService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

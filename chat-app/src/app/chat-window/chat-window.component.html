@@ -36,14 +36,14 @@
     <div class="row">
       <div class="col-md-8">
         <div class="form-group">
-              <textarea class="form-control" rows="5" id="comment"></textarea>
+          <input type="text" id="input_msg" name="" value="">
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="row"></div>
         <div class="row">
-            <button type="button" class="btn btn-success btn-lg">Send</button>
+            <button type="button" (click)="sendMessage()" class="btn btn-success btn-lg">Send</button>
         </div>
         <div class="row">
             <button type="button" class="btn btn-success btn-lg">Image</button>
