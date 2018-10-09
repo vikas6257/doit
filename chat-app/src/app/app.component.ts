@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'openup';
-  EnterAs:string = 'User';
+  EnterAs:string = 'NA';
   EnterChatUser() {
     this.EnterAs = 'User';
     console.log(this.EnterAs);
