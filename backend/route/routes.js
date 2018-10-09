@@ -54,19 +54,20 @@ router.post ('/login', (req,res,next)=> {
 
 router.get ('/active-users', (req,res,next)=> {
     console.log(req);
+    active_users = {};
 
     for(var i=0; i < entry.alone_connections.length; i++) {
-      if(active_users[entry.alone_connections[i].socket.id] == undefined) {
+
               active_users[entry.alone_connections[i].socket.id] =
                                 entry.alone_connections[i].username;
-      }
+
      }
 
      for(var i=0; i < entry.talking_connections.length; i++) {
-       if(active_users[entry.talking_connections[i].socket.id] == undefined) {
+
                active_users[entry.talking_connections[i].socket.id] =
                                  entry.talking_connections[i].username;
-       }
+    
      }
 
     res.json(active_users);
