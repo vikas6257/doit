@@ -1,9 +1,12 @@
 var express = require("express");
 var router = express.Router();
 var cors = require("cors");
+var logger = require("node-logger").createLogger("backend_route.log");
+
+let entry = require("../entry");
 
 const user_login = require("../model/login");
-
+var active_users = {};
 
 router.post ('/register', (req,res,next)=> {
 
@@ -41,12 +44,33 @@ router.post ('/login', (req,res,next)=> {
         res.json(err);
       }
       else if (docs && docs['password'] == req.body.password){
-        res.json({msg: "Succesfully logged in", status: "true"});
+        res.json({msg: "Succesfully logged in", status: "1"});
       }
       else {
-         res.json({msg: "User does not not exist", status: "false"});
+         res.json({msg: "User does not not exist", status: "0"});
       }
     });
 });
+
+router.get ('/active-users', (req,res,next)=> {
+    console.log(req);
+
+    for(var i=0; i < entry.alone_connections.length; i++) {
+      if(active_users[entry.alone_connections[i].socket.id] == undefined) {
+              active_users[entry.alone_connections[i].socket.id] =
+                                entry.alone_connections[i].username;
+      }
+     }
+
+     for(var i=0; i < entry.talking_connections.length; i++) {
+       if(active_users[entry.talking_connections[i].socket.id] == undefined) {
+               active_users[entry.talking_connections[i].socket.id] =
+                                 entry.talking_connections[i].username;
+       }
+     }
+
+    res.json(active_users);
+});
+
 
 module.exports = router;

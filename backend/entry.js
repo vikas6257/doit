@@ -3,8 +3,11 @@ var express = require("express");
 var mongoose = require("mongoose");
 var bodyparser = require("body-parser");
 var cors = require("cors");
-var logger = require("node-logger").createLogger("backend.log");
+var logger = require("node-logger").createLogger("backend_entry.log");
 
+/*******************************************************************/
+/*                            MIIDLEWARE                           */
+/*******************************************************************/
 //instantiate express
 var app = express();
 
@@ -34,6 +37,7 @@ app.use(cors({origin : "http://localhost:4200", credentials : true}));
 app.use(bodyparser.json());
 app.use('/api',   route);
 
+
 let http = require('http').Server(app);
 
 //Start back end server
@@ -43,52 +47,134 @@ var server = app.listen(port, ()=>{
 
 let io = require('socket.io').listen(server)
 
-connections = [];
-/*
-io.on('connection', (socket) => {
+/*Global varaibles*/
 
-    connections.push(socket);
-    logger.log('New user connected : '+socket.id);
-    // Log whenever a user connects
-    logger.log('Total user connected : '+connections.length);
+const connection = {
+  socket:undefined,
+  username:undefined,
+};
 
-    // Log whenever a client disconnects from our websocket server
-    socket.on('disconnect', function(){
-        logger.log('User disconnected : '+socket.id);
-        connections.splice(connections.indexOf(socket), 1);
-        logger.log('Total user connected : '+connections.length);
-    });
+ alone_connections = [];
+ talking_connections = [];
 
-    // When we receive a 'message' event from our client, print out
-    // the contents of that message and then echo it back to our client
-    // using `io.emit()`
-    socket.on('message', (message) => {
-        logger.log("Message Received: " + message);
-        io.emit('message', {type:'new-message', text: message});
-    });
-});
-*/
+ /************************************************************************/
+ /*                         APIS                                         */
+ /************************************************************************/
+ function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
-io.on('connection', (socket) => {
-  connections.push(socket);
-  logger.log('New user connected : '+socket.id);
-  logger.log('Total user connected : '+connections.length);
+ function get_stranger_to_talk() {
+  return (alone_connections[getRandomInt(alone_connections.length)]);
+}
 
-  if (connections.length == 2) {
-    logger.log('zzzzzzzzzz')
-    connections[0].on("message", (message)=>{
-      connections.forEach(print_socket);
-      logger.log("Message Received: " + message + ' from socket : '+connections[0].id);
-      logger.log('Sending message to : '+connections[1].id);
-      connections[1].emit('message', {type: 'new-message', text: message});
-    });
+ function start_chat(newConnection) {
+  socket = newConnection.socket;
+  let stranger = undefined;
+  let match_found = false;
+  logger.log('Checking to start chat')
+   while ((stranger == undefined || socket == stranger.socket) && alone_connections.length >= 2) {
+      stranger = get_stranger_to_talk();
+      match_found = true;
   }
-  socket.on('disconnect', function(){
-      logger.log('User disconnected : '+socket.id);
-      connections.splice(connections.indexOf(socket), 1);
-      logger.log('Total user connected : '+connections.length);
+  if (match_found) {
+    logger.log(socket.id + 'can chat to ' + stranger.socket.id);
+    socket.on('message', (message)=>{
+
+      stranger.socket.emit('message',{type:'new-message', text: message});
+    });
+    stranger.socket.on('message', (message)=>{
+      socket.emit('message',{type:'new-message', text: message});
+    });
+    //Transfer connected socket from alone_connections to talking_connections
+     alone_connections.splice(alone_connections.indexOf(stranger), 1);
+     talking_connections.push(stranger);
+     talking_connections.push(newConnection);
+     alone_connections.splice(alone_connections.indexOf(newConnection), 1);
+  }
+  else {
+    logger.log(socket.id + ' is alone. :(');
+  }
+}
+
+
+/**************************************************************************/
+/*   Message type-  (EMIT)                                                */
+/*                  new-message1 ---> used to get                         */
+/*                                            delete user-id              */
+/*                                            add user-id                 */
+/*                  new-message ----> used to send chat message.          */
+/*                                                                        */
+/*                  (RECEIVE)                                             */
+/*                    admin-message ---> used to get user-id              */
+/*                    message       ---> used to rcv chat message.        */
+/*  We should always check message type at frontend to distinguish.       */
+/**************************************************************************/
+io.on('connection', (socket) => {
+  const newConnection = Object.create(connection);
+  newConnection.socket = socket;
+  alone_connections.push(newConnection);
+
+  /*Once socket gets created, send message of type new-message-1 to get user-id
+    from front end to map it with socket-id*/
+  socket.emit('message', {type: 'new-message1', text: "send-user-id"});
+  /*Wait for reply , and check message has key "sent-user-id"*/
+  socket.on("message-admin", (message)=>{
+    /*Check if json has key as "sent-user-id", as it signifies
+      frontend has successfully sent user-id*/
+
+    if(message["sent-user-id"] != undefined) {
+      logger.log("Socket id:" + socket.id, newConnection.socket.id );
+      newConnection.username = message['sent-user-id'];
+
+      /*Once we receive reply from front end , send this new user to
+      all clients.*/
+      for (var i =0;i<alone_connections.length;i++) {
+         alone_connections[i].socket.emit('message', {
+              type: 'new-message1',
+              text: "add-user-id",
+              value:message['sent-user-id']});
+      }
+
+      for (var i =0;i<talking_connections.length;i++) {
+        talking_connections[i].socket.emit('message', {
+              type: 'new-message1',
+              text: "add-user-id",
+              value:message['sent-user-id']});
+      }
+
+    }
   });
+
+  socket.on('disconnect', function(){
+
+      alone_connections.splice(alone_connections.indexOf(newConnection), 1);
+      talking_connections.splice(talking_connections.indexOf(newConnection), 1);
+
+      /*Once socket gets deleted, send message of type new-message-1 to delete user-id
+      from front end*/
+      for (var i =0;i<alone_connections.length;i++) {
+        alone_connections[i].socket.emit('message', {type: 'new-message1',
+          text: "delete-user-id",
+          value: newConnection.username});
+      }
+
+      for (var i =0;i<talking_connections.length;i++) {
+        talking_connections[i].socket.emit('message', {type: 'new-message1',
+          text: "delete-user-id",
+          value: newConnection.username});
+      }
+
+  });
+
+  start_chat(newConnection);
 });
+
+
+
 function print_socket(value){
   logger.log('Print: '+value.id)
 }
+
+module.exports.alone_connections = alone_connections;
+module.exports.talking_connections = talking_connections;

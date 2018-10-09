@@ -24,6 +24,7 @@ export class WebsocketService {
           console.log("Received message from Websocket Server")
           observer.next(data);
         })
+
         return () => {
           this.socket.disconnect();
         }
@@ -34,7 +35,13 @@ export class WebsocketService {
     // socket server whenever the `next()` method is called.
     let observer = {
         next: (data: Object) => {
-            this.socket.emit('message', JSON.stringify(data));
+           if(data['sent-user-id'] != undefined) {
+            this.socket.emit('message-admin', data);
+          }
+          else {
+            console.log("chating msg")
+            this.socket.emit('message', data);
+          }
         },
     };
 

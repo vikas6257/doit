@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { WebsocketService } from './websocket.service'
 import { ChatserviceService } from './chatservice.service'
 import 'rxjs';
+import { ActiveUsersComponent } from './active-users/active-users.component';
 
 const ROUTES:Routes = [
   {path: 'chat', component: ChatBoxComponent}
@@ -22,7 +23,8 @@ const ROUTES:Routes = [
     ChatBoxComponent,
     HeadingComponent,
     ChatWindowComponent,
-    LoginComponent
+    LoginComponent,
+    ActiveUsersComponent
   ],
   imports: [
     BrowserModule,

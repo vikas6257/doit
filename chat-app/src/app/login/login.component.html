@@ -7,15 +7,17 @@
 
         <input class="box" type="password" name="" value="" formControlName="password" required placeholder="Password" autocomplete="current-password">
 
-        <button type="submit" name="login" [disabled]="!user_form.form.valid">Login</button>
-    </div>
+        <button type="submit" name="login" [disabled]="!user_form.form.valid"> Login </button>
 
+     </div>
    </div>
   </form>
-  <div *ngIf = "login_error_status" class="center">
-    <p>Username or password is wrong.</p>
+  <div *ngIf = "login_error_status">
+      <h5>Username or password is wrong.</h5>
   </div>
 </div>
+
+<br>
 
 <div *ngIf = "chat_box_status">
   <router-outlet></router-outlet>

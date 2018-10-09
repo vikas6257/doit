@@ -13,43 +13,52 @@ import { Router } from '@angular/router';
 })
 
 
-
 export class LoginComponent implements OnInit {
 
   form: FormGroup;
   @Input() EnterAs:string;
   constructor(private http: Http, private router: Router) { }
-  login_status:boolean = true;
-  login_error_status:boolean = false;
-  chat_box_status:boolean = false;
+
+  login_status = true;
+  login_error_status = false;
+  chat_box_status = false;
+  status = 0;
+  login_handle ="";
 
   AddUser(form) {
+    //debug
     console.log(form.value);
     let newUser: Login = {
       username : form.value.name,
       password: form.value.password,
     };
 
+    this.login_handle = form.value.name;
+
     var header = new Headers();
     header.append('Content-Type', 'application/json');
     if (this.EnterAs == 'User'){
-      console.log(newUser);
-      this.http.post('http://localhost:3000/api/login', newUser, {headers:header}).pipe(map(res => res.json())).subscribe(res => {
-      this.chat_box_status = res['status']
-      });
-
-      if(this.chat_box_status = true) {
-        this.login_status = false;
-        this.login_error_status = false;
-        this.router.navigate(['/chat']);
-      }
-      else {
-        this.login_status = true;
-        this.login_error_status = true;
-      }
+      //debug
       console.log('Trying to login');
-      console.log(this.login_status);
-      console.log(this.chat_box_status);
+      console.log("Existing user with data: "+ newUser);
+      this.login_handle = form.value.name;
+      this.http.post('http://localhost:3000/api/login', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+
+        this.status = res['status'];
+
+        if(this.status == 1) {
+          this.chat_box_status = true;
+          this.login_status = false;
+          this.login_error_status = false;
+          this.router.navigate(['/chat']);
+        }
+        else {
+          this.login_status = true;
+          this.login_error_status = true;
+          this.chat_box_status = false;
+        }
+
+      });
     }
   }
 
