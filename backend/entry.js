@@ -8,6 +8,52 @@ var logger = require("node-logger").createLogger("backend.log");
 //instantiate express
 var app = express();
 
+const connection = {
+  socket:undefined,
+  username:undefined,
+};
+
+alone_connections = [];
+talking_connections = [];
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+function get_stranger_to_talk() {
+  return (alone_connections[getRandomInt(alone_connections.length)]);
+}
+
+function start_chat(socket) {
+  let stranger = undefined;
+  let match_found = false;
+  logger.log('Checking to start chat')
+
+  while ((stranger == undefined || socket == stranger.socket) && alone_connections.length >= 2) {
+      stranger = get_stranger_to_talk();
+      match_found = true;
+  }
+  if (match_found) {
+    logger.log(socket.id + 'can cat to ' + stranger.socket.id);
+    socket.on('message', (message)=>{
+      stranger.socket.emit('message',{type:'new-message', text: message});
+    });
+    stranger.socket.on('message', (message)=>{
+      socket.emit('message',{type:'new-message', text: message});
+    });
+    //Remove connected socket from alone_connections to talking_connections
+
+    alone_connections.splice(alone_connections.indexOf(stranger), 1);
+    talking_connections.push(stranger);
+
+    alone_connections.splice(alone_connections.indexOf(socket), 1);
+    talking_connections.push(socket);
+  }
+  else {
+    logger.log(socket.id + ' is alone. :(');
+  }
+}
+
 //import route module
 const route = require("./route/routes");
 
@@ -43,51 +89,21 @@ var server = app.listen(port, ()=>{
 
 let io = require('socket.io').listen(server)
 
-connections = [];
-/*
 io.on('connection', (socket) => {
+  const newConnection = Object.create(connection);
+  newConnection.socket = socket;
 
-    connections.push(socket);
-    logger.log('New user connected : '+socket.id);
-    // Log whenever a user connects
-    logger.log('Total user connected : '+connections.length);
-
-    // Log whenever a client disconnects from our websocket server
-    socket.on('disconnect', function(){
-        logger.log('User disconnected : '+socket.id);
-        connections.splice(connections.indexOf(socket), 1);
-        logger.log('Total user connected : '+connections.length);
-    });
-
-    // When we receive a 'message' event from our client, print out
-    // the contents of that message and then echo it back to our client
-    // using `io.emit()`
-    socket.on('message', (message) => {
-        logger.log("Message Received: " + message);
-        io.emit('message', {type:'new-message', text: message});
-    });
-});
-*/
-
-io.on('connection', (socket) => {
-  connections.push(socket);
+  alone_connections.push(newConnection);
   logger.log('New user connected : '+socket.id);
-  logger.log('Total user connected : '+connections.length);
+  logger.log('Total user connected : '+(alone_connections.length+talking_connections.length));
 
-  if (connections.length == 2) {
-    logger.log('zzzzzzzzzz')
-    connections[0].on("message", (message)=>{
-      connections.forEach(print_socket);
-      logger.log("Message Received: " + message + ' from socket : '+connections[0].id);
-      logger.log('Sending message to : '+connections[1].id);
-      connections[1].emit('message', {type: 'new-message', text: message});
-    });
-  }
   socket.on('disconnect', function(){
       logger.log('User disconnected : '+socket.id);
-      connections.splice(connections.indexOf(socket), 1);
-      logger.log('Total user connected : '+connections.length);
+      alone_connections.splice(alone_connections.indexOf(newConnection), 1);
+      logger.log('Total user connected : '+(alone_connections.length+talking_connections.length));
   });
+
+  start_chat(socket);
 });
 function print_socket(value){
   logger.log('Print: '+value.id)

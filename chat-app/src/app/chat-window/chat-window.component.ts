@@ -10,16 +10,41 @@ export class ChatWindowComponent implements OnInit {
 
   constructor(private chat: ChatserviceService) {  }
 
+  msg_rcv:string;
   ngOnInit() {
     this.chat.messages.subscribe(msg => {
+      this.msg_rcv = msg.text;
+      var chat_history_id = document.getElementById("chat_history");
+      var li_in_chat_history = document.createElement("li");
+      li_in_chat_history.appendChild(document.createTextNode(msg.text));
+      chat_history_id.appendChild(li_in_chat_history);
+
       console.log(msg);
     })
   }
 
   sendMessage() {
-    var in_msg = (<HTMLInputElement>document.getElementById("input_msg")).value;
+    var input_text_ele = document.getElementById("input_msg");
+    var in_msg = (<HTMLInputElement>input_text_ele).value;
     console.log('message from input : '+in_msg);
     this.chat.sendMsg(in_msg);
+    (<HTMLInputElement>input_text_ele).value = "";
   }
 
+  enter_on_test(event) {
+    console.log(event);
+    if (event.key == "Enter" && !event.shiftKey) {
+      console.log('Enter pressed on text area')
+      document.getElementById("sendbutton").click();
+    }
+    else if (event.key == "Enter" && event.shiftKey) {
+      console.log('shift+Enter pressed on text area');
+      var value = (<HTMLInputElement>document.getElementById("input_msg")).value;
+      (<HTMLInputElement>document.getElementById("input_msg")).value = value+'\n';
+    }
+  }
+
+  newline(event) {
+    console.log(event);
+  }
 }
