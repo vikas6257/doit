@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatserviceService } from '../chatservice.service';
+import { LoginComponent } from '../login/login.component'
 
 @Component({
   selector: 'app-chat-window',
@@ -8,12 +9,15 @@ import { ChatserviceService } from '../chatservice.service';
 })
 export class ChatWindowComponent implements OnInit {
 
-  constructor(private chat: ChatserviceService) {  }
+  constructor(private chat: ChatserviceService, private login: LoginComponent)
+   { }
+
+  login_handle = this.login.login_handle;
 
   msg_rcv:string;
   ngOnInit() {
     this.chat.messages.subscribe(msg => {
-      /*Always check message type*/
+      /*Always check message type. Message type "new-message" is used for chatting*/
       console.log(msg);
       if (msg['type'] == "new-message") {
         this.msg_rcv = msg.text;

@@ -16,14 +16,22 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
 
   form: FormGroup;
+  form_register: FormGroup;
+
   @Input() EnterAs:string;
   constructor(private http: Http, private router: Router) { }
 
   login_status = true;
   login_error_status = false;
-  chat_box_status = false;
+  login_error_msg = "";
+
+  register_status = true;
+  register_error_status = false;
+  register_error_msg = "";
+
   status = 0;
   login_handle ="";
+  chat_box_status = false;
 
   AddUser(form) {
     //debug
@@ -31,6 +39,7 @@ export class LoginComponent implements OnInit {
     let newUser: Login = {
       username : form.value.name,
       password: form.value.password,
+      gender:   "dummy-gender",
     };
 
     this.login_handle = form.value.name;
@@ -49,23 +58,111 @@ export class LoginComponent implements OnInit {
         if(this.status == 1) {
           this.chat_box_status = true;
           this.login_status = false;
+          this.register_status = false;
           this.login_error_status = false;
+          this.register_error_status = false;
           this.router.navigate(['/chat']);
+        }
+        else if (this.status == 0){
+          this.login_status = true;
+          this.register_status = true;
+          this.login_error_status = true;
+          this.register_error_status = false;
+          this.chat_box_status = false;
+          this.login_error_msg = "Username or password is wrong.";
         }
         else {
           this.login_status = true;
           this.login_error_status = true;
           this.chat_box_status = false;
+          this.register_status = true;
+          this.register_error_status = false;
+          this.login_error_msg = "User is already logged in.";
         }
 
       });
     }
   }
 
+
+  AddNewUser(form_register) {
+    //debug
+    console.log(form_register.value);
+    if(form_register.value.password != form_register.value.confirm_password) {
+      this.register_error_msg = "Password entered in password and Retype password section is not same";
+      this.login_status = true;
+      this.login_error_status = false;
+      this.chat_box_status = false;
+      this.register_status =  true;
+      this.register_error_status = true;
+    }
+    else if (this.EnterAs == 'User'){
+      let newUser: Login = {
+        username : form_register.value.name,
+        password: form_register.value.password,
+        gender: form_register.value.gender,
+      };
+
+      this.login_handle = form_register.value.name;
+
+      var header = new Headers();
+      header.append('Content-Type', 'application/json');
+
+      //debug
+      console.log('Trying to Register');
+      console.log("Existing user with data: "+ newUser);
+      this.login_handle = form_register.value.name;
+      this.http.post('http://localhost:3000/api/register', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+
+        this.status = res['status'];
+
+        if(this.status == 1) {
+          this.chat_box_status = true;
+          this.login_status = false;
+          this.login_error_status = false;
+          this.register_error_status = false;
+          this.register_status =  false;
+          this.router.navigate(['/chat']);
+        }
+        else {
+          this.login_status = true;
+          this.login_error_status = false;
+          this.chat_box_status = false;
+          this.register_status =  true;
+          this.register_error_status = true;
+          this.register_error_msg = "User name already exists. Plese try with "
+                                    +"some different user name :)";
+        }
+
+      });
+    }
+  }
+
+
   ngOnInit() {
     this.form = new FormGroup({
       name: new FormControl(''),
       password: new FormControl('')
     });
+
+    this.form_register = new FormGroup({
+      name: new FormControl(''),
+      password: new FormControl(''),
+      confirm_password: new FormControl(''),
+      gender: new FormControl('male')
+    });
+
+
+      this.login_status = true;
+      this.login_error_status = false;
+      this.login_error_msg = "";
+
+      this.register_status = true;
+      this.register_error_status = false;
+      this.register_error_msg = "";
+
+      this.status = 0;
+      this.login_handle ="";
+      this.chat_box_status = false;
   }
 }

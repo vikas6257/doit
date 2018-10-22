@@ -15,13 +15,13 @@ router.post ('/register', (req,res,next)=> {
         res.json(err);
       }
       else if (docs){
-        flag = 0;
-        res.json({msg: "Username exists"});
+        res.json({msg: "Username exists", status: "0"});
       }
       else {
         let new_user_login = new user_login({
           username: req.body.username,
-          password: req.body.password
+          password: req.body.password,
+          gender:   req.body.gender
         });
 
         new_user_login.save((err, item)=>{
@@ -29,7 +29,7 @@ router.post ('/register', (req,res,next)=> {
             res.json(err);
           }
           else {
-            res.json({msg: "Account created"});
+            res.json({msg: "Account created", status: "1"});
           }
         });
       }
@@ -38,13 +38,26 @@ router.post ('/register', (req,res,next)=> {
 
 router.post ('/login', (req,res,next)=> {
     console.log(req);
+    var found = false;
 
     user_login.findOne({username: req.body.username}, function(err, docs) {
+
       if(err) {
         res.json(err);
       }
-      else if (docs && docs['password'] == req.body.password){
-        res.json({msg: "Succesfully logged in", status: "1"});
+      else if (docs && docs['password'] == req.body.password ) {
+
+        for(var i=0; i < entry.active_users.length; i++) {
+           if (entry.active_users[i].username == req.body.username) {
+             found = true;
+             break;
+           }
+        }
+
+        if(!found)
+           res.json({msg: "Succesfully logged in", status: "1"});
+        else
+          res.json({msg: "User is already loged in", status: "-1"});
       }
       else {
          res.json({msg: "User does not not exist", status: "0"});
@@ -56,18 +69,11 @@ router.get ('/active-users', (req,res,next)=> {
     console.log(req);
     active_users = {};
 
-    for(var i=0; i < entry.alone_connections.length; i++) {
+    for(var i=0; i < entry.active_users.length; i++) {
 
-              active_users[entry.alone_connections[i].socket.id] =
-                                entry.alone_connections[i].username;
+              active_users[entry.active_users[i].socket.id] =
+                                entry.active_users[i].username;
 
-     }
-
-     for(var i=0; i < entry.talking_connections.length; i++) {
-
-               active_users[entry.talking_connections[i].socket.id] =
-                                 entry.talking_connections[i].username;
-    
      }
 
     res.json(active_users);

@@ -3,6 +3,7 @@ import { ChatserviceService } from '../chatservice.service';
 import { LoginComponent } from '../login/login.component';
 import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat-box',
@@ -11,6 +12,12 @@ import { map } from 'rxjs/operators';
 })
 
 export class ChatBoxComponent implements OnInit {
+
+
+  constructor(private chat: ChatserviceService, private login: LoginComponent,
+              private http: Http,  private router: Router) {
+  }
+
   chat_start_status = false;
   chat_end_status = true;
   /*
@@ -28,13 +35,15 @@ export class ChatBoxComponent implements OnInit {
     this.chat_start_status = false;
   }
 
-  constructor(private chat: ChatserviceService, private login: LoginComponent, private http: Http) {
+  logout() {
+     this.chat.sendMsg({'logout': true});
+     this.router.navigate(['/logout']);
   }
 
   ngOnInit() {
     this.chat.messages.subscribe(msg => {
-        /*Always check message type*/
-      if(msg['text'] == "send-user-id" && msg['type'] == "new-message1"){
+        /*Always check message type. Message type "new-message1" is for admin-use*/
+      if(msg['type'] == "new-message1" && msg['text'] == "send-user-id"){
         console.log("sending user-id back to server:"+this.login.login_handle);
         this.chat.sendMsg({'sent-user-id': this.login.login_handle});
       }

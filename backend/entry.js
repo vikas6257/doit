@@ -56,6 +56,7 @@ const connection = {
 
  alone_connections = [];
  talking_connections = [];
+ active_users = [];
 
  /************************************************************************/
  /*                         APIS                                         */
@@ -88,9 +89,9 @@ const connection = {
     });
     //Transfer connected socket from alone_connections to talking_connections
      alone_connections.splice(alone_connections.indexOf(stranger), 1);
+     alone_connections.splice(alone_connections.indexOf(newConnection), 1);
      talking_connections.push(stranger);
      talking_connections.push(newConnection);
-     alone_connections.splice(alone_connections.indexOf(newConnection), 1);
   }
   else {
     logger.log(socket.id + ' is alone. :(');
@@ -111,9 +112,15 @@ const connection = {
 /*  We should always check message type at frontend to distinguish.       */
 /**************************************************************************/
 io.on('connection', (socket) => {
+  logger.log("YO");
   const newConnection = Object.create(connection);
+  const newConnection_active_users = Object.create(connection);
+
   newConnection.socket = socket;
+  newConnection_active_users.socket = socket;
+
   alone_connections.push(newConnection);
+  active_users.push(newConnection_active_users);
 
   /*Once socket gets created, send message of type new-message-1 to get user-id
     from front end to map it with socket-id*/
@@ -124,20 +131,14 @@ io.on('connection', (socket) => {
       frontend has successfully sent user-id*/
 
     if(message["sent-user-id"] != undefined) {
-      logger.log("Socket id:" + socket.id, newConnection.socket.id );
+
       newConnection.username = message['sent-user-id'];
+      newConnection_active_users.username = message['sent-user-id'];
 
       /*Once we receive reply from front end , send this new user to
       all clients.*/
-      for (var i =0;i<alone_connections.length;i++) {
-         alone_connections[i].socket.emit('message', {
-              type: 'new-message1',
-              text: "add-user-id",
-              value:message['sent-user-id']});
-      }
-
-      for (var i =0;i<talking_connections.length;i++) {
-        talking_connections[i].socket.emit('message', {
+      for (var i =0;i< active_users.length;i++) {
+         active_users[i].socket.emit('message', {
               type: 'new-message1',
               text: "add-user-id",
               value:message['sent-user-id']});
@@ -147,24 +148,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', function(){
-
-      alone_connections.splice(alone_connections.indexOf(newConnection), 1);
-      talking_connections.splice(talking_connections.indexOf(newConnection), 1);
-
       /*Once socket gets deleted, send message of type new-message-1 to delete user-id
       from front end*/
-      for (var i =0;i<alone_connections.length;i++) {
-        alone_connections[i].socket.emit('message', {type: 'new-message1',
+      for (var i =0;i<active_users.length;i++) {
+        active_users[i].socket.emit('message', {type: 'new-message1',
           text: "delete-user-id",
-          value: newConnection.username});
+          value: newConnection_active_users.username});
       }
 
-      for (var i =0;i<talking_connections.length;i++) {
-        talking_connections[i].socket.emit('message', {type: 'new-message1',
-          text: "delete-user-id",
-          value: newConnection.username});
-      }
-
+      active_users.splice(alone_connections.indexOf(newConnection_active_users), 1);
+      alone_connections.splice(alone_connections.indexOf(newConnection), 1);
+      talking_connections.splice(talking_connections.indexOf(newConnection), 1);
   });
 
   start_chat(newConnection);
@@ -176,5 +170,4 @@ function print_socket(value){
   logger.log('Print: '+value.id)
 }
 
-module.exports.alone_connections = alone_connections;
-module.exports.talking_connections = talking_connections;
+module.exports.active_users = active_users;

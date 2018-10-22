@@ -14,7 +14,8 @@ import 'rxjs';
 import { ActiveUsersComponent } from './active-users/active-users.component';
 
 const ROUTES:Routes = [
-  {path: 'chat', component: ChatBoxComponent}
+  {path: 'chat', component: ChatBoxComponent},
+  {path: 'logout', component: AppComponent}
 ]
 
 @NgModule({

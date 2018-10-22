@@ -33,10 +33,16 @@ export class WebsocketService {
     // We define our Observer which will listen to messages
     // from our other components and send messages back to our
     // socket server whenever the `next()` method is called.
+
+    /*We need to add all conditions in if statememts, for all admin
+    messages from client to server*/
     let observer = {
         next: (data: Object) => {
            if(data['sent-user-id'] != undefined) {
             this.socket.emit('message-admin', data);
+          }
+          else if (data['logout'] != undefined) {
+              this.socket.disconnect();
           }
           else {
             console.log("chating msg")
