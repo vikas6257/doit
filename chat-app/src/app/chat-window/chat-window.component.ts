@@ -19,7 +19,7 @@ export class ChatWindowComponent implements OnInit {
     this.chat.messages.subscribe(msg => {
       /*Always check message type. Message type "new-message" is used for chatting*/
       console.log(msg);
-      if (msg['type'] == "new-message") {
+      if (msg['type'] == "message") {
         this.msg_rcv = msg.text;
         var chat_history_id = document.getElementById("chat_history");
         var li_in_chat_history = document.createElement("li");

@@ -82,10 +82,10 @@ const connection = {
     logger.log(socket.id + 'can chat to ' + stranger.socket.id);
     socket.on('message', (message)=>{
 
-      stranger.socket.emit('message',{type:'new-message', text: message});
+      stranger.socket.emit('message',{type:'message', text: message});
     });
     stranger.socket.on('message', (message)=>{
-      socket.emit('message',{type:'new-message', text: message});
+      socket.emit('message',{type:'message', text: message});
     });
     //Transfer connected socket from alone_connections to talking_connections
      alone_connections.splice(alone_connections.indexOf(stranger), 1);
@@ -99,20 +99,14 @@ const connection = {
 }
 
 
-/**************************************************************************/
-/*   Message type-  (EMIT)                                                */
-/*                  new-message1 ---> used to get                         */
-/*                                            delete user-id              */
-/*                                            add user-id                 */
-/*                  new-message ----> used to send chat message.          */
-/*                                                                        */
-/*                  (RECEIVE)                                             */
-/*                    admin-message ---> used to get user-id              */
-/*                    message       ---> used to rcv chat message.        */
-/*  We should always check message type at frontend to distinguish.       */
-/**************************************************************************/
+/********************************************************************************************/
+/* Message types:-                                                                          */
+/* message-admin : - It is used to communicate admin-level data between server & client.    */
+/* message:-         It is used to communicate chat messages between end users, so user-id  */
+/*                   must be included in the body of message when we recieve it from client */
+/*                   to properly redirect it to the intended user.                          */
+/********************************************************************************************/
 io.on('connection', (socket) => {
-  logger.log("YO");
   const newConnection = Object.create(connection);
   const newConnection_active_users = Object.create(connection);
 
@@ -124,7 +118,7 @@ io.on('connection', (socket) => {
 
   /*Once socket gets created, send message of type new-message-1 to get user-id
     from front end to map it with socket-id*/
-  socket.emit('message', {type: 'new-message1', text: "send-user-id"});
+  socket.emit('message', {type: 'message-admin', text: "send-user-id"});
   /*Wait for reply , and check message has key "sent-user-id"*/
   socket.on("message-admin", (message)=>{
     /*Check if json has key as "sent-user-id", as it signifies
@@ -139,7 +133,7 @@ io.on('connection', (socket) => {
       all clients.*/
       for (var i =0;i< active_users.length;i++) {
          active_users[i].socket.emit('message', {
-              type: 'new-message1',
+              type: 'message-admin',
               text: "add-user-id",
               value:message['sent-user-id']});
       }
@@ -151,7 +145,7 @@ io.on('connection', (socket) => {
       /*Once socket gets deleted, send message of type new-message-1 to delete user-id
       from front end*/
       for (var i =0;i<active_users.length;i++) {
-        active_users[i].socket.emit('message', {type: 'new-message1',
+        active_users[i].socket.emit('message', {type: 'message-admin',
           text: "delete-user-id",
           value: newConnection_active_users.username});
       }
