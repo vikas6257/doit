@@ -1,7 +1,6 @@
 <div [ngSwitch]="EnterAs">
   <app-heading></app-heading>
   <div class="center" *ngSwitchCase="'NA'">
-    <h2>Enter as</h2>
     <button type="button" (click)="EnterChatUser()" name="button" class="button">User</button>
     <button type="button" (click)="EnterChatGuest()" name="button" class="button">Guest</button>
   </div>
