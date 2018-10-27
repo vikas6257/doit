@@ -2,15 +2,18 @@ var express = require("express");
 var router = express.Router();
 var cors = require("cors");
 var logger = require("node-logger").createLogger("backend_route.log");
+var ObjectId = require('mongodb').ObjectID;
 
 let entry = require("../entry");
 
-const user_login = require("../model/login");
+const schema = require("../model/schema");
+
+
 var active_users = {};
 
 router.post ('/register', (req,res,next)=> {
 
-    user_login.findOne({username: req.body.username}, function(err, docs) {
+    schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
       if(err) {
         res.json(err);
       }
@@ -18,7 +21,7 @@ router.post ('/register', (req,res,next)=> {
         res.json({msg: "Username exists", status: "0"});
       }
       else {
-        let new_user_login = new user_login({
+        let new_user_login = new schema.loginschema({
           username: req.body.username,
           password: req.body.password,
           gender:   req.body.gender
@@ -40,7 +43,7 @@ router.post ('/login', (req,res,next)=> {
     console.log(req);
     var found = false;
 
-    user_login.findOne({username: req.body.username}, function(err, docs) {
+    schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
 
       if(err) {
         res.json(err);
@@ -57,6 +60,7 @@ router.post ('/login', (req,res,next)=> {
         if(!found)
            res.json({msg: "Succesfully logged in", status: "1"});
         else
+
           res.json({msg: "User is already loged in", status: "-1"});
       }
       else {
@@ -78,6 +82,205 @@ router.get ('/active-users', (req,res,next)=> {
 
     res.json(active_users);
 });
+
+
+/*Client needs to send message as
+ ----------------------------------------
+!  username: "name",                    !
+!  friend_username: "friend's name",    !
+!  friend_gender: "friend's gender",    !
+ ---------------------------------------
+*/
+router.post ('/add-user-fl', (req,res,next)=> {
+
+    schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
+      if(err) {
+        res.json(err);
+      }
+      else {
+        let new_friend = new schema.friendlistschema({
+          username: req.body.friend_username,
+          gender: req.body.friend_gender
+        });
+
+        new_friend.save((err, item_f)=>{
+          if(err) {
+            res.json(err);
+          }
+          else {
+            docs.friendlist.push(item_f._id);
+            docs.save((err, item)=>{
+              if(err) {
+                res.json(err);
+              }
+              else {
+                /*Make sure to send uid back to the client*/
+                  res.json({"msg": "Friend added", "id": item_f._id});
+              }
+            });
+          }
+        });
+      }
+    });
+});
+
+router.post ('/get-user-fl', (req,res,next)=> {
+
+    schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
+      if(err) {
+        res.json(err);
+      }
+      else {
+        res.json({"User":docs.friendlist});
+      }
+    });
+});
+
+/*
+ ------------------------------------
+!  Client needs to send message as  !
+!  username: "name",                !
+!  friend_id : "uid"                !
+ -----------------------------------
+*/
+router.post ('/delete-user-fl', (req,res,next)=> {
+    schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
+      if(err) {
+        res.json(err);
+      }
+      else {
+        docs.friendlist.splice(docs.friendlist.indexOf(ObjectId(req.body.friend_id)),1);
+
+        docs.save((err, item)=>{
+          if(err) {
+            res.json(err);
+          }
+        });
+
+
+        //TODO: Before deleting friendlist row, delete all rows corresponding
+       //      to uuids present in inbox list
+        schema.friendlistschema.deleteOne(ObjectId(req.body.friend_id), function (err, result) {
+          if (err) {
+            res.json(err);
+          }
+          else {
+            res.json({"msg": "Friend deleted"});
+          }
+        });
+      }
+    });
+});
+
+
+/*
+ ------------------------------------
+!  Client needs to send message as  !
+!  id: "uid",                       !
+!  timestamp : "uid"                !
+!  text : ""                        !
+ -----------------------------------
+*/
+router.post ('/send-inbox-msg', (req,res,next)=> {
+
+    schema.friendlistschema.findOne({_id: ObjectId(req.body.id)}, function(err, docs) {
+      if(err) {
+        res.json(err);
+      }
+      else {
+         let msg = new schema.inboxmessageschema({
+           timestamp: req.body.timestamp,
+           text: req.body.text
+         });
+
+         msg.save((err, item)=> {
+           if(err) {
+             res.json(err);
+           }
+           else {
+             docs.inbox.push(item._id);
+             docs.save((err, item_m)=>{
+               if(err) {
+                 res.json(err);
+               }
+               else {
+                    res.json({"msg": "Message sent."});
+               }
+             });
+           }
+         });
+      }
+    });
+});
+
+
+/*
+ ------------------------------------
+!  Client needs to send message as  !
+!  id: "uid",                       !
+ -----------------------------------
+*/
+router.post ('/get-inbox-msg', (req,res,next)=> {
+    msg = [];
+    logger.log('Something went wrong while deleting messages for a user');
+    schema.friendlistschema.findOne({_id: ObjectId(req.body.id)}, function(err, docs) {
+      if(err) {
+        res.json(err);
+      }
+      else {
+        if(docs.inbox != undefined) {
+          /*Delete all messages once user read it*/
+            schema.inboxmessageschema.find( {_id: {$in:docs.inbox} }, function (err, result) {
+              if (err) {
+                res.json(err);
+              }
+              else {
+                res.json(result);
+              }
+            });
+          }
+      }
+    });
+});
+
+
+/*
+ ------------------------------------
+!  Client needs to send message as  !
+!  id: "uid",                       !
+ -----------------------------------
+*/
+router.post ('/delete-inbox-msg', (req,res,next)=> {
+
+    schema.friendlistschema.findOne({_id: ObjectId(req.body.id)}, function(err, docs) {
+      if(err) {
+        res.json(err);
+      }
+      else {
+
+         if(docs.inbox != undefined) {
+           /*Delete all messages once user read it*/
+           for(var i=0;i<docs.inbox.length;i++) {
+             schema.inboxmessageschema.deleteOne({_id: docs.inbox[i]}, function (err, result) {
+               if (err) {
+                 logger.log('Something went wrong while deleting messages for a user');
+               }
+             });
+           }
+           docs.inbox = [];
+           docs.save((err, item)=> {
+             if(err) {
+               res.json(err);
+             }
+             else {
+               res.json({"msg": "Succesfully deletd message"});
+             }
+           });
+         }
+      }
+    });
+});
+
 
 
 module.exports = router;
