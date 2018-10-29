@@ -16,16 +16,26 @@ export class ChatWindowComponent implements OnInit {
 
   msg_rcv:string;
   ngOnInit() {
+
     this.chat.messages.subscribe(msg => {
       /*Always check message type. Message type "new-message" is used for chatting*/
       console.log(msg);
       if (msg['type'] == "message") {
         this.msg_rcv = msg.text;
-        var chat_history_id = document.getElementById("chat_history");
-        var li_in_chat_history = document.createElement("li");
-        li_in_chat_history.appendChild(document.createTextNode(msg.text));
-        chat_history_id.appendChild(li_in_chat_history);
+        
+        var container = document.createElement("div");
+        container.setAttribute("style", "display:flex;");
 
+        var chat_history_id = document.getElementById("chat_history");
+        var div_from = document.createElement("div");
+        div_from.setAttribute("style", "color: green; font-size: medium;");
+        div_from.appendChild(document.createTextNode(msg['user_name']+": "));
+
+        var div_msg = document.createElement("div");
+        div_msg.appendChild(document.createTextNode(msg.text));
+        container.appendChild(div_from);
+        container.appendChild(div_msg);
+        chat_history_id.appendChild(container);
         console.log(msg);
     }
     })
@@ -37,6 +47,20 @@ export class ChatWindowComponent implements OnInit {
     console.log('message from input : '+in_msg);
     this.chat.sendMsg(in_msg);
     (<HTMLInputElement>input_text_ele).value = "";
+
+    var container = document.createElement("div");
+    container.setAttribute("style", "display:flex;");
+
+    var chat_history_id = document.getElementById("chat_history");
+    var div_you = document.createElement("div");
+    div_you.setAttribute("style", "color: blue; font-size: medium;");
+    div_you.appendChild(document.createTextNode("You: "));
+
+    var div_msg = document.createElement("div");
+    div_msg.appendChild(document.createTextNode(in_msg));
+    container.appendChild(div_you);
+    container.appendChild(div_msg);
+    chat_history_id.appendChild(container);
   }
 
   enter_on_test(event) {

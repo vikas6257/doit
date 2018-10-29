@@ -51,12 +51,13 @@ let io = require('socket.io').listen(server)
 
 const connection = {
   socket:undefined,
-  username:undefined,
+  user_name:undefined,
+  friends:undefined,
+  isTalkingtoStranger:true,
 };
 
- alone_connections = [];
- talking_connections = [];
- active_users = [];
+//Map to hold all connected(to backend server) user.
+const connected_users = new Map();
 
  /************************************************************************/
  /*                         APIS                                         */
@@ -72,29 +73,34 @@ const connection = {
  function start_chat(newConnection) {
   socket = newConnection.socket;
   let stranger = undefined;
+  let stranger_name = undefined;
   let match_found = false;
-  logger.log('Checking to start chat')
-   while ((stranger == undefined || socket == stranger.socket) && alone_connections.length >= 2) {
-      stranger = get_stranger_to_talk();
+  logger.log('Checking to start chat');
+  for (var [key, value] of connected_users) {
+    if (newConnection.user_name != key && !value.isTalkingtoStranger) {
+      logger.log('Match found with : '+key);
       match_found = true;
+      stranger = value;
+      stranger_name = key;
+      break;
+    }
   }
   if (match_found) {
     logger.log(socket.id + 'can chat to ' + stranger.socket.id);
     socket.on('message', (message)=>{
-
-      stranger.socket.emit('message',{type:'message', text: message});
+      stranger.socket.emit('message',{type:'message', text: message, user_name: newConnection.user_name});
     });
     stranger.socket.on('message', (message)=>{
-      socket.emit('message',{type:'message', text: message});
+      socket.emit('message',{type:'message', text: message, user_name: stranger_name});
     });
-    //Transfer connected socket from alone_connections to talking_connections
-     alone_connections.splice(alone_connections.indexOf(stranger), 1);
-     alone_connections.splice(alone_connections.indexOf(newConnection), 1);
-     talking_connections.push(stranger);
-     talking_connections.push(newConnection);
+
+    newConnection.isTalkingtoStranger = true;
+    stranger.isTalkingtoStranger = true;
+    return true;
   }
   else {
     logger.log(socket.id + ' is alone. :(');
+    return false;
   }
 }
 
@@ -108,54 +114,37 @@ const connection = {
 /********************************************************************************************/
 io.on('connection', (socket) => {
   const newConnection = Object.create(connection);
-  const newConnection_active_users = Object.create(connection);
 
-  newConnection.socket = socket;
-  newConnection_active_users.socket = socket;
-
-  alone_connections.push(newConnection);
-  active_users.push(newConnection_active_users);
-
-  /*Once socket gets created, send message of type new-message-1 to get user-id
-    from front end to map it with socket-id*/
-  socket.emit('message', {type: 'message-admin', text: "send-user-id"});
-  /*Wait for reply , and check message has key "sent-user-id"*/
-  socket.on("message-admin", (message)=>{
-    /*Check if json has key as "sent-user-id", as it signifies
-      frontend has successfully sent user-id*/
-
-    if(message["sent-user-id"] != undefined) {
-
-      newConnection.username = message['sent-user-id'];
-      newConnection_active_users.username = message['sent-user-id'];
-
-      /*Once we receive reply from front end , send this new user to
-      all clients.*/
-      for (var i =0;i< active_users.length;i++) {
-         active_users[i].socket.emit('message', {
-              type: 'message-admin',
-              text: "add-user-id",
-              value:message['sent-user-id']});
-      }
-
-    }
+  socket.on("user_id", (message)=>{
+    newConnection.socket = socket;
+    newConnection.user_name = message;
+    connected_users.set(message, newConnection);
+    logger.log('User got connected :' + message);
+    logger.log('Total user connected :' + connected_users.size);
   });
 
   socket.on('disconnect', function(){
-      /*Once socket gets deleted, send message of type new-message-1 to delete user-id
-      from front end*/
-      for (var i =0;i<active_users.length;i++) {
-        active_users[i].socket.emit('message', {type: 'message-admin',
-          text: "delete-user-id",
-          value: newConnection_active_users.username});
-      }
-
-      active_users.splice(alone_connections.indexOf(newConnection_active_users), 1);
-      alone_connections.splice(alone_connections.indexOf(newConnection), 1);
-      talking_connections.splice(talking_connections.indexOf(newConnection), 1);
+    logger.log('User got disconnected :'+newConnection.user_name);
+    connected_users.delete(newConnection.user_name);
+    logger.log('Total user connected :' + connected_users.size);
   });
 
-  start_chat(newConnection);
+  socket.on('start-chat', function(){
+    logger.log('User wants to start chat.');
+    newConnection.isTalkingtoStranger = false;
+    if (start_chat(newConnection)) {
+      logger.log('returning true');
+      newConnection.socket.emit('message', {type:'start-chat', text:true});
+    }
+    else {
+      logger.log('returning false');
+      newConnection.socket.emit('message', {type:'start-chat', text:false});
+    }
+  });
+
+  socket.on('end-chat', function(){
+    logger.log('User wants to end chat.');
+  });
 });
 
 
@@ -164,4 +153,4 @@ function print_socket(value){
   logger.log('Print: '+value.id)
 }
 
-module.exports.active_users = active_users;
+module.exports.connected_users = connected_users;

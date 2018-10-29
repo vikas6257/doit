@@ -8,9 +8,6 @@ let entry = require("../entry");
 
 const schema = require("../model/schema");
 
-
-var active_users = {};
-
 router.post ('/register', (req,res,next)=> {
 
     schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
@@ -49,18 +46,9 @@ router.post ('/login', (req,res,next)=> {
         res.json(err);
       }
       else if (docs && docs['password'] == req.body.password ) {
-
-        for(var i=0; i < entry.active_users.length; i++) {
-           if (entry.active_users[i].username == req.body.username) {
-             found = true;
-             break;
-           }
-        }
-
-        if(!found)
+        if(!entry.connected_users.has(req.body.username))
            res.json({msg: "Succesfully logged in", status: "1"});
         else
-
           res.json({msg: "User is already loged in", status: "-1"});
       }
       else {
@@ -72,14 +60,6 @@ router.post ('/login', (req,res,next)=> {
 router.get ('/active-users', (req,res,next)=> {
     console.log(req);
     active_users = {};
-
-    for(var i=0; i < entry.active_users.length; i++) {
-
-              active_users[entry.active_users[i].socket.id] =
-                                entry.active_users[i].username;
-
-     }
-
     res.json(active_users);
 });
 

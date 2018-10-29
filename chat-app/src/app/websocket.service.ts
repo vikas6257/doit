@@ -38,11 +38,22 @@ export class WebsocketService {
     messages from client to server*/
     let observer = {
         next: (data: Object) => {
-           if(data['sent-user-id'] != undefined) {
-            this.socket.emit('message-admin', data);
+          console.log(data);
+           if(data['send-user-id'] != undefined) {
+             console.log("Send user id");
+             console.log(data);
+            this.socket.emit('user_id', data['send-user-id']);
           }
           else if (data['logout'] != undefined) {
               this.socket.disconnect();
+          }
+          else if (data['start-chat'] != undefined) {
+            console.log("start-chat")
+            this.socket.emit('start-chat', data['start-chat']);
+          }
+          else if (data['end-chat'] != undefined) {
+            console.log("end-chat")
+            this.socket.emit('end-chat', data['end-chat']);
           }
           else {
             console.log("chating msg")
