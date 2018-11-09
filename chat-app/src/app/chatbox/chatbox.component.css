@@ -16,6 +16,7 @@
   padding-top: 5px;
   border-style: ridge;
   box-shadow: 3px 3px #ccc;
+  position: relative;
 }
 
 .chatlog {

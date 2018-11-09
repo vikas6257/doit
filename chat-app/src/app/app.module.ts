@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { HeadingComponent } from './heading/heading.component';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
 import { HttpModule } from '@angular/http'
@@ -13,21 +12,22 @@ import { ChatserviceService } from './chatservice.service'
 import 'rxjs';
 import { ActiveUsersComponent } from './active-users/active-users.component';
 import { ChatboxComponent } from './chatbox/chatbox.component';
+import { UserPageComponent } from './user-page/user-page.component';
 
 const ROUTES:Routes = [
-  {path: 'chat', component: ChatBoxComponent},
+  {path: 'chat', component: UserPageComponent},
   {path: 'logout', component: AppComponent}
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChatBoxComponent,
     HeadingComponent,
     ChatWindowComponent,
     LoginComponent,
     ActiveUsersComponent,
-    ChatboxComponent
+    ChatboxComponent,
+    UserPageComponent
   ],
   imports: [
     BrowserModule,
