@@ -57,13 +57,6 @@ router.post ('/login', (req,res,next)=> {
     });
 });
 
-router.get ('/active-users', (req,res,next)=> {
-    console.log(req);
-    active_users = {};
-    res.json(active_users);
-});
-
-
 /*Client needs to send message as
  ----------------------------------------
 !  username: "name",                    !
@@ -111,7 +104,9 @@ router.post ('/get-user-fl', (req,res,next)=> {
         res.json(err);
       }
       else {
-        res.json({"User":docs.friendlist});
+        schema.friendlistschema.find( {_id: {$in:docs.friendlist} }, function (err, result) {
+        res.json({"User":result});
+        });
       }
     });
 });
