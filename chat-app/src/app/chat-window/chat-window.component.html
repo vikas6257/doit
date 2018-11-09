@@ -15,23 +15,23 @@
       </div>
     </div>
     <div class="row">
-      <div class="container">
-          <div class="col-md-8">
+      <div class="col-md-9">
+        <div class="container">
             <div id="chat_history"></div>
           </div>
       </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-2">
+
+        <div class="col-md-3">
           <app-active-users></app-active-users>
         </div>
     </div>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-6">
         <div class="form-group">
           <input type="text" id="input_msg" name="" value="" class="form-control" (keydown.enter)="enter_on_test($event)" (keydown.shift.enter)="enter_on_test($event)">
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="row"></div>
         <div class="row">
             <button type="submit" (click)="sendMessage()" class="btn btn-success btn-lg" id="sendbutton">Send</button>
