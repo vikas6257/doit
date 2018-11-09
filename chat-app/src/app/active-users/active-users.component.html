@@ -1,4 +1,10 @@
-<li *ngFor="let hero of active_users"
-  (click)="onSelect(hero)">
-  <span class="badge">{{hero}}</span>
-</li>
+<div class="list-group">
+  <div class="list-group-item list-group-item-success list-group-item-success"
+     [class]="list-group-item-success"></div>
+  <button class="list-group-item" type="button" *ngFor="let friend of friend_list"
+  [class.list-group-item-success]="friend === selected_friend"
+  (mouseover)="onSelect(friend)" (click)="EnterChatBox(friend)">
+    <i class="glyphicon glyphicon-female"><kbd>  {{friend.username}}</kbd></i>
+
+  </button>
+</div>

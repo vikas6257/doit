@@ -66,20 +66,13 @@ export class ChatBoxComponent implements OnInit {
       }
       else if(msg['type'] == "start-chat") {
         if (msg['text'] == false) {
-          
+
         }
         console.log(msg);
       }
     });
 
     this.chat.sendMsg({'send-user-id': this.login.login_handle});
-    /*Get request to fetch active-user list once, chat-box component is loaded*/
-    this.http.get('http://localhost:3000/api/active-users').pipe(map(res => res.json())).subscribe((res) => {
-      console.log(res);
-      for(var key in res) {
-        this.active_users.push(res[key]);
-      }
-    });
   }
 
 }
