@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, Injector, ComponentRef,
+EmbeddedViewRef, ApplicationRef} from '@angular/core';
 import { ChatserviceService } from '../chatservice.service';
 import { LoginComponent } from '../login/login.component';
+import { ChatboxComponent } from '../chatbox/chatbox.component';
 import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -10,10 +12,12 @@ import { Router } from '@angular/router';
   templateUrl: './user-page.component.html',
   styleUrls: ['./user-page.component.css']
 })
+
 export class UserPageComponent implements OnInit {
 
   constructor(private chat: ChatserviceService, private login: LoginComponent,
-    private http: Http, private router: Router) { }
+    private http: Http, private router: Router, private resolver: ComponentFactoryResolver,
+    private injector: Injector, private appRef: ApplicationRef) { }
 
   chat_start_status = false;
   chat_end_status = true;
@@ -41,6 +45,22 @@ export class UserPageComponent implements OnInit {
     this.router.navigate(['/logout']);
   }
 
+  addchatbox($event) {
+    var ComponentFactory = this.resolver.resolveComponentFactory(ChatboxComponent);
+    var ComponentRef = ComponentFactory.create(this.injector);
+    this.appRef.attachView(ComponentRef.hostView);
+    const domElement = (ComponentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+    ComponentRef.instance.AddChatboxId($event);
+    console.log(domElement);
+    console.log(domElement.children);
+    console.log(ComponentRef.hostView);
+    console.log(ComponentRef);
+
+    const chatboxElement = document.getElementById("chatbox1");
+    chatboxElement.appendChild(domElement);
+    //const chatbox = chatboxElement.getElementById("chatbox_popup");
+    console.log('open chatbox for '+$event);
+  }
   ngOnInit() {
     this.chat.messages.subscribe(msg => {
       /*Always check message type. Message type "new-message1" is for admin-use*/
@@ -70,6 +90,6 @@ export class UserPageComponent implements OnInit {
     });
 
     this.chat.sendMsg({ 'send-user-id': this.login.login_handle });
+    this.chat.sendMsg({ 'start-chat': true });
   }
-
 }

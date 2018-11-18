@@ -39,6 +39,7 @@ export class WebsocketService {
     let observer = {
         next: (data: Object) => {
           console.log(data);
+          if (data != undefined) {
            if(data['send-user-id'] != undefined) {
              console.log("Send user id");
              console.log(data);
@@ -59,6 +60,7 @@ export class WebsocketService {
             console.log("chating msg")
             this.socket.emit('message', data);
           }
+        }
         },
     };
 

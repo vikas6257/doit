@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter} from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { Http, Headers } from '@angular/http';
 import { Friend } from '../friend';
@@ -11,6 +11,10 @@ import { map } from 'rxjs/operators';
 })
 
 export class ActiveUsersComponent implements OnInit {
+  /*
+  Create a event.
+  */
+  @Output() openchatbox = new EventEmitter<string>();
 
   friend_list = [];
   fl = [];
@@ -27,7 +31,6 @@ export class ActiveUsersComponent implements OnInit {
         username : this.login.login_handle,
         gender: "invalid",
      };
-
     this.http.post('http://localhost:3000/api/get-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
       console.log(res);
       this.fl = res["User"];
@@ -47,6 +50,10 @@ export class ActiveUsersComponent implements OnInit {
   }
 
   EnterChatBox(friend: Friend) {
+    /*
+    Emmit openchatbox event.
+    */
+    this.openchatbox.emit(friend.username);
     console.log("Friend name is :"+ friend.username);
   }
 }

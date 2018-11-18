@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { HeadingComponent } from './heading/heading.component';
-import { ChatWindowComponent } from './chat-window/chat-window.component';
 import { HttpModule } from '@angular/http'
 import { LoginComponent } from './login/login.component';
 import { WebsocketService } from './websocket.service'
@@ -22,13 +20,13 @@ const ROUTES:Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    HeadingComponent,
-    ChatWindowComponent,
     LoginComponent,
     ActiveUsersComponent,
     ChatboxComponent,
     UserPageComponent
   ],
+  /*Allow to add component dynamically i.e compile component before hand.*/
+  entryComponents: [ChatboxComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
