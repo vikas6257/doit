@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ChatserviceService } from '../chatservice.service';
-import { LoginComponent } from '../login/login.component'
+import { LoginComponent } from '../login/login.component';
+import { out_chat_msg } from '../out_chat_msg';
 
 @Component({
   selector: 'app-chatbox',
@@ -55,8 +56,12 @@ export class ChatboxComponent implements OnInit {
 
   sendMessage() {
     var input_text_ele = document.getElementById("input_msg");
-    var out_msg = (<HTMLInputElement>input_text_ele).value;
-    console.log('message from input : '+out_msg);
+    var in_msg = (<HTMLInputElement>input_text_ele).value;
+    let out_msg = new out_chat_msg();
+    out_msg.from = this.userId;
+    out_msg.to = this.login.login_handle;
+    out_msg.msg = in_msg;
+    console.log('message from input : '+in_msg);
     this.chat.sendMsg(out_msg);
     (<HTMLInputElement>input_text_ele).value = "";
 
@@ -74,7 +79,7 @@ export class ChatboxComponent implements OnInit {
 
     var msg_div = document.createElement("div");
     msg_div.setAttribute("class", "chat-message");
-    msg_div.appendChild(document.createTextNode(out_msg));
+    msg_div.appendChild(document.createTextNode(in_msg));
 
     main_div.appendChild(photo_div);
     main_div.appendChild(msg_div);
