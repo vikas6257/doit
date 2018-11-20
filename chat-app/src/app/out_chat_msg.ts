@@ -1,4 +1,4 @@
-export class out_chat_msg {
+export class OutChatMessage {
   to  : string;
   msg   :string;
   time? : string;
