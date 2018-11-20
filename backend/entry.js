@@ -129,22 +129,16 @@ io.on('connection', (socket) => {
     logger.log('Total user connected :' + connected_users.size);
   });
 
-  socket.on('start-chat', function(){
-    logger.log('User wants to start chat.');
-    newConnection.isTalkingtoStranger = false;
-    if (start_chat(newConnection)) {
-      logger.log('returning true');
-      newConnection.socket.emit('message', {type:'start-chat', text:true});
-    }
-    else {
-      logger.log('returning false');
-      newConnection.socket.emit('message', {type:'start-chat', text:false});
-    }
-  });
+    socket.on('message', (message)=>{
+        logger.log('Got a new message:'+message['msg']+ 'from:' + newConnection.user_name);
+        connection_peer =  connected_users.get(message['to']);
+        if(connection_peer != undefined) {
+          logger.log(' Sendinge message to '+ connection_peer.user_name);
+          connection_peer.socket.emit('message',{type:'message', text: message['msg'],
+                              from: newConnection.user_name});
+        }
+      });
 
-  socket.on('end-chat', function(){
-    logger.log('User wants to end chat.');
-  });
 });
 
 

@@ -39,7 +39,6 @@ export class LoginComponent implements OnInit {
     let newUser: Login = {
       username : form.value.name,
       password: form.value.password,
-      gender:   "dummy-gender",
     };
 
     this.login_handle = form.value.name;
