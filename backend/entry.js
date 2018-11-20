@@ -88,10 +88,10 @@ const connected_users = new Map();
   if (match_found) {
     logger.log(socket.id + 'can chat to ' + stranger.socket.id);
     socket.on('message', (message)=>{
-      stranger.socket.emit('message',{type:'message', text: message.msg, user_name: newConnection.user_name});
+      stranger.socket.emit('message',{type:'message', text: message, user_name: newConnection.user_name});
     });
     stranger.socket.on('message', (message)=>{
-      socket.emit('message',{type:'message', text: message.msg, user_name: stranger_name});
+      socket.emit('message',{type:'message', text: message, user_name: stranger_name});
     });
 
     newConnection.isTalkingtoStranger = true;
