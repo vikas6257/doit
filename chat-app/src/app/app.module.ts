@@ -11,6 +11,7 @@ import 'rxjs';
 import { ActiveUsersComponent } from './active-users/active-users.component';
 import { ChatboxComponent } from './chatbox/chatbox.component';
 import { UserPageComponent } from './user-page/user-page.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 const ROUTES:Routes = [
   {path: 'chat', component: UserPageComponent},
@@ -23,7 +24,8 @@ const ROUTES:Routes = [
     LoginComponent,
     ActiveUsersComponent,
     ChatboxComponent,
-    UserPageComponent
+    UserPageComponent,
+    SpinnerComponent
   ],
   /*Allow to add component dynamically i.e compile component before hand.*/
   entryComponents: [ChatboxComponent],

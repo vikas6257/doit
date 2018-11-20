@@ -48,11 +48,11 @@ export class WebsocketService {
           else if (data['logout'] != undefined) {
               this.socket.disconnect();
           }
-          else if (data['start-chat'] != undefined) {
+          else if (data['start-chat'] != undefined) { //will be used in future
             console.log("start-chat")
             this.socket.emit('start-chat', data['start-chat']);
           }
-          else if (data['end-chat'] != undefined) {
+          else if (data['end-chat'] != undefined) { //will be used in future
             console.log("end-chat")
             this.socket.emit('end-chat', data['end-chat']);
           }

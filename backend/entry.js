@@ -56,8 +56,11 @@ const connection = {
   isTalkingtoStranger:true,
 };
 
-//Map to hold all connected(to backend server) user.
+//Map to hold all connected user as connection object.
 const connected_users = new Map();
+
+//list to hold users pending to assign a stranger for chat. Just contains userid
+pending_users = [];
 
  /************************************************************************/
  /*                         APIS                                         */
@@ -65,45 +68,6 @@ const connected_users = new Map();
  function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
-
- function get_stranger_to_talk() {
-  return (alone_connections[getRandomInt(alone_connections.length)]);
-}
-
- function start_chat(newConnection) {
-  socket = newConnection.socket;
-  let stranger = undefined;
-  let stranger_name = undefined;
-  let match_found = false;
-  logger.log('Checking to start chat');
-  for (var [key, value] of connected_users) {
-    if (newConnection.user_name != key && !value.isTalkingtoStranger) {
-      logger.log('Match found with : '+key);
-      match_found = true;
-      stranger = value;
-      stranger_name = key;
-      break;
-    }
-  }
-  if (match_found) {
-    logger.log(socket.id + 'can chat to ' + stranger.socket.id);
-    socket.on('message', (message)=>{
-      stranger.socket.emit('message',{type:'message', text: message, user_name: newConnection.user_name});
-    });
-    stranger.socket.on('message', (message)=>{
-      socket.emit('message',{type:'message', text: message, user_name: stranger_name});
-    });
-
-    newConnection.isTalkingtoStranger = true;
-    stranger.isTalkingtoStranger = true;
-    return true;
-  }
-  else {
-    logger.log(socket.id + ' is alone. :(');
-    return false;
-  }
-}
-
 
 /********************************************************************************************/
 /* Message types:-                                                                          */
@@ -125,26 +89,72 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', function(){
     logger.log('User got disconnected :'+newConnection.user_name);
+    pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
     connected_users.delete(newConnection.user_name);
     logger.log('Total user connected :' + connected_users.size);
   });
 
-    socket.on('message', (message)=>{
-        logger.log('Got a new message:'+message['msg']+ 'from:' + newConnection.user_name);
-        connection_peer =  connected_users.get(message['to']);
-        if(connection_peer != undefined) {
-          logger.log(' Sendinge message to '+ connection_peer.user_name);
-          connection_peer.socket.emit('message',{type:'message', text: message['msg'],
-                              from: newConnection.user_name});
+  /********************************************************************************************/
+  /*                       COMMON MESSAGING INFRA                                             */
+  /*  1. For messsages to friend, we always ensure that conncetion is alive at frontend       */
+  /*     else we do a DB post of offline messages.                                            */
+  /*  2. For messages to stranger, if starnger1 closes the chatbox, he/she will anyway lose   */
+  /*     the starnger2 details on closure of chat box. So he/she can't send messagess to      */
+  /*     starnger2. But Stranger 2 can send false messages to stranger1 as he/she is still    */
+  /*     holding stranger1 details. So to resolve this we send 'end-chat' per starnger basis  */
+  /*     so that if one starnger closes chatbox, another stanger's chatbox should             */
+  /*     automatically be closed.                                                             */
+  /********************************************************************************************/
+  socket.on('message', (message)=>{
+      logger.log('Got a new message:'+message['msg']+ 'from:' + newConnection.user_name);
+      connection_peer =  connected_users.get(message['to']);
+      /*Must always be true*/
+      if(connection_peer != undefined) {
+        logger.log(' Sendinge message to '+ connection_peer.user_name);
+        connection_peer.socket.emit('message',{type:'message', text: message['msg'],
+                            from: newConnection.user_name});
+      }
+    });
+
+
+    /********************************************************************************************/
+    /*                       STRANGER ASSIGNMENT INFRA                                          */
+    /*  1. On recieving 'start-chat', map a user from pending-list                              */
+    /*  2. If pending-list is empty, push this request into that list and try to fulfill        */
+    /*     or map it when another user comes.                                                   */
+    /*  3. Send 'assigned-user' to init chatbox at frontend                                     */
+    /*  4. On recieving 'end-chat', send 'delete-stranger' to delete chatbox at frontend.       */
+    /********************************************************************************************/
+    socket.on('start-chat', function() {
+      if(pending_users.length > 0) {
+        //assign a user
+        strangerIndex =  getRandomInt(pending_users.length);
+        strangerId = pending_users[strangerIndex];
+        pending_users.splice(strangerIndex, 1);
+        //send message to stranger1
+        socket.emit('message',{type:'assigned-stranger',
+                  userId:   strangerId});
+        stranger_peer =  connected_users.get(strangerId);
+        /*Must always be true*/
+        if(stranger_peer != undefined) {
+            //send message to stranger2
+            stranger_peer.socket.emit('message',{type:'assigned-stranger',
+                            userId: newConnection.user_name});
+          }
+      }
+      else {
+        pending_users.push(newConnection.user_name);
+      }
+    });
+
+    socket.on('end-chat', (message)=> {
+      stranger_peer =  connected_users.get(message['to']);
+      if(stranger_peer != undefined) {
+          stranger_peer.socket.emit('message',{type:'delete-stranger',
+                          userId: newConnection.user_name});
         }
-      });
+    });
 
 });
-
-
-
-function print_socket(value){
-  logger.log('Print: '+value.id)
-}
 
 module.exports.connected_users = connected_users;

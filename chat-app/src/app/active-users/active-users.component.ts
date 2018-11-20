@@ -19,7 +19,7 @@ export class ActiveUsersComponent implements OnInit {
   friend_list = [];
   fl = [];
   selected_friend : Friend;
-
+  showSpinner: boolean = true;
   constructor(private http: Http, private login: LoginComponent) { }
 
   ngOnInit() {
@@ -42,6 +42,7 @@ export class ActiveUsersComponent implements OnInit {
         };
         this.friend_list.push(friend);
       }
+      this.showSpinner = false;
     });
   }
 

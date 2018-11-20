@@ -23,11 +23,11 @@ export class ChatboxComponent implements OnInit {
     this.isMaxi = false;
     this.isMini = false;
     this.chat.messages.subscribe(msg => {
-      /*Always check message type. Message type "new-message" is used for chatting*/
+      /*Always check message type. Message type "message" is used for chatting*/
       if (msg['type'] == "message") {
         if(msg['from'] == this.userId) {
           this.msg_rcv = msg.text;
-          console.log("In chat ox componet of ,"this.userId + " and received the message as :" msg);
+          console.log("In chat box componet of ,"this.userId + " and received the message as:" msg);
 
           var chatlog = document.getElementById("chatlog");
 
@@ -65,7 +65,7 @@ export class ChatboxComponent implements OnInit {
     };
 
     this.chat.sendMsg(send_msg);
-    
+
     (<HTMLInputElement>input_text_ele).value = "";
 
     var chatlog = document.getElementById("chatlog");

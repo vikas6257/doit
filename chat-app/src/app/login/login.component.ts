@@ -33,7 +33,10 @@ export class LoginComponent implements OnInit {
   login_handle ="";
   chat_box_status = false;
 
+  showSpinner = false;
+
   AddUser(form) {
+    this.showSpinner = true;
     //debug
     console.log(form.value);
     let newUser: Login = {
@@ -51,7 +54,7 @@ export class LoginComponent implements OnInit {
       console.log("Existing user with data: "+ newUser);
       this.login_handle = form.value.name;
       this.http.post('http://localhost:3000/api/login', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-
+        this.showSpinner = false;
         this.status = res['status'];
 
         if(this.status == 1) {
@@ -87,6 +90,7 @@ export class LoginComponent implements OnInit {
   AddNewUser(form_register) {
     //debug
     console.log(form_register.value);
+    this.showSpinner = true;
     if(form_register.value.password != form_register.value.confirm_password) {
       this.register_error_msg = "Password entered in password and Retype password section is not same";
       this.login_status = true;
@@ -114,7 +118,7 @@ export class LoginComponent implements OnInit {
       this.http.post('http://localhost:3000/api/register', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
 
         this.status = res['status'];
-
+        this.showSpinner = false;
         if(this.status == 1) {
           this.chat_box_status = true;
           this.login_status = false;

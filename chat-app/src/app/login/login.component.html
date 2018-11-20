@@ -2,7 +2,9 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<div class= "row">
+<app-spinner *ngIf="showSpinner"></app-spinner>
+
+<div class= "row" *ngIf="!showSpinner">
   <div class=col-md-1></div>
   <div class=col-md-4>
       <div *ngIf = "login_status">
