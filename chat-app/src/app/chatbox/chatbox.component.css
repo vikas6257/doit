@@ -116,6 +116,11 @@
   margin-bottom: 2px;
 }
 
+.username {
+  position: relative;
+  left: -190px;
+}
+
 .window-header .window-header-opt {
   margin-left: 5px;
 }

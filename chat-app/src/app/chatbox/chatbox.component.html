@@ -2,6 +2,9 @@
 <div id={{userId}} class="chatbox" *ngIf = "isOpened">
   <div class="window-header">
     <div class="window-header-opt-add" (click)="AddUser()"><i class="far fa-plus-square"></i></div>
+    <div class="username">
+      {{userId}}
+    </div>
     <div class="window-header-opt" (click)="MinimizeWindow()"><i class="far fa-window-minimize"></i></div>
     <div class="window-header-opt" (click)="MaximizeWindow()"><i class="far fa-window-maximize"></i></div>
     <div class="window-header-opt" (click)="CloseWindow()"><i class="far fa-window-close"></i></div>

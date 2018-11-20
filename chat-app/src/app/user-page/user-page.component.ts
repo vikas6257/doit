@@ -7,6 +7,15 @@ import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
+export class chatbox_pop {
+  isadded: boolean;
+  username: string;
+
+  constructor() {
+    this.isadded = false;
+    this.username = undefined;
+  }
+}
 @Component({
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
@@ -22,9 +31,10 @@ export class UserPageComponent implements OnInit {
 
   chat_start_status = false;
   chat_end_status = true;
-  chatbox_pop_1 = false;
-  chatbox_pop_2 = false;
-  chatbox_pop_3 = false;
+
+  chatbox_pop_1 = new chatbox_pop();
+  chatbox_pop_2 = new chatbox_pop();
+  chatbox_pop_3 = new chatbox_pop();
 
   chatbox_friends = new Map();
 
@@ -34,19 +44,48 @@ export class UserPageComponent implements OnInit {
   }
 
   addchatbox($event) {
-    var chatboxElement;
-    if (this.chatbox_pop_1 == false) {
-      chatboxElement = document.getElementById("chatbox1");
-      this.chatbox_pop_1 = true;
-    }else if (this.chatbox_pop_2 == false) {
-      chatboxElement = document.getElementById("chatbox2");
-      this.chatbox_pop_2 = true;
-    }else if (this.chatbox_pop_3 == false){
-      chatboxElement = document.getElementById("chatbox3");
-      this.chatbox_pop_3 = true;
+
+    var chatboxElement = undefined;
+    if (this.chatbox_pop_1.isadded == true) {
+      if (this.chatbox_pop_1.username.match($event) != null) {
+        return;
+      }
     }
-    chatboxElement.appendChild(this.chatbox_friends.get($event));
-    //const chatbox = chatboxElement.getElementById("chatbox_popup");
+
+    if (this.chatbox_pop_2.isadded == true) {
+      if (this.chatbox_pop_2.username.match($event) != null) {;
+        return;
+      }
+    }
+
+    if (this.chatbox_pop_3.isadded == true){
+      if (this.chatbox_pop_3.username.match($event) == null) {
+        return;
+      }
+    }
+
+    if (this.chatbox_pop_1.isadded == false){
+      chatboxElement = document.getElementById("chatbox1");
+      this.chatbox_pop_1.username = $event;
+      this.chatbox_pop_1.isadded = true;
+    }else if (this.chatbox_pop_2.isadded == false){
+      chatboxElement = document.getElementById("chatbox2");
+      this.chatbox_pop_2.username = $event;
+      this.chatbox_pop_2.isadded = true;
+    }else if (this.chatbox_pop_3.isadded == false){
+      chatboxElement = document.getElementById("chatbox3");
+      this.chatbox_pop_3.username = $event;
+
+      this.chatbox_pop_1.isadded = false;
+      this.chatbox_pop_2.isadded = false;
+    }
+    if (chatboxElement != undefined) {
+      if (chatboxElement.hasChildNodes()) {
+        chatboxElement.removeChild(chatboxElement.firstChild);  
+      }
+      chatboxElement.appendChild(this.chatbox_friends.get($event));
+    }
+
     console.log('open chatbox for '+$event);
   }
   ngOnInit() {
