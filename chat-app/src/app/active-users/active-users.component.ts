@@ -15,6 +15,7 @@ export class ActiveUsersComponent implements OnInit {
   Create a event.
   */
   @Output() openchatbox = new EventEmitter<string>();
+  @Output() active_user_component_afterinit = new EventEmitter<any>();
 
   friend_list = [];
   fl = [];
@@ -41,6 +42,8 @@ export class ActiveUsersComponent implements OnInit {
           gender: this.fl[i].gender,
         };
         this.friend_list.push(friend);
+        console.log("Send friend : "+friend.username+" for chatbox creation.");
+        this.active_user_component_afterinit.emit(friend.username);
       }
       this.showSpinner = false;
     });

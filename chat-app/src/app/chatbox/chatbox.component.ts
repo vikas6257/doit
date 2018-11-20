@@ -27,7 +27,6 @@ export class ChatboxComponent implements OnInit {
       if (msg['type'] == "message") {
         if(msg['from'] == this.userId) {
           this.msg_rcv = msg.text;
-          console.log("In chat box componet of ,"this.userId + " and received the message as:" msg);
 
           var chatlog = document.getElementById("chatlog");
 
