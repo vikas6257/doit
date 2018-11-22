@@ -37,7 +37,6 @@ router.post ('/register', (req,res,next)=> {
 });
 
 router.post ('/login', (req,res,next)=> {
-    console.log(req);
     var found = false;
 
     schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
@@ -81,6 +80,11 @@ router.post ('/add-user-fl', (req,res,next)=> {
             res.json(err);
           }
           else {
+            local_user = entry.connected_users.get(req.body.username);
+            if (local_user) {
+               local_user.friends.push(req.body.friend_username);
+            }
+
             docs.friendlist.push(item_f._id);
             docs.save((err, item)=>{
               if(err) {
@@ -98,13 +102,24 @@ router.post ('/add-user-fl', (req,res,next)=> {
 });
 
 router.post ('/get-user-fl', (req,res,next)=> {
-
     schema.loginschema.findOne({username: req.body.username}, function(err, docs) {
       if(err) {
         res.json(err);
       }
       else {
+        local_user = entry.connected_users.get(req.body.username);
         schema.friendlistschema.find( {_id: {$in:docs.friendlist} }, function (err, result) {
+        for(var i=0;i<result.length;i++) {
+          if(entry.connected_users.get(result[i].username) != undefined) {
+            result[i].onlinestatus = "true";
+          }
+          else{
+            result[i].onlinestatus = "false";
+          }
+          if (local_user) {
+             local_user.friends.push(result[i].username);
+          }
+        }
         res.json({"User":result});
         });
       }
@@ -115,6 +130,7 @@ router.post ('/get-user-fl', (req,res,next)=> {
  ------------------------------------
 !  Client needs to send message as  !
 !  username: "name",                !
+!  friend_username: "name",         !
 !  friend_id : "uid"                !
  -----------------------------------
 */
@@ -132,6 +148,10 @@ router.post ('/delete-user-fl', (req,res,next)=> {
           }
         });
 
+        local_user = entry.connected_users.get(req.body.username);
+        if (local_user) {
+           local_user.friends.splice(req.body.friend_username, 1);
+        }
 
         //TODO: Before deleting friendlist row, delete all rows corresponding
        //      to uuids present in inbox list

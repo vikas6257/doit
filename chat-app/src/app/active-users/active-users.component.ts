@@ -40,6 +40,7 @@ export class ActiveUsersComponent implements OnInit {
           id: this.fl[i]._id.toString(),
           username: this.fl[i].username,
           gender: this.fl[i].gender,
+          onlinestatus: this.fl[i].onlinestatus,
         };
         this.friend_list.push(friend);
         console.log("Send friend : "+friend.username+" for chatbox creation.");
@@ -58,6 +59,5 @@ export class ActiveUsersComponent implements OnInit {
     Emmit openchatbox event.
     */
     this.openchatbox.emit(friend.username);
-    console.log("Friend name is :"+ friend.username);
   }
 }

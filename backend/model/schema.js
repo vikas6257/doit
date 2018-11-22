@@ -22,7 +22,11 @@ const friendlistschema = mongoose.Schema({
     type: String,
     required: false
   },
-  inbox: []
+  inbox: [],
+  onlinestatus: {
+    type: String,
+    required: false
+  }
 });
 
 

@@ -25,7 +25,9 @@ export class ChatboxComponent implements OnInit {
     this.chat.messages.subscribe(msg => {
       /*Always check message type. Message type "message" is used for chatting*/
       if (msg['type'] == "message") {
+
         if(msg['from'] == this.userId) {
+              console.log('from : '+msg['from']+' this : '+this.userId);
           this.msg_rcv = msg.text;
 
           var chatlog = document.getElementById("chatlog");

@@ -52,7 +52,7 @@ let io = require('socket.io').listen(server)
 const connection = {
   socket:undefined,
   user_name:undefined,
-  friends:undefined,
+  friends:[],
   isTalkingtoStranger:true,
 };
 
@@ -91,6 +91,7 @@ io.on('connection', (socket) => {
     logger.log('User got disconnected :'+newConnection.user_name);
     pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
     connected_users.delete(newConnection.user_name);
+    //TODO: Send messages to client for friend offline status
     logger.log('Total user connected :' + connected_users.size);
   });
 
