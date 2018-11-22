@@ -30,7 +30,7 @@ export class ChatboxComponent implements OnInit {
               console.log('from : '+msg['from']+' this : '+this.userId);
           this.msg_rcv = msg.text;
 
-          var chatlog = document.getElementById("chatlog");
+          var chatlog = document.getElementById("chatlog_"+this.userId);
 
           var main_div = document.createElement("div");
           main_div.setAttribute("class", "chat friend");
@@ -56,7 +56,7 @@ export class ChatboxComponent implements OnInit {
   }
 
   sendMessage() {
-    var input_text_ele = document.getElementById("input_msg");
+    var input_text_ele = document.getElementById("input_msg_"+this.userId);
     var out_msg = (<HTMLInputElement>input_text_ele).value;
     console.log('message from input : '+out_msg);
     /*Should add a check here to send this message only if friend is online*/
@@ -69,7 +69,7 @@ export class ChatboxComponent implements OnInit {
 
     (<HTMLInputElement>input_text_ele).value = "";
 
-    var chatlog = document.getElementById("chatlog");
+    var chatlog = document.getElementById("chatlog_"+this.userId);
 
     var main_div = document.createElement("div");
     main_div.setAttribute("class","chat self");

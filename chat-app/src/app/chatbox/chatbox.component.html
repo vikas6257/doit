@@ -9,7 +9,7 @@
     <div class="window-header-opt" (click)="MaximizeWindow()"><i class="far fa-window-maximize"></i></div>
     <div class="window-header-opt" (click)="CloseWindow()"><i class="far fa-window-close"></i></div>
   </div>
-  <div id="chatlog" class="chatlog" *ngIf = "!isMini">
+  <div id="chatlog_{{userId}}" class="chatlog" *ngIf = "!isMini">
     <!--<div class="chat friend">
         <div class="user-photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
         <div class="chat-message">Hello!!</div>
@@ -21,6 +21,6 @@
   </div>
   <div class="chat-form" *ngIf = "!isMini">
       <input type="text" placeholder="Write something. And press enter to send." onfocus="this.placeholder = ''" onblur="this.placeholder = 'Write something. And press enter to send.'"
-        id="input_msg" (keydown.enter)="sendMessage(this.value)" (keydown.shift.enter)="enter_on_test($event)" autocomplete="off">
+        id="input_msg_{{userId}}" (keydown.enter)="sendMessage(this.value)" (keydown.shift.enter)="enter_on_test($event)" autocomplete="off">
   </div>
 </div>
