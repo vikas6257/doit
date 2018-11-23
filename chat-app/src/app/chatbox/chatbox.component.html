@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-<div id={{userId}} class="chatbox" *ngIf = "isOpened">
+<div id={{userId}} class="chatbox">
   <div class="window-header">
     <div class="window-header-opt-add" (click)="AddUser()"><i class="far fa-plus-square"></i></div>
     <div class="username">
@@ -9,7 +9,7 @@
     <div class="window-header-opt" (click)="MaximizeWindow()"><i class="far fa-window-maximize"></i></div>
     <div class="window-header-opt" (click)="CloseWindow()"><i class="far fa-window-close"></i></div>
   </div>
-  <div id="chatlog_{{userId}}" class="chatlog" *ngIf = "!isMini">
+  <div id="chatlog_{{userId}}" class="chatlog">
     <!--<div class="chat friend">
         <div class="user-photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
         <div class="chat-message">Hello!!</div>
@@ -19,7 +19,7 @@
         <div class="chat-message">Hello!!</div>
     </div>-->
   </div>
-  <div class="chat-form" *ngIf = "!isMini">
+  <div class="chat-form">
       <input type="text" placeholder="Write something. And press enter to send." onfocus="this.placeholder = ''" onblur="this.placeholder = 'Write something. And press enter to send.'"
         id="input_msg_{{userId}}" (keydown.enter)="sendMessage(this.value)" (keydown.shift.enter)="enter_on_test($event)" autocomplete="off">
   </div>

@@ -45,8 +45,6 @@ export class ActiveUsersComponent implements OnInit {
           onlinestatus: this.fl[i].onlinestatus,
         };
         this.friend_list.push(friend);
-        console.log("Send friend : "+friend.username+" for chatbox creation.");
-        this.active_user_component_afterinit.emit(friend.username);
       }
       this.showSpinner = false;
       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
@@ -62,5 +60,9 @@ export class ActiveUsersComponent implements OnInit {
     Emmit openchatbox event.
     */
     this.openchatbox.emit(friend.username);
+  }
+  EnterChatBoxStranger() {
+    console.log('open chat box for a stanger');
+    this.openchatbox.emit('Stranger');
   }
 }

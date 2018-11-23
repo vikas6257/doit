@@ -3,7 +3,7 @@
   <div class="list-group-item list-group-item-success list-group-item-success"
      [class]="list-group-item-success"></div>
   <button class="list-group-item" type="button" [class.list-group-item-success]="'Stranger' === selected_friend"
-     (mouseover)="onSelect('Stranger')" (click)="EnterChatBox('Stranger')">
+     (mouseover)="onSelect('Stranger')" (click)="EnterChatBoxStranger()" id="Stranger">
        <i class="glyphicon glyphicon-female"><kbd>Stranger</kbd></i>
   </button>
   <button class="list-group-item" type="button" *ngFor="let friend of friend_list"
