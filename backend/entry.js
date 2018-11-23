@@ -47,26 +47,47 @@ var server = app.listen(port, ()=>{
 
 let io = require('socket.io').listen(server)
 
-/*Global varaibles*/
-
-const connection = {
+/*connection object*/
+var connection = {
   socket:undefined,
   user_name:undefined,
-  friends:[],
-  isTalkingtoStranger:true,
+  friends:[], //dynamic field consists of username of friends, hence connection type is var instead of const
+  isTalkingtoStranger:true, //dynamic field
 };
 
 //Map to hold all connected user as connection object.
-const connected_users = new Map();
+var connected_users = new Map();
 
 //list to hold users pending to assign a stranger for chat. Just contains userid
-pending_users = [];
+var pending_users = [];
 
  /************************************************************************/
  /*                         APIS                                         */
  /************************************************************************/
+
+ /************************************************************************/
+ /* To generate random index                                             */
+ /************************************************************************/
  function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
+}
+
+/************************************************************************/
+/* To send a message 'friend_online' to all online friends              */
+/************************************************************************/
+function fireOnlineStatus(user) {
+  logger.log("Arg is: "+user.user_name);
+  logger.log("My friend list count is: "+user.friends.length);
+  for(let i = 0;i<user.friends.length;i++) {
+    online_friend = connected_users.get(user.friends[i]);
+    // Emit message only to online friends that I am now online
+    if(online_friend) {
+      logger.log("Friend: "+ online_friend.user_name);
+      online_friend.socket.emit('message',{type:'friend_online',
+                        friend: user.user_name});
+    }
+  }
+
 }
 
 /********************************************************************************************/
@@ -77,21 +98,42 @@ pending_users = [];
 /*                   to properly redirect it to the intended user.                          */
 /********************************************************************************************/
 io.on('connection', (socket) => {
-  const newConnection = Object.create(connection);
+  let newConnection = Object.create(connection);
 
   socket.on("user_id", (message)=>{
     newConnection.socket = socket;
     newConnection.user_name = message;
+    newConnection.friends.length = 0;
     connected_users.set(message, newConnection);
     logger.log('User got connected :' + message);
     logger.log('Total user connected :' + connected_users.size);
   });
 
+  /* Message 'i_am_online' will be send by client to trigger his/her online chat_end_status
+     to online friends.*/
+  socket.on("i_am_online", (message)=>{
+      fireOnlineStatus(newConnection);
+  });
+
   socket.on('disconnect', function(){
     logger.log('User got disconnected :'+newConnection.user_name);
+
+    //Traverse through all friends in the list and emit offline message
+    for(let i =0;i<newConnection.friends.length;i++) {
+      // Get connection object from friend_list entry
+      online_friend = connected_users.get(newConnection.friends[i]);
+      // Emit message to only online friends that I am going offline
+      if(online_friend) {
+        logger.log('Emit offline message to :'+online_friend.user_name);
+        online_friend.socket.emit('message',{type:'friend_offline',
+                          friend: newConnection.user_name});
+      }
+    }
+    /*TODO:- Confirm whether deleteion of friend list is required ? As we are deleting
+             the entire object.*/
+    newConnection.friends.length = 0;
     pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
     connected_users.delete(newConnection.user_name);
-    //TODO: Send messages to client for friend offline status
     logger.log('Total user connected :' + connected_users.size);
   });
 

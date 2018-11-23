@@ -56,6 +56,10 @@ export class WebsocketService {
             console.log("end-chat")
             this.socket.emit('end-chat', data['end-chat']);
           }
+          else if (data['i_am_online'] != undefined) { //will be used in future
+            console.log("i_am_online")
+            this.socket.emit('i_am_online', data['i_am_online']);
+          }
           else {
             console.log("chating msg")
             this.socket.emit('message', data);

@@ -3,6 +3,7 @@ import { LoginComponent } from '../login/login.component';
 import { Http, Headers } from '@angular/http';
 import { Friend } from '../friend';
 import { map } from 'rxjs/operators';
+import { ChatserviceService } from '../chatservice.service';
 
 @Component({
   selector: 'app-active-users',
@@ -21,7 +22,8 @@ export class ActiveUsersComponent implements OnInit {
   fl = [];
   selected_friend : Friend;
   showSpinner: boolean = true;
-  constructor(private http: Http, private login: LoginComponent) { }
+  constructor(private chat: ChatserviceService,
+               private http: Http, private login: LoginComponent) { }
 
   ngOnInit() {
     var header = new Headers();
@@ -47,6 +49,7 @@ export class ActiveUsersComponent implements OnInit {
         this.active_user_component_afterinit.emit(friend.username);
       }
       this.showSpinner = false;
+      this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
     });
   }
 

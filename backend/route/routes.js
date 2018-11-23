@@ -4,7 +4,7 @@ var cors = require("cors");
 var logger = require("node-logger").createLogger("backend_route.log");
 var ObjectId = require('mongodb').ObjectID;
 
-let entry = require("../entry");
+var entry = require("../entry");
 
 const schema = require("../model/schema");
 
@@ -109,14 +109,14 @@ router.post ('/get-user-fl', (req,res,next)=> {
       else {
         local_user = entry.connected_users.get(req.body.username);
         schema.friendlistschema.find( {_id: {$in:docs.friendlist} }, function (err, result) {
-        for(var i=0;i<result.length;i++) {
+        for(let i=0;i<result.length;i++) {
           if(entry.connected_users.get(result[i].username) != undefined) {
             result[i].onlinestatus = "true";
           }
           else{
             result[i].onlinestatus = "false";
           }
-          if (local_user) {
+          if (local_user && result[i].username != undefined) {
              local_user.friends.push(result[i].username);
           }
         }
@@ -146,21 +146,22 @@ router.post ('/delete-user-fl', (req,res,next)=> {
           if(err) {
             res.json(err);
           }
-        });
-
-        local_user = entry.connected_users.get(req.body.username);
-        if (local_user) {
-           local_user.friends.splice(req.body.friend_username, 1);
-        }
-
-        //TODO: Before deleting friendlist row, delete all rows corresponding
-       //      to uuids present in inbox list
-        schema.friendlistschema.deleteOne(ObjectId(req.body.friend_id), function (err, result) {
-          if (err) {
-            res.json(err);
-          }
           else {
-            res.json({"msg": "Friend deleted"});
+            local_user = entry.connected_users.get(req.body.username);
+            if (local_user) {
+              local_user.friends.splice(req.body.friend_username, 1);
+            }
+
+            //TODO: Before deleting friendlist row, delete all rows corresponding
+            //      to uuids present in inbox list
+            schema.friendlistschema.deleteOne(ObjectId(req.body.friend_id), function (err, result) {
+              if (err) {
+                res.json(err);
+              }
+              else {
+                res.json({"msg": "Friend deleted"});
+              }
+            });
           }
         });
       }
