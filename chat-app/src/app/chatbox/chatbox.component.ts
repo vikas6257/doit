@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Output, EventEmitter, OnDestroy} from '@angular/core';
 import { ChatserviceService } from '../chatservice.service';
 import { LoginComponent } from '../login/login.component';
 import { OutChatMessage } from '../out_chat_msg';
 import { Friend } from '../friend';
 import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chatbox',
@@ -12,7 +13,7 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./chatbox.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ChatboxComponent implements OnInit {
+export class ChatboxComponent implements OnInit, OnDestroy{
 
   @Output() close_chatbox = new EventEmitter<string>();
   @Output() user_assigned = new EventEmitter<any>();
@@ -25,10 +26,14 @@ export class ChatboxComponent implements OnInit {
   isMaxi: boolean;
   userId: undefined;
   msg_rcv:string;
+  subscription: Subscription;
+  isstranger: boolean;
   ngOnInit() {
     this.isMaxi = false;
     this.isMini = false;
-    this.chat.messages.subscribe(msg => {
+    this.isstranger = false;
+    this.subscription = this.chat.messages.subscribe(msg => {
+      console.log(this.subscription);
       /*Always check message type. Message type "message" is used for chatting*/
       if (msg['type'] == "message") {
         if(msg['from'] == this.userId) {
@@ -72,7 +77,12 @@ export class ChatboxComponent implements OnInit {
     })
   }
 
+  ngOnDestroy() {
+    console.log('Destroying chatbox component : '+this.userId);
+  }
+
   sendMessage() {
+    console.log(this.subscription);
     var input_text_ele = document.getElementById("input_msg_"+this.userId);
     var out_msg = (<HTMLInputElement>input_text_ele).value;
     console.log('message from input : '+out_msg);
@@ -111,6 +121,10 @@ export class ChatboxComponent implements OnInit {
   AddChatboxId(id) {
     this.userId = id;
   }
+  setstranger() {
+    this.isstranger = true;
+  }
+
   AddUser() {
     if(this.userId != 'Stranger') {
       var header = new Headers();
@@ -163,6 +177,8 @@ export class ChatboxComponent implements OnInit {
   CloseWindow() {
     console.log('Pressed Close');
     this.close_chatbox.emit(this.userId);
-    this.chat.sendMsg({'end-chat':{'to':this.userId}});
+    if (this.isstranger == true) {
+      this.chat.sendMsg({'end-chat':{'to':this.userId}});
+    }
   }
 }

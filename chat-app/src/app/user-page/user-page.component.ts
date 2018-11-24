@@ -48,6 +48,13 @@ export class UserPageComponent implements OnInit {
     this.delete_chat_box(userId);
     console.log(this.chatbox_friends.get(userId));
   }
+  userpage_close_chatbox_stranger(userId, compref){
+    console.log('closing from UserPageComponent for stranger : '+userId);
+    console.log(this.chatbox_friends.get(userId));
+    compref.destroy();
+    this.delete_chat_box(userId);
+    console.log(this.chatbox_friends.get(userId));
+  }
 
   chatboxpop_userid_assigned(msg) {
     console.log('Changing component instance key from : ' + msg['olduserId'] + ', to : '+ msg['newuserId']);
@@ -168,7 +175,12 @@ export class UserPageComponent implements OnInit {
     if (friend.match('Stranger') != null) {
       this.chat.sendMsg({'start-chat':'NA'});
       ComponentRef.instance.user_assigned.subscribe(message => this.chatboxpop_userid_assigned(message));
-      ComponentRef.instance.delete_stranger.subscribe(message => this.delete_chat_box(message));
+      ComponentRef.instance.delete_stranger.subscribe(message => this.userpage_close_chatbox_stranger(message, ComponentRef));
+      ComponentRef.instance.close_chatbox.subscribe(message => this.userpage_close_chatbox_stranger(message, ComponentRef));
+      ComponentRef.instance.setstranger();
+    }
+    else {
+      ComponentRef.instance.close_chatbox.subscribe(message => this.userpage_close_chatbox(message));
     }
   }
 }
