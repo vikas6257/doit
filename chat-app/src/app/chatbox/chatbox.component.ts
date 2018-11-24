@@ -27,11 +27,10 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   userId: undefined;
   msg_rcv:string;
   subscription: Subscription;
-  isstranger: boolean;
+  isstranger = false;
   ngOnInit() {
     this.isMaxi = false;
     this.isMini = false;
-    this.isstranger = false;
     this.subscription = this.chat.messages.subscribe(msg => {
       console.log(this.subscription);
       /*Always check message type. Message type "message" is used for chatting*/
