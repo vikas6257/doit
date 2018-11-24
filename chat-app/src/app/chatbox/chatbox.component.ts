@@ -177,6 +177,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     console.log('Pressed Close');
     this.close_chatbox.emit(this.userId);
     if (this.isstranger == true) {
+      console.log('sending end chat');
       this.chat.sendMsg({'end-chat':{'to':this.userId}});
     }
   }

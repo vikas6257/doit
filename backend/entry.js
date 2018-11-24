@@ -110,6 +110,7 @@ function getStranger(user) {
 /*  Debug API                                                                */
 /*****************************************************************************/
 function dump_tables() {
+  logger.log("----------------");
   for (let entry of connected_users.entries()) {
       var key = entry[0],
       user = entry[1];
@@ -125,7 +126,7 @@ function dump_tables() {
   for(let i=0;i<pending_users.length;i++) {
       logger.log("Pendng users are: "+pending_users[i]);
   }
-
+  logger.log("----------------");
 }
 
 /********************************************************************************************/
@@ -177,7 +178,8 @@ io.on('connection', (socket) => {
     /* starnger to whom he/she was talking.*/
     for(let i= 0; i < newConnection.talking_to_stranger.length;i++) {
       my_stranger = connected_users.get(newConnection.talking_to_stranger[i]);
-      my_stranger.talking_to_stranger.splice(newConnection.user_name, 1);
+      my_stranger.talking_to_stranger.splice(
+        my_stranger.talking_to_stranger.indexOf(newConnection.user_name), 1);
     }
     newConnection.talking_to_stranger.length = 0;
     pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
@@ -201,7 +203,9 @@ io.on('connection', (socket) => {
       connection_peer =  connected_users.get(message['to']);
       /*Must always be true*/
       if(connection_peer != undefined) {
+
         logger.log(' Sendinge message to '+ connection_peer.user_name);
+        dump_tables();
         connection_peer.socket.emit('message',{type:'message', text: message['msg'],
                             from: newConnection.user_name});
       }
@@ -223,7 +227,6 @@ io.on('connection', (socket) => {
         strangerIndex =  getStranger(newConnection);
         if(strangerIndex >= 0) {
           strangerId = pending_users[strangerIndex];
-          pending_users.splice(strangerId, 1);
           //send message to stranger1
           socket.emit('message',{type:'assigned-stranger',
                     userId:   strangerId});
@@ -234,8 +237,9 @@ io.on('connection', (socket) => {
               stranger_peer.socket.emit('message',{type:'assigned-stranger',
                               userId: newConnection.user_name});
             }
-            newConnection.talking_to_stranger.push[strangerId];
-            stranger_peer.talking_to_stranger.push[newConnection.user_name];
+            newConnection.talking_to_stranger.push(strangerId);
+            stranger_peer.talking_to_stranger.push(newConnection.user_name);
+            pending_users.splice(pending_users.indexOf(strangerId), 1);
         }
         else {
             pending_users.push(newConnection.user_name);
@@ -251,8 +255,10 @@ io.on('connection', (socket) => {
       if(stranger_peer != undefined) {
           stranger_peer.socket.emit('message',{type:'delete-stranger',
                           userId: newConnection.user_name});
-          newConnection.talking_to_stranger.splice(stranger_peer.user_name ,1);
-          stranger_peer.talking_to_stranger.splice(newConnection.user_name,1);
+          newConnection.talking_to_stranger.splice(
+            newConnection.talking_to_stranger.indexOf(stranger_peer.user_name) ,1);
+          stranger_peer.talking_to_stranger.splice(
+            stranger_peer.talking_to_stranger.indexOf(newConnection.user_name) ,1);
         }
     });
 
