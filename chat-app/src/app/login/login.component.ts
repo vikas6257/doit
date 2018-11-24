@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
 
   @Input() EnterAs:string;
   constructor(private http: Http, private router: Router) { }
+  friend_list = [];
 
   login_status = true;
   login_error_status = false;

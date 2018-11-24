@@ -18,7 +18,6 @@ export class ActiveUsersComponent implements OnInit {
   @Output() openchatbox = new EventEmitter<string>();
   @Output() active_user_component_afterinit = new EventEmitter<any>();
 
-  friend_list = [];
   fl = [];
   selected_friend : Friend;
   showSpinner: boolean = true;
@@ -29,11 +28,10 @@ export class ActiveUsersComponent implements OnInit {
     var header = new Headers();
     header.append('Content-Type', 'application/json');
 
-      let User: Friend = {
-        id: "invalid",
+    let User: Friend = {
         username : this.login.login_handle,
-        gender: "invalid",
      };
+
     this.http.post('http://localhost:3000/api/get-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
       console.log(res);
       this.fl = res["User"];
@@ -44,7 +42,7 @@ export class ActiveUsersComponent implements OnInit {
           gender: this.fl[i].gender,
           onlinestatus: this.fl[i].onlinestatus,
         };
-        this.friend_list.push(friend);
+        this.login.friend_list.push(friend);
       }
       this.showSpinner = false;
       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });

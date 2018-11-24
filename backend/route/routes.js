@@ -84,7 +84,6 @@ router.post ('/add-user-fl', (req,res,next)=> {
             if (local_user) {
                local_user.friends.push(req.body.friend_username);
             }
-
             docs.friendlist.push(item_f._id);
             docs.save((err, item)=>{
               if(err) {

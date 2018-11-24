@@ -48,11 +48,11 @@ var server = app.listen(port, ()=>{
 let io = require('socket.io').listen(server)
 
 /*connection object*/
-var connection = {
+let connection = {
   socket:undefined,
   user_name:undefined,
   friends:[], //dynamic field consists of username of friends, hence connection type is var instead of const
-  isTalkingtoStranger:true, //dynamic field
+  talking_to_stranger:[], //dynamic field
 };
 
 //Map to hold all connected user as connection object.
@@ -82,10 +82,48 @@ function fireOnlineStatus(user) {
     online_friend = connected_users.get(user.friends[i]);
     // Emit message only to online friends that I am now online
     if(online_friend) {
-      logger.log("Friend: "+ online_friend.user_name);
       online_friend.socket.emit('message',{type:'friend_online',
                         friend: user.user_name});
     }
+  }
+}
+
+/************************************************************************/
+/* To get a stranger. Currently its working on FCFS algo.               */
+/* Need to come up with more optimised logic.                           */
+/************************************************************************/
+function getStranger(user) {
+  logger.log("User is: "+user.user_name);
+  for(let i = 0;i < pending_users.length;i++) {
+    /*Check if user in pending list in not my firend or already talking to*/
+    logger.log("Pending User is: "+pending_users[i]);
+    if(user.friends.includes(pending_users[i]) == false &&
+       user.talking_to_stranger.includes(pending_users[i]) == false) {
+         logger.log("Assigned user: "+ pending_users[i]);
+         return i;
+    }
+  }
+  return -1;
+}
+
+/*****************************************************************************/
+/*  Debug API                                                                */
+/*****************************************************************************/
+function dump_tables() {
+  for (let entry of connected_users.entries()) {
+      var key = entry[0],
+      user = entry[1];
+
+      logger.log("Local DB for user: ",user.user_name);
+      for(let i=0;i<user.friends.length;i++) {
+        logger.log("My Friend is: "+user.friends[i]);
+      }
+      for(let i=0;i<user.talking_to_stranger.length;i++) {
+        logger.log("My talking_to_strangeris: "+user.talking_to_stranger[i]);
+      }
+  }
+  for(let i=0;i<pending_users.length;i++) {
+      logger.log("Pendng users are: "+pending_users[i]);
   }
 
 }
@@ -103,7 +141,8 @@ io.on('connection', (socket) => {
   socket.on("user_id", (message)=>{
     newConnection.socket = socket;
     newConnection.user_name = message;
-    newConnection.friends.length = 0;
+    newConnection.friends = new Array();
+    newConnection.talking_to_stranger = new Array();
     connected_users.set(message, newConnection);
     logger.log('User got connected :' + message);
     logger.log('Total user connected :' + connected_users.size);
@@ -129,9 +168,18 @@ io.on('connection', (socket) => {
                           friend: newConnection.user_name});
       }
     }
+
     /*TODO:- Confirm whether deleteion of friend list is required ? As we are deleting
              the entire object.*/
+
     newConnection.friends.length = 0;
+    /* When an user disconnects, remove that user from talking_to_stranger list of all */
+    /* starnger to whom he/she was talking.*/
+    for(let i= 0; i < newConnection.talking_to_stranger.length;i++) {
+      my_stranger = connected_users.get(newConnection.talking_to_stranger[i]);
+      my_stranger.talking_to_stranger.splice(newConnection.user_name, 1);
+    }
+    newConnection.talking_to_stranger.length = 0;
     pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
     connected_users.delete(newConnection.user_name);
     logger.log('Total user connected :' + connected_users.size);
@@ -171,19 +219,27 @@ io.on('connection', (socket) => {
     socket.on('start-chat', function() {
       if(pending_users.length > 0) {
         //assign a user
-        strangerIndex =  getRandomInt(pending_users.length);
-        strangerId = pending_users[strangerIndex];
-        pending_users.splice(strangerIndex, 1);
-        //send message to stranger1
-        socket.emit('message',{type:'assigned-stranger',
-                  userId:   strangerId});
-        stranger_peer =  connected_users.get(strangerId);
-        /*Must always be true*/
-        if(stranger_peer != undefined) {
-            //send message to stranger2
-            stranger_peer.socket.emit('message',{type:'assigned-stranger',
-                            userId: newConnection.user_name});
-          }
+        let strangerIndex = -1;
+        strangerIndex =  getStranger(newConnection);
+        if(strangerIndex >= 0) {
+          strangerId = pending_users[strangerIndex];
+          pending_users.splice(strangerId, 1);
+          //send message to stranger1
+          socket.emit('message',{type:'assigned-stranger',
+                    userId:   strangerId});
+          stranger_peer =  connected_users.get(strangerId);
+          /*Must always be true*/
+          if(stranger_peer != undefined) {
+              //send message to stranger2
+              stranger_peer.socket.emit('message',{type:'assigned-stranger',
+                              userId: newConnection.user_name});
+            }
+            newConnection.talking_to_stranger.push[strangerId];
+            stranger_peer.talking_to_stranger.push[newConnection.user_name];
+        }
+        else {
+            pending_users.push(newConnection.user_name);
+        }
       }
       else {
         pending_users.push(newConnection.user_name);
@@ -195,6 +251,8 @@ io.on('connection', (socket) => {
       if(stranger_peer != undefined) {
           stranger_peer.socket.emit('message',{type:'delete-stranger',
                           userId: newConnection.user_name});
+          newConnection.talking_to_stranger.splice(stranger_peer.user_name ,1);
+          stranger_peer.talking_to_stranger.splice(newConnection.user_name,1);
         }
     });
 

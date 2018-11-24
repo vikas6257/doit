@@ -2,6 +2,9 @@ import { Component, OnInit, ViewEncapsulation, Output, EventEmitter } from '@ang
 import { ChatserviceService } from '../chatservice.service';
 import { LoginComponent } from '../login/login.component';
 import { OutChatMessage } from '../out_chat_msg';
+import { Friend } from '../friend';
+import { Http, Headers } from '@angular/http';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chatbox',
@@ -15,7 +18,8 @@ export class ChatboxComponent implements OnInit {
   @Output() user_assigned = new EventEmitter<any>();
   @Output() delete_stranger = new EventEmitter<string>();
 
-  constructor(private chat: ChatserviceService, private login: LoginComponent) { }
+  constructor(private chat: ChatserviceService, private login: LoginComponent,
+               private http: Http,) { }
 
   isMini: boolean;
   isMaxi: boolean;
@@ -108,6 +112,29 @@ export class ChatboxComponent implements OnInit {
     this.userId = id;
   }
   AddUser() {
+    if(this.userId != 'Stranger') {
+      var header = new Headers();
+      header.append('Content-Type', 'application/json');
+
+      let User = {
+          'username' : this.login.login_handle,
+          'friend_gender': "male",
+          'friend_username' : this.userId,
+      };
+
+      this.http.post('http://localhost:3000/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+        console.log(res);
+        let friend: Friend = {
+          id: res['id'].toString(),
+          username: this.userId,
+          gender: "male", //put dummy for now
+          onlinestatus: "true", // starnger must be online
+        };
+
+        this.login.friend_list.push(friend);
+
+      });
+    }
     console.log('Pressed + button.');
   }
   MinimizeWindow() {
