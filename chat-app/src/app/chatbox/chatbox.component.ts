@@ -12,6 +12,8 @@ import { OutChatMessage } from '../out_chat_msg';
 export class ChatboxComponent implements OnInit {
 
   @Output() close_chatbox = new EventEmitter<string>();
+  @Output() user_assigned = new EventEmitter<any>();
+  @Output() delete_stranger = new EventEmitter<string>();
 
   constructor(private chat: ChatserviceService, private login: LoginComponent) { }
 
@@ -54,8 +56,14 @@ export class ChatboxComponent implements OnInit {
     if (msg['type'] == "assigned-stranger") {
       console.log('User assigned message recieved in chatbox');
       if (this.userId == "Stranger") {
+        this.user_assigned.emit({'olduserId':this.userId, 'newuserId':msg['userId']});
         this.AddChatboxId(msg['userId']);
       }
+    }
+    if (msg['type'] == "delete-stranger") {
+      console.log('Stranger : '+msg['userId']+' has disconnet the chat.')
+      console.log('Remove chatbox popup.');
+      this.delete_stranger.emit(msg['userId']);
     }
     })
   }
@@ -128,5 +136,6 @@ export class ChatboxComponent implements OnInit {
   CloseWindow() {
     console.log('Pressed Close');
     this.close_chatbox.emit(this.userId);
+    this.chat.sendMsg({'end-chat':{'to':this.userId}});
   }
 }

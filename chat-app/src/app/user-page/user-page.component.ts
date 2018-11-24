@@ -49,6 +49,24 @@ export class UserPageComponent implements OnInit {
     console.log(this.chatbox_friends.get(userId));
   }
 
+  chatboxpop_userid_assigned(msg) {
+    console.log('Changing component instance key from : ' + msg['olduserId'] + ', to : '+ msg['newuserId']);
+    /*
+    var oldcomponent = this.chatbox_friends.get(msg['olduserId']);
+    this.chatbox_friends.delete(msg['olduserId']);
+    this.chatbox_friends.set(msg['newuserId'], oldcomponent);
+    */
+    if (this.chatbox_pop_1.username.match(msg['olduserId']) != null) {
+      this.chatbox_pop_1.username = msg['newuserId'];
+      console.log('username of chatbox_pop_1 changed from :'+msg['olduserId']+', to :'+msg['newuserId']);
+    }else if (this.chatbox_pop_2.username.match(msg['olduserId']) != null) {
+      this.chatbox_pop_2.username = msg['newuserId'];
+      console.log('username of chatbox_pop_2 changed from :'+msg['olduserId']+', to :'+msg['newuserId']);
+    }else if (this.chatbox_pop_3.username.match(msg['olduserId']) != null) {
+      this.chatbox_pop_3.username = msg['newuserId'];
+      console.log('username of chatbox_pop_3 changed from :'+msg['olduserId']+', to :'+msg['newuserId']);
+    }
+  }
   addchatbox($event) {
     var chatboxElement = undefined;
     if (this.chatbox_pop_1.isadded == true) {
@@ -89,6 +107,10 @@ export class UserPageComponent implements OnInit {
         this.create_chatbox_for_friends($event);
       }
       chatboxElement.appendChild(this.chatbox_friends.get($event));
+      if ($event == 'Stranger') {
+        console.log('Deleting chatbox component for this stranger');
+        this.chatbox_friends.delete($event);
+      }
     }
 
     console.log('open chatbox for '+$event);
@@ -145,6 +167,8 @@ export class UserPageComponent implements OnInit {
     this.chatbox_friends.set(friend, domElement);
     if (friend.match('Stranger') != null) {
       this.chat.sendMsg({'start-chat':'NA'});
+      ComponentRef.instance.user_assigned.subscribe(message => this.chatboxpop_userid_assigned(message));
+      ComponentRef.instance.delete_stranger.subscribe(message => this.delete_chat_box(message));
     }
   }
 }
