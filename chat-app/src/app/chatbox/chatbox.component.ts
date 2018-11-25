@@ -22,35 +22,58 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   constructor(private chat: ChatserviceService, private login: LoginComponent,
                private http: Http,) { }
 
+  //Tags minimized chatbox window
   isMini: boolean;
+
+  //Tags maximized chatbox window
   isMaxi: boolean;
+
+  //User-id of this instance of chatbox window
   userId: undefined;
+
+  //Message recieved to this chatbox window
   msg_rcv:string;
+
+  //This window's subscription to websocket
   subscription: Subscription;
+
+  //Tags stranger chatbox window
   isstranger = false;
+  /**
+   * [ngOnInit Subscribes to messages recieved from websocket]
+   *            1. Subscription to chat messages, assigned stranger messages
+   *                delete stranger messages.
+   * @return nothing
+   */
   ngOnInit() {
     this.isMaxi = false;
     this.isMini = false;
     this.subscription = this.chat.messages.subscribe(msg => {
-      console.log(this.subscription);
       /*Always check message type. Message type "message" is used for chatting*/
       if (msg['type'] == "message") {
         if(msg['from'] == this.userId) {
-              console.log('from : '+msg['from']+' this : '+this.userId);
           this.msg_rcv = msg.text;
 
+          /***********************************************************
+          *   Create recieved message that will be added to chatbox. *
+           ***********************************************************/
           var chatlog = document.getElementById("chatlog_"+this.userId);
 
+          //Main div
           var main_div = document.createElement("div");
           main_div.setAttribute("class", "chat friend");
 
+          //Photo
           var photo_div = document.createElement("div");
           photo_div.setAttribute("class", "user-photo");
+
+          //Image
           var image = document.createElement("img");
           image.setAttribute("src","assets/Tyrion Lannister.jpg");
           image.setAttribute("alt","Tyrion lannister");
           photo_div.appendChild(image);
 
+          //Message
           var msg_div = document.createElement("div");
           msg_div.setAttribute("class", "chat-message");
           msg_div.appendChild(document.createTextNode(msg.text));
@@ -58,44 +81,66 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           main_div.appendChild(photo_div);
           main_div.appendChild(msg_div);
           chatlog.appendChild(main_div);
-          console.log('Inside chatbox: '+msg);
         }
-    }
+    }/*End of subscription callback*/
+
+    /************************************************************************
+    *   As stranger chatbox instantiates, it gets a default temprary id as  *
+    *   'Stranger'. Change the temporary id to permanent on user assigned.  *
+     ************************************************************************/
     if (msg['type'] == "assigned-stranger") {
-      console.log('User assigned message recieved in chatbox');
       if (this.userId == "Stranger") {
         this.user_assigned.emit({'olduserId':this.userId, 'newuserId':msg['userId']});
         this.AddChatboxId(msg['userId']);
       }
     }
+
+    /**************************************************************
+    *   Remove stranger chatbox on peer stranger chatbox removal. *
+     **************************************************************/
     if (msg['type'] == "delete-stranger") {
-      console.log('Stranger : '+msg['userId']+' has disconnet the chat.')
-      console.log('Remove chatbox popup.');
       this.delete_stranger.emit(msg['userId']);
-    }
-    })
-  }
+    }})/*End of subscribe*/
+  }/* End of ngOnInit*/
 
   ngOnDestroy() {
-    console.log('Destroying chatbox component : '+this.userId);
   }
 
+/**
+ * [sendMessage Sends the message typed input form to websocket.]
+ *              1. Removes typed text in input form.
+ *              2. Sends typed message to websocket.
+ *
+ * @return [nothing]
+ */
   sendMessage() {
-    console.log(this.subscription);
     var input_text_ele = document.getElementById("input_msg_"+this.userId);
     var out_msg = (<HTMLInputElement>input_text_ele).value;
-    console.log('message from input : '+out_msg);
+    /*Remove message from input field*/
+    (<HTMLInputElement>input_text_ele).value = "";
+
     /*Should add a check here to send this message only if friend is online*/
     let send_msg: OutChatMessage = {
         to: this.userId,
         msg: out_msg,
     };
 
+    /*****************************
+    * Send message to websocket. *
+     *****************************/
     this.chat.sendMsg(send_msg);
 
-    (<HTMLInputElement>input_text_ele).value = "";
-
     var chatlog = document.getElementById("chatlog_"+this.userId);
+
+    /***************************************************************
+    *               Self message format                            *
+    *    Main div                                                  *
+    *    +--------------------------------------------------+      *
+    *    |+-------------------------------------+  +-------+|      *
+    *    || Chat message div                    |  |img div||      *
+    *    |+-------------------------------------+  +-------+|      *
+    *    +--------------------------------------------------+      *
+    ***************************************************************/
 
     var main_div = document.createElement("div");
     main_div.setAttribute("class","chat self");
@@ -114,7 +159,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     main_div.appendChild(photo_div);
     main_div.appendChild(msg_div);
     chatlog.appendChild(main_div);
-    console.log(main_div);
   }
 
   AddChatboxId(id) {
@@ -123,7 +167,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   setstranger() {
     this.isstranger = true;
   }
-
   AddUser() {
     if(this.userId != 'Stranger') {
       var header = new Headers();
@@ -148,36 +191,67 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
       });
     }
-    console.log('Pressed + button.');
   }
+
+  /**
+   * [MinimizeWindow Minimize the chatbox window]
+   * @return nothing
+   */
   MinimizeWindow() {
     this.isMini = true;
+
+    //Fetch id of elements going to be changed.
     var chatboxdiv = document.getElementById(this.userId);
     var inputdiv = document.getElementById("input_msg_"+this.userId);
     var chatlogdiv = document.getElementById("chatlog_"+this.userId);
+
+    //Hide chatlog portion of chatbox window
     chatlogdiv.setAttribute("style", "display: none");
+
+    //Hide input form portion of chatbox window
     inputdiv.setAttribute("style", "display: none");
+
+    //Reduce height of chatbox window to have an effect of minimize.
     chatboxdiv.setAttribute("style","height: 40px; margin-top: 350px;");
-    console.log('Pressed Minimize');
-  }
+  }/*End of MinimizeWindow*/
+
+  /**
+   * [MaximizeWindow Maximize th chatbox window]
+   * @return nothing
+   */
   MaximizeWindow() {
+
     if(this.isMini) {
       this.isMaxi = true;
+
+      //Fetch id of elements going to be changed.
       var chatboxdiv = document.getElementById(this.userId);
-      chatboxdiv.setAttribute("style","height: 400px;");
       var inputdiv = document.getElementById("input_msg_"+this.userId);
       var chatlogdiv = document.getElementById("chatlog_"+this.userId);
+
+      //Incease height of chatbox window
+      chatboxdiv.setAttribute("style","height: 400px;");
+
+      //Change attributes to default
       chatlogdiv.setAttribute("style","display: block");
       inputdiv.setAttribute("style", "display: flex");
       this.isMini = false
     }
-    console.log('Pressed Maximize');
-  }
+  }/*End of MaximizeWindow*/
+
+  /**
+   * [CloseWindow Close chatbox window]
+   * @return nothing
+   */
   CloseWindow() {
-    console.log('Pressed Close');
+    /****************************************************
+    * Emit close_chatbox event.                         *
+    * Currently user-page has subscribed to this event. *
+     ****************************************************/
     this.close_chatbox.emit(this.userId);
+
+    //Send end chat message having destination, to peer.
     if (this.isstranger == true) {
-      console.log('sending end chat');
       this.chat.sendMsg({'end-chat':{'to':this.userId}});
     }
   }
