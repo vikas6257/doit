@@ -20,8 +20,15 @@ export class LoginComponent implements OnInit {
 
   @Input() EnterAs:string;
   constructor(private http: Http, private router: Router) { }
+  /*Global friend list . It will be imported to active-user component
+    to populate.*/
   friend_list = [];
 
+  /*Global variable to hold user's login handle. It will be imported to other
+    components too.*/
+  login_handle ="";
+
+  /*Local variables used within the component.*/
   login_status = true;
   login_error_status = false;
   login_error_msg = "";
@@ -31,7 +38,6 @@ export class LoginComponent implements OnInit {
   register_error_msg = "";
 
   status = 0;
-  login_handle ="";
   chat_box_status = false;
 
   showSpinner = false;

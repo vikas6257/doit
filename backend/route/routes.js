@@ -172,7 +172,7 @@ router.post ('/delete-user-fl', (req,res,next)=> {
  ------------------------------------
 !  Client needs to send message as  !
 !  id: "uid",                       !
-!  timestamp : "uid"                !
+!  timestamp : "time"                !
 !  text : ""                        !
  -----------------------------------
 */
@@ -216,15 +216,12 @@ router.post ('/send-inbox-msg', (req,res,next)=> {
  -----------------------------------
 */
 router.post ('/get-inbox-msg', (req,res,next)=> {
-    msg = [];
-    logger.log('Something went wrong while deleting messages for a user');
     schema.friendlistschema.findOne({_id: ObjectId(req.body.id)}, function(err, docs) {
       if(err) {
         res.json(err);
       }
       else {
-        if(docs.inbox != undefined) {
-          /*Delete all messages once user read it*/
+        if(docs  != undefined && docs.inbox.length > 0) {
             schema.inboxmessageschema.find( {_id: {$in:docs.inbox} }, function (err, result) {
               if (err) {
                 res.json(err);
@@ -233,6 +230,9 @@ router.post ('/get-inbox-msg', (req,res,next)=> {
                 res.json(result);
               }
             });
+          }
+          else {
+            res.json(docs);
           }
       }
     });
