@@ -151,8 +151,11 @@ router.post ('/delete-user-fl', (req,res,next)=> {
               local_user.friends.splice(req.body.friend_username, 1);
             }
 
-            //TODO: Before deleting friendlist row, delete all rows corresponding
-            //      to uuids present in inbox list
+            /*
+             * TODO: Before deleting friendlist row, delete all rows corresponding
+             *      to uuids present in inbox list to delete all offline messages
+             *      if any. Currently delete friend is not supported in first release.
+             */
             schema.friendlistschema.deleteOne(ObjectId(req.body.friend_id), function (err, result) {
               if (err) {
                 res.json(err);

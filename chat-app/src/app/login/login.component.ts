@@ -20,12 +20,16 @@ export class LoginComponent implements OnInit {
 
   @Input() EnterAs:string;
   constructor(private http: Http, private router: Router) { }
-  /*Global friend list . It will be imported to active-user component
-    to populate.*/
+  /*
+   * Global friend list . It will be imported to active-user component
+  * to populate.
+  */
   friend_list = [];
 
-  /*Global variable to hold user's login handle. It will be imported to other
-    components too.*/
+  /*
+   * Global variable to hold user's login handle. It will be imported to other
+   * components too.
+   */
   login_handle ="";
 
   /*Local variables used within the component.*/

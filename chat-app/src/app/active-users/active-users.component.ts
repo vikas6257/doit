@@ -35,8 +35,11 @@ export class ActiveUsersComponent implements OnInit {
 
     this.http.post('http://localhost:3000/api/get-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
       console.log(res);
-      /*We got reply from DB about friend-list*/
-      /* fl will consist of the list having friends details */
+      /*
+       * We got reply from DB about friend-list. Populate fl with the reply
+       * and start iterating over fl to create each friend object and push it
+       * global friend list.
+       */
       this.fl = res["User"];
 
       for(let i=0;i<this.fl.length;i++) {
@@ -48,25 +51,37 @@ export class ActiveUsersComponent implements OnInit {
           friend.onlinestatus =  this.fl[i].onlinestatus;
           friend.inbox =  new Array();
 
-        /*Push it to the global friend-list defined in login page*/
+        /*
+         * Push it to the global friend-list defined in login page.
+         */
         this.login.friend_list.push(friend);
       }
 
-      /*Emit a messafe to server saying that I am online. It is used to notify friends
-        about my online status*/
+      /*
+       * Emit a message to server saying that I am online. It is used to notify friends
+       * about my online status.
+       */
       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
 
-      /*Once friend list is populated, it's time for offline messages*/
+      /*
+       * Once friend list is populated, it's time for offline messages.
+       */
       for(let i=0;i<this.login.friend_list.length;i++) {
-        /*Create an object for each friend in the friend list to send a get-inbox
-        http post request.*/
+        /*
+        * Create an object for each friend in the friend list to send a get-inbox
+        * http post request.
+        */
         let User: Friend = {
             id : this.login.friend_list[i].id,
          };
 
-         /*Note: Different http post request will be send for each friends*/
+         /*
+          * Note: Different http post request will be send for each friends.
+          */
          this.http.post('http://localhost:3000/api/get-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-            /*res will be a list of inbox messages for a particular friend*/
+            /*
+             * res will be a list of inbox messages for a particular friend.
+             */
               for (let j=0;j<res.length;j++) {
                 /*Create a inbox object*/
                 let inbox: Inbox = {
@@ -76,7 +91,9 @@ export class ActiveUsersComponent implements OnInit {
                 this.login.friend_list[i].inbox.push(inbox);
             }
 
-            /*Once we populate our front-end with inbox message, send a delete to DB*/
+            /*
+             * Once we populate our front-end with inbox message, send a delete to DB. *
+             */
             let User: Friend = {
                 id : this.login.friend_list[i].id,
              };
