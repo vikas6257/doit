@@ -63,6 +63,8 @@ export class ActiveUsersComponent implements OnInit {
        */
       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
 
+      this.showSpinner = false;
+
       /*
        * Once friend list is populated, it's time for offline messages.
        */
@@ -100,8 +102,6 @@ export class ActiveUsersComponent implements OnInit {
              this.http.post('http://localhost:3000/api/delete-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
                console.log(res);
              });
-
-            this.showSpinner = false;
           });
       }
     });
