@@ -104,6 +104,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   }/* End of ngOnInit*/
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 /**

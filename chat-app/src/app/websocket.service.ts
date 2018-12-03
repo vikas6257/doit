@@ -27,7 +27,9 @@ export class WebsocketService {
         })
 
         return () => {
-          this.socket.disconnect();
+          /**
+           * Cleaning-up code on observer unsubscibe can be added here.
+           */
         }
     });
 
