@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter} from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { Http, Headers } from '@angular/http';
 import { Friend } from '../friend';
-import { Inbox } from '../inbox';
+import { OfflineMessage } from '../offline_message';
 import { map } from 'rxjs/operators';
 import { ChatserviceService } from '../chatservice.service';
 
@@ -16,7 +16,7 @@ export class ActiveUsersComponent implements OnInit {
   /*
   Create a event.
   */
-  @Output() openchatbox = new EventEmitter<string>();
+  @Output() openchatbox = new EventEmitter<any>();
   @Output() active_user_component_afterinit = new EventEmitter<any>();
 
   fl = []; /*A local list use to push friends into global friend list*/
@@ -86,7 +86,7 @@ export class ActiveUsersComponent implements OnInit {
              */
               for (let j=0;j<res.length;j++) {
                 /*Create a inbox object*/
-                let inbox: Inbox = {
+                let inbox: OfflineMessage = {
                   timestamp: res[j].timestamp,
                   text: res[j].text,
                 };
@@ -109,16 +109,22 @@ export class ActiveUsersComponent implements OnInit {
 
   onSelect(friend: Friend) {
     this.selected_friend = friend;
+    console.log(friend.username+ " is online: "+ friend.onlinestatus);
+    
+    for(let i=0;i<friend.inbox.length;i++) {
+      console.log("Message:- time: "+ friend.inbox[i].timestamp +" ,text: "+ friend.inbox[i].text);
+    }
   }
 
   EnterChatBox(friend: Friend) {
     /*
     Emmit openchatbox event.
     */
-    this.openchatbox.emit(friend.username);
+    this.openchatbox.emit(friend);
   }
+
   EnterChatBoxStranger() {
     console.log('open chat box for a stanger');
-    this.openchatbox.emit('Stranger');
+    this.openchatbox.emit(undefined);
   }
 }

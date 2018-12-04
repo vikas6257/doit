@@ -5,7 +5,7 @@ import { Inbox } from './inbox';
 export class Friend {
   id? : string;
   username?: string;
-  gender?  : string;
+  gender?  : string; //either male of female
   inbox? : Inbox[];
   onlinestatus? : string; //either true or false
 }

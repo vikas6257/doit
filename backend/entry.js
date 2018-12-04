@@ -82,6 +82,7 @@ function fireOnlineStatus(user) {
     online_friend = connected_users.get(user.friends[i]);
     // Emit message only to online friends that I am now online
     if(online_friend) {
+      logger.log("Firing online message to: "+ online_friend.user_name);
       online_friend.socket.emit('message',{type:'friend_online',
                         friend: user.user_name});
     }

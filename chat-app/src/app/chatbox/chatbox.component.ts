@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewEncapsulation, Output, EventEmitter, OnDestroy} from '@angular/core';
 import { ChatserviceService } from '../chatservice.service';
 import { LoginComponent } from '../login/login.component';
-import { OutChatMessage } from '../out_chat_msg';
+import { OnlineMessage } from '../online_message';
+import { OfflineMessage } from '../offline_message';
 import { Friend } from '../friend';
 import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import {formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-chatbox',
@@ -29,7 +31,10 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   isMaxi: boolean;
 
   //User-id of this instance of chatbox window
-  userId: undefined;
+  userId: string;
+
+  //friend object of this instance
+  friend: Friend;
 
   //Message recieved to this chatbox window
   msg_rcv:string;
@@ -49,6 +54,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     this.isMaxi = false;
     this.isMini = false;
     this.subscription = this.chat.messages.subscribe(msg => {
+      console.log(msg['type']);
       /*Always check message type. Message type "message" is used for chatting*/
       if (msg['type'] == "message") {
         if(msg['from'] == this.userId) {
@@ -82,7 +88,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           main_div.appendChild(msg_div);
           chatlog.appendChild(main_div);
         }
-    }/*End of subscription callback*/
+    }
 
     /************************************************************************
     *   As stranger chatbox instantiates, it gets a default temprary id as  *
@@ -91,7 +97,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     if (msg['type'] == "assigned-stranger") {
       if (this.userId == "Stranger") {
         this.user_assigned.emit({'olduserId':this.userId, 'newuserId':msg['userId']});
-        this.AddChatboxId(msg['userId']);
+        this.AddChatboxIdForStanger(msg['userId']);
       }
     }
 
@@ -100,14 +106,38 @@ export class ChatboxComponent implements OnInit, OnDestroy{
      **************************************************************/
     if (msg['type'] == "delete-stranger") {
       this.delete_stranger.emit(msg['userId']);
-    }})/*End of subscribe*/
+    }
+
+    /********************************************************************
+    * A friend has fired an online message. Change his/her online status*
+    *********************************************************************/
+    if(msg['type'] == "friend_online") {
+      for(let i=0;i<this.login.friend_list.length;i++) {
+          if(msg['friend'] == this.login.friend_list[i].username) {
+            this.login.friend_list[i].onlinestatus = "true";
+          }
+      }
+    }
+
+    /*********************************************************************
+    * A friend has fired an offline message. Change his/her online status*
+    **********************************************************************/
+    if(msg['type'] == "friend_offline") {
+      for(let i=0;i<this.login.friend_list.length;i++) {
+          if(msg['friend'] == this.login.friend_list[i].username) {
+            this.login.friend_list[i].onlinestatus = "false";
+          }
+      }
+    }
+
+  })/*End of subscribe*/
   }/* End of ngOnInit*/
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-/**
+/*
  * [sendMessage Sends the message typed input form to websocket.]
  *              1. Removes typed text in input form.
  *              2. Sends typed message to websocket.
@@ -120,16 +150,36 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     /*Remove message from input field*/
     (<HTMLInputElement>input_text_ele).value = "";
 
-    /*Should add a check here to send this message only if friend is online*/
-    let send_msg: OutChatMessage = {
-        to: this.userId,
-        msg: out_msg,
-    };
+    /*If friend is offline do a DB post for message*/
+    if (this.friend != undefined && this.friend.onlinestatus == 'false') {
+      /**/
+      let header = new Headers();
+      header.append('Content-Type', 'application/json');
 
-    /*****************************
-    * Send message to websocket. *
-     *****************************/
-    this.chat.sendMsg(send_msg);
+      let today= new Date();
+
+      let send_msg: OfflineMessage = {
+        to_username: this.friend.username,
+        from_username: this.login.login_handle,
+        timestamp: formatDate(today, 'dd-MM-yyyy hh:mm:ss a', 'en-US', '+0530'),
+        text: out_msg,
+      };
+
+      this.http.post('http://localhost:3000/api/send-inbox-msg', send_msg, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+          console.log(res);
+      });
+    }
+    else {
+      let send_msg: OnlineMessage = {
+          to: this.userId,
+          msg: out_msg,
+      };
+      /*****************************
+      * Send message to websocket. *
+       *****************************/
+      this.chat.sendMsg(send_msg);
+    }
+
 
     var chatlog = document.getElementById("chatlog_"+this.userId);
 
@@ -162,33 +212,68 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     chatlog.appendChild(main_div);
   }
 
-  AddChatboxId(id) {
-    this.userId = id;
+  /*
+   * Populate friend and userId for which this chatbox belongs to.
+   * Note: For strangers Friend will be NULL and userId will be starnger for
+   * interim time till a stranger is assigned. Once a stranger is user_assigned
+   * AddChatboxIdForStanger() will be called to populate  userId for which this
+   * chatbox belongs to.
+   */
+  AddChatboxId(friend) {
+    let userId = 'Stranger';
+
+    if(friend != undefined) {
+      userId = friend.username;
+    }
+
+    this.friend = friend;
+    this.userId = userId;
   }
+
+  /*
+   * Populate userId for which this chatbox belongs to.
+   * Note: For strangers Friend will be NULL.
+   */
+  AddChatboxIdForStanger(userId) {
+    /*Friend object must be NULL for stranger*/
+    if(this.friend != undefined) {
+      console.log("Something wrong");
+    }
+    this.userId = userId;
+  }
+
+
   setstranger() {
     this.isstranger = true;
   }
+
+  /**
+   * [Sends DB post to add friend to the friend-list]
+   * @return nothing
+   */
   AddUser() {
-    if(this.userId != 'Stranger') {
-      var header = new Headers();
+    /*Just ensure that this is a stranger instance and user-id has been user_assigned
+     before adding user to friend-list*/
+    if(this.isstranger == true && this.userId != 'Stranger') {
+      let header = new Headers();
       header.append('Content-Type', 'application/json');
 
       let User = {
           'username' : this.login.login_handle,
-          'friend_gender': "male",
+          'friend_gender': "male", //put dummy for now
           'friend_username' : this.userId,
       };
 
       this.http.post('http://localhost:3000/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         console.log(res);
-        let friend: Friend = {
+        let new_friend: Friend = {
           id: res['id'].toString(),
           username: this.userId,
           gender: "male", //put dummy for now
           onlinestatus: "true", // starnger must be online
         };
 
-        this.login.friend_list.push(friend);
+        this.login.friend_list.push(new_friend);
 
       });
     }

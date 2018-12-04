@@ -174,39 +174,60 @@ router.post ('/delete-user-fl', (req,res,next)=> {
 /*
  ------------------------------------
 !  Client needs to send message as  !
-!  id: "uid",                       !
-!  timestamp : "time"                !
+!  to_username: "to username"       !
+!  from_username: "from username"   !
+!  timestamp : "time"               !
 !  text : ""                        !
  -----------------------------------
 */
 router.post ('/send-inbox-msg', (req,res,next)=> {
 
-    schema.friendlistschema.findOne({_id: ObjectId(req.body.id)}, function(err, docs) {
+    schema.loginschema.findOne({username: req.body.to_username}, function(err, docs) {
       if(err) {
         res.json(err);
       }
       else {
-         let msg = new schema.inboxmessageschema({
-           timestamp: req.body.timestamp,
-           text: req.body.text
-         });
+        /*
+         * We need to traverse through each of our friendlist to get the exact row of friendlist
+         * table. Only username is not sufficient to get the same. Multiple rows with same Username
+         * can exist in friendlist table.
+         */
+        for(let i=0;i<docs.friendlist.length;i++) {
+           schema.friendlistschema.findOne({username: req.body.from_username, _id: docs.friendlist[i]._id}, function(err_inner, docs_inner) {
+             if(err_inner) {
+                // res.json(err_inner);
+             }
+             else {
+              /*
+               * Ideally this should be true only once. So res.json should not be called multiple times.
+               * If it is getting called, then there must be something fishy with the DB entries.
+               */
+               if (docs_inner) {
+                 let msg = new schema.inboxmessageschema({
+                   timestamp: req.body.timestamp,
+                   text: req.body.text
+                 });
 
-         msg.save((err, item)=> {
-           if(err) {
-             res.json(err);
-           }
-           else {
-             docs.inbox.push(item._id);
-             docs.save((err, item_m)=>{
-               if(err) {
-                 res.json(err);
+                 msg.save((err, item)=> {
+                   if(err) {
+                  //   res.json(err);
+                   }
+                   else {
+                     docs_inner.inbox.push(item._id);
+                     docs_inner.save((err, item_m)=>{
+                       if(err) {
+                    //     res.json(err);
+                       }
+                       else {
+                            res.json({"msg": "Message sent."});
+                       }
+                     });
+                   }
+                 });
                }
-               else {
-                    res.json({"msg": "Message sent."});
-               }
-             });
-           }
-         });
+             }
+           });
+         }
       }
     });
 });
@@ -225,6 +246,7 @@ router.post ('/get-inbox-msg', (req,res,next)=> {
       }
       else {
         if(docs  != undefined && docs.inbox.length > 0) {
+            /*Get all messages form DB in one-shot*/
             schema.inboxmessageschema.find( {_id: {$in:docs.inbox} }, function (err, result) {
               if (err) {
                 res.json(err);
@@ -255,28 +277,28 @@ router.post ('/delete-inbox-msg', (req,res,next)=> {
         res.json(err);
       }
       else {
-
          if(docs.inbox != undefined) {
-           /*Delete all messages once user read it*/
-           for(var i=0;i<docs.inbox.length;i++) {
-             schema.inboxmessageschema.deleteOne({_id: docs.inbox[i]}, function (err, result) {
-               if (err) {
-                 logger.log('Something went wrong while deleting messages for a user');
+           /*Delete all messages once user read it in one shot*/
+          schema.inboxmessageschema.deleteMany({_id: {$in:docs.inbox}}, function (err, result) {
+            if (err) {
+                res.json(err);
+            }
+            else {
+             docs.inbox = [];
+             docs.save((err, item)=> {
+               if(err) {
+                 res.json(err);
+               }
+               else {
+                 res.json({"msg": "Succesfully deletd message"});
                }
              });
-           }
-           docs.inbox = [];
-           docs.save((err, item)=> {
-             if(err) {
-               res.json(err);
-             }
-             else {
-               res.json({"msg": "Succesfully deletd message"});
-             }
-           });
+            }
+          });
          }
       }
     });
+
 });
 
 
