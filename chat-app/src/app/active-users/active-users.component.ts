@@ -17,7 +17,7 @@ export class ActiveUsersComponent implements OnInit {
   Create a event.
   */
   @Output() openchatbox = new EventEmitter<any>();
-  @Output() active_user_component_afterinit = new EventEmitter<any>();
+  @Output() snd_active_usr_to_user_page_comp = new EventEmitter<any>();
 
   fl = []; /*A local list use to push friends into global friend list*/
   selected_friend : Friend;
@@ -55,6 +55,12 @@ export class ActiveUsersComponent implements OnInit {
          * Push it to the global friend-list defined in login page.
          */
         this.login.friend_list.push(friend);
+
+        /***************************************************************
+         * Send all active user to user-page component, to instantiate *
+         * chatbox for all friends                                     *
+         ***************************************************************/
+        this.snd_active_usr_to_user_page_comp.emit(friend);
       }
 
       /*
