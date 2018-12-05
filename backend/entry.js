@@ -76,13 +76,10 @@ var pending_users = [];
 /* To send a message 'friend_online' to all online friends              */
 /************************************************************************/
 function fireOnlineStatus(user) {
-  logger.log("Arg is: "+user.user_name);
-  logger.log("My friend list count is: "+user.friends.length);
   for(let i = 0;i<user.friends.length;i++) {
     online_friend = connected_users.get(user.friends[i]);
     // Emit message only to online friends that I am now online
     if(online_friend) {
-      logger.log("Firing online message to: "+ online_friend.user_name);
       online_friend.socket.emit('message',{type:'friend_online',
                         friend: user.user_name});
     }
@@ -94,13 +91,10 @@ function fireOnlineStatus(user) {
 /* Need to come up with more optimised logic.                           */
 /************************************************************************/
 function getStranger(user) {
-  logger.log("User is: "+user.user_name);
   for(let i = 0;i < pending_users.length;i++) {
     /*Check if user in pending list in not my firend or already talking to*/
-    logger.log("Pending User is: "+pending_users[i]);
     if(user.friends.includes(pending_users[i]) == false &&
        user.talking_to_stranger.includes(pending_users[i]) == false) {
-         logger.log("Assigned user: "+ pending_users[i]);
          return i;
     }
   }
@@ -157,15 +151,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', function(){
-    logger.log('User got disconnected :'+newConnection.user_name);
-
     //Traverse through all friends in the list and emit offline message
     for(let i =0;i<newConnection.friends.length;i++) {
       // Get connection object from friend_list entry
       online_friend = connected_users.get(newConnection.friends[i]);
       // Emit message to only online friends that I am going offline
       if(online_friend) {
-        logger.log('Emit offline message to :'+online_friend.user_name);
         online_friend.socket.emit('message',{type:'friend_offline',
                           friend: newConnection.user_name});
       }
@@ -185,7 +176,6 @@ io.on('connection', (socket) => {
     newConnection.talking_to_stranger.length = 0;
     pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
     connected_users.delete(newConnection.user_name);
-    logger.log('Total user connected :' + connected_users.size);
   });
 
   /********************************************************************************************/
@@ -200,12 +190,9 @@ io.on('connection', (socket) => {
   /*     automatically be closed.                                                             */
   /********************************************************************************************/
   socket.on('message', (message)=>{
-      logger.log('Got a new message:'+message['msg']+ 'from:' + newConnection.user_name);
       connection_peer =  connected_users.get(message['to']);
       /*Must always be true*/
       if(connection_peer != undefined) {
-
-        logger.log(' Sendinge message to '+ connection_peer.user_name);
         dump_tables();
         connection_peer.socket.emit('message',{type:'message', text: message['msg'],
                             from: newConnection.user_name});

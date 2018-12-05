@@ -6,9 +6,13 @@
   </div>
 
   <div *ngSwitchCase="'User'">
-    <app-login [EnterAs]="EnterAs"></app-login>
+    <div *ngIf = 'reset'>
+      <app-login [EnterAs]="EnterAs"></app-login>
+    </div>
   </div>
   <div *ngSwitchCase="'Guest'">
-    <app-login [EnterAs]="EnterAs"></app-login>
+      <div *ngIf ='reset'>
+        <app-login [EnterAs]="EnterAs"></app-login>
+      <div *ngIf='reset'>
   </div>
 </div>

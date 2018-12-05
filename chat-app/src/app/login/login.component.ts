@@ -165,18 +165,5 @@ export class LoginComponent implements OnInit {
       confirm_password: new FormControl(''),
       gender: new FormControl('male')
     });
-
-
-      this.login_status = true;
-      this.login_error_status = false;
-      this.login_error_msg = "";
-
-      this.register_status = true;
-      this.register_error_status = false;
-      this.register_error_msg = "";
-
-      this.status = 0;
-      this.login_handle ="";
-      this.chat_box_status = false;
   }
 }

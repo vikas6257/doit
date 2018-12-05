@@ -6,6 +6,7 @@ import { ChatboxComponent } from '../chatbox/chatbox.component';
 import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AppComponent } from '../app.component';
 
 export class chatbox_pop {
   isadded: boolean;
@@ -26,7 +27,7 @@ export class UserPageComponent implements OnInit {
 
   constructor(private chat: ChatserviceService, private login: LoginComponent,
     private http: Http, private router: Router, private resolver: ComponentFactoryResolver,
-    private injector: Injector, private appRef: ApplicationRef,
+    private injector: Injector, private appRef: ApplicationRef, private myapp: AppComponent
     ) { }
 
   chat_start_status = false;
@@ -40,8 +41,11 @@ export class UserPageComponent implements OnInit {
 
   logout() {
     this.chat.sendMsg({ 'logout': true });
+    this.myapp.reset = true;
+    this.myapp.EnterAs = 'NA';
     this.router.navigate(['/logout']);
   }
+
   userpage_close_chatbox(userId){
     console.log('closing from UserPageComponent for : '+userId);
     console.log(this.chatbox_friends.get(userId));
@@ -170,6 +174,9 @@ export class UserPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    /*Logout purpose*/
+    this.myapp.reset = true;
+
     this.chat.sendMsg({ 'send-user-id': this.login.login_handle });
   }
 

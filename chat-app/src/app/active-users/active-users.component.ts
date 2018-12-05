@@ -110,9 +110,10 @@ export class ActiveUsersComponent implements OnInit {
   onSelect(friend: Friend) {
     this.selected_friend = friend;
     console.log(friend.username+ " is online: "+ friend.onlinestatus);
-    
-    for(let i=0;i<friend.inbox.length;i++) {
-      console.log("Message:- time: "+ friend.inbox[i].timestamp +" ,text: "+ friend.inbox[i].text);
+    if (friend.inbox) {
+      for(let i=0;i<friend.inbox.length;i++) {
+        console.log("Message:- time: "+ friend.inbox[i].timestamp +" ,text: "+ friend.inbox[i].text);
+      }
     }
   }
 

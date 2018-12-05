@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
+  reset: boolean;
   title = 'openup';
   EnterAs:string = 'NA';
   EnterChatUser() {
@@ -18,4 +19,10 @@ export class AppComponent {
     this.EnterAs = 'Guest';
     console.log(this.EnterAs);
   }
+
+  ngOnInit()  {
+    this.reset = true;
+    this.EnterAs = 'NA';
+  }
+
 }
