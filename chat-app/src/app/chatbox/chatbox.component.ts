@@ -151,9 +151,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     (<HTMLInputElement>input_text_ele).value = "";
 
     /*If friend is offline do a DB post for message*/
-    /*
     if (this.friend != undefined && this.friend.onlinestatus == 'false') {
-      /
       let header = new Headers();
       header.append('Content-Type', 'application/json');
 
@@ -170,8 +168,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           console.log(res);
       });
     }
-    */
-  //  else {
+    else {
       let send_msg: OnlineMessage = {
           to: this.userId,
           msg: out_msg,
@@ -180,8 +177,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       * Send message to websocket. *
        *****************************/
       this.chat.sendMsg(send_msg);
-  //  }
-
+    }
 
     var chatlog = document.getElementById("chatlog_"+this.userId);
 
