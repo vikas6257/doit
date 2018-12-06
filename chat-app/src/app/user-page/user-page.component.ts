@@ -7,6 +7,7 @@ import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AppComponent } from '../app.component';
+import { PlatformLocation } from '@angular/common'
 
 export class chatbox_pop {
   isadded: boolean;
@@ -27,8 +28,15 @@ export class UserPageComponent implements OnInit {
 
   constructor(private chat: ChatserviceService, private login: LoginComponent,
     private http: Http, private router: Router, private resolver: ComponentFactoryResolver,
-    private injector: Injector, private appRef: ApplicationRef, private myapp: AppComponent
-    ) { }
+    private injector: Injector, private appRef: ApplicationRef, private myapp: AppComponent,
+    location: PlatformLocation) {
+      /*
+       * User has pressed back, so do logout.
+       */
+      location.onPopState(() => {
+          this.logout();
+      });
+     }
 
   chat_start_status = false;
   chat_end_status = true;
@@ -39,6 +47,11 @@ export class UserPageComponent implements OnInit {
 
   chatbox_friends = new Map();
 
+  /*
+  * API to to logout from current sessiom. It can be called from anywhere
+  * the moment we want to terminate the current user session and redirect
+  * to login page.
+  */
   logout() {
     this.chat.sendMsg({ 'logout': true });
     this.myapp.reset = true;
