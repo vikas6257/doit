@@ -83,7 +83,18 @@ var pending_users = [];
  });
 
   var upload = multer({
-      storage: Storage
+      storage: Storage,
+      files: 1,
+      fileFilter: function (req, file, callback) {
+        var ext = path.extname(file.originalname);
+        if(ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+            return callback(new Error('Only png, jpg & jpeg images are allowed'))
+        }
+        callback(null, true)
+      },
+      limits:{
+        fileSize: 1024 * 1024
+      }
   }).any();
 
   app.post("/add", function (req, res) {
