@@ -82,6 +82,12 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     main_div.appendChild(photo_div);
     main_div.appendChild(msg_div);
     chatlog.appendChild(main_div);
+
+
+    /********************************************
+     * Scroll down to bottom on sending message.*
+     ********************************************/
+    chatlog.scrollTop = chatlog.scrollHeight;
   }
   /**
    * [ngOnInit Subscribes to messages recieved from websocket]
@@ -220,6 +226,11 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     main_div.appendChild(photo_div);
     main_div.appendChild(msg_div);
     chatlog.appendChild(main_div);
+
+    /********************************************
+    * Scroll down to bottom on sending message. *
+     ********************************************/
+    chatlog.scrollTop = chatlog.scrollHeight;
   }
 
   /*
