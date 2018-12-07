@@ -52,8 +52,35 @@ export class UserPageComponent implements OnInit {
   stranger_list = [];
   istalk_to_stranger = true;
 
+  selectedFile:File;
+  dp_url:String = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
+
   /*
-  * API to to logout from current sessiom. It can be called from anywhere
+   * API to add profile pic.
+  */
+  onFileSelceted(event) {
+    this.selectedFile = <File>event.target.files[0];
+    const fd = new FormData();
+
+    fd.append(this.login.login_handle+".jpg", this.selectedFile);
+
+    this.http.post('http://localhost:3000/add', fd ).pipe(map(res => res.json())).subscribe((res) => {
+      console.log(res);
+    });
+
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+
+      reader.onload = (event) => { // called once readAsDataURL is completed
+        this.dp_url = event.target.result;
+      }
+    }
+  }
+
+  /*
+  * API to logout from current sessiom. It can be called from anywhere
   * the moment we want to terminate the current user session and redirect
   * to login page.
   */

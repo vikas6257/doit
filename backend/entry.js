@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 var bodyparser = require("body-parser");
 var cors = require("cors");
 var logger = require("node-logger").createLogger("backend_entry.log");
+var multer = require('multer');
 
 /*******************************************************************/
 /*                            MIIDLEWARE                           */
@@ -37,7 +38,6 @@ app.use(cors({origin : "http://localhost:4200", credentials : true}));
 app.use(bodyparser.json());
 app.use('/api',   route);
 
-
 let http = require('http').Server(app);
 
 //Start back end server
@@ -64,6 +64,40 @@ var pending_users = [];
  /************************************************************************/
  /*                         APIS                                         */
  /************************************************************************/
+
+
+ /************************************************************************/
+ /*               PROFILE PIC UPLOAD                                     */
+ /*   Profile pic of user will be uploaded to the memory with name as    */
+ /*  "user-id.img". That's why we don't need to create cache in DB as we */
+ /*   are sure how to fetch profile pic for each user.                   */
+ /************************************************************************/
+ var Storage = multer.diskStorage({
+     destination: function(req, file, callback) {
+         callback(null, "./uploads");
+     },
+     filename: function(req, file, callback) {
+         logger.log(req);
+         callback(null, file.fieldname);
+     }
+ });
+
+  var upload = multer({
+      storage: Storage
+  }).any();
+
+  app.post("/add", function (req, res) {
+    upload(req, res, function(err) {
+         if (err) {
+             return res.json({"msg": "Something went wrong!" });
+         }
+         return res.json({"msg": "File uploaded sucessfully!."});
+     });
+   });
+
+   app.get('/uploads/:username', function(req, res) {
+     res.sendFile(__dirname + "/uploads/" + req.params.username);
+   });
 
  /************************************************************************/
  /* To generate random index                                             */

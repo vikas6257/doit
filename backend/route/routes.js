@@ -84,7 +84,7 @@ router.post ('/add-user-fl', (req,res,next)=> {
             if (local_user) {
                /* As we are adding a user as a friend, we must be changing a user's
                 * identity from stranger to friend. This implies that this user
-                * must be in talking_to_stranger list. So update local cache.
+                  * must be in talking_to_stranger list. So update local cache.
                 */
                local_user.friends.push(req.body.friend_username);
                local_user.talking_to_stranger.splice(
@@ -305,9 +305,6 @@ router.post ('/delete-inbox-msg', (req,res,next)=> {
          }
       }
     });
-
 });
-
-
 
 module.exports = router;
