@@ -1,4 +1,6 @@
-import { Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {
+  Component, OnInit, Output, EventEmitter, Input
+} from '@angular/core';
 import { LoginComponent } from '../login/login.component';
 import { Http, Headers } from '@angular/http';
 import { Friend } from '../friend';
@@ -18,6 +20,9 @@ export class ActiveUsersComponent implements OnInit {
   */
   @Output() openchatbox = new EventEmitter<any>();
   @Output() snd_active_usr_to_user_page_comp = new EventEmitter<any>();
+
+  // OPTIMIZE: Don't traverse list of friends and strangers just to get stranger
+  @Input() stranger_list: any
 
   fl = []; /*A local list use to push friends into global friend list*/
   selected_friend : Friend;
@@ -55,12 +60,6 @@ export class ActiveUsersComponent implements OnInit {
          * Push it to the global friend-list defined in login page.
          */
         this.login.friend_list.push(friend);
-
-        /***************************************************************
-         * Send all active user to user-page component, to instantiate *
-         * chatbox for all friends                                     *
-         ***************************************************************/
-        this.snd_active_usr_to_user_page_comp.emit(friend);
       }
 
       /*
@@ -108,6 +107,11 @@ export class ActiveUsersComponent implements OnInit {
              this.http.post('http://localhost:3000/api/delete-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
                console.log(res);
              });
+             /***************************************************************
+              * Send all active user to user-page component, to instantiate *
+              * chatbox for all friends                                     *
+              ***************************************************************/
+             this.snd_active_usr_to_user_page_comp.emit(this.login.friend_list[i]);
           });
       }
     });
@@ -123,15 +127,19 @@ export class ActiveUsersComponent implements OnInit {
     }
   }
 
+  onSelectStranger(stranger) {
+    this.selected_friend = stranger;
+  }
+
   EnterChatBox(friend: Friend) {
     /*
     Emmit openchatbox event.
     */
     this.openchatbox.emit(friend);
   }
-
-  EnterChatBoxStranger() {
-    console.log('open chat box for a stanger');
-    this.openchatbox.emit(undefined);
+  EnterChatBoxStranger(stranger_clicked) {
+    let stranger = new Friend();
+    stranger.username = stranger_clicked;
+    this.openchatbox.emit(stranger);
   }
 }

@@ -1,4 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, Output, EventEmitter, OnDestroy} from '@angular/core';
+import {
+  Component, OnInit, ViewEncapsulation,
+  Output, EventEmitter, OnDestroy, ViewChild,
+  ElementRef
+} from '@angular/core';
 import { ChatserviceService } from '../chatservice.service';
 import { LoginComponent } from '../login/login.component';
 import { OnlineMessage } from '../online_message';
@@ -42,8 +46,43 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   //This window's subscription to websocket
   subscription: Subscription;
 
-  //Tags stranger chatbox window
+  //Tag stranger chatbox window
   isstranger = false;
+
+  /*************************************************
+  * Take reference of this component html template *
+   *************************************************/
+  @ViewChild('chatlog_ref') chatlog_ref: ElementRef;
+
+  append_in_msg(msg) {
+    /***********************************************************
+    *   Create recieved message that will be added to chatbox. *
+     ***********************************************************/
+    var chatlog = this.chatlog_ref.nativeElement;
+
+    //Main div
+    var main_div = document.createElement("div");
+    main_div.setAttribute("class", "chat friend");
+
+    //Photo
+    var photo_div = document.createElement("div");
+    photo_div.setAttribute("class", "user-photo");
+
+    //Image
+    var image = document.createElement("img");
+    image.setAttribute("src","assets/Tyrion Lannister.jpg");
+    image.setAttribute("alt","Tyrion lannister");
+    photo_div.appendChild(image);
+
+    //Message
+    var msg_div = document.createElement("div");
+    msg_div.setAttribute("class", "chat-message");
+    msg_div.appendChild(document.createTextNode(msg));
+
+    main_div.appendChild(photo_div);
+    main_div.appendChild(msg_div);
+    chatlog.appendChild(main_div);
+  }
   /**
    * [ngOnInit Subscribes to messages recieved from websocket]
    *            1. Subscription to chat messages, assigned stranger messages
@@ -59,34 +98,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       if (msg['type'] == "message") {
         if(msg['from'] == this.userId) {
           this.msg_rcv = msg.text;
-
-          /***********************************************************
-          *   Create recieved message that will be added to chatbox. *
-           ***********************************************************/
-          var chatlog = document.getElementById("chatlog_"+this.userId);
-
-          //Main div
-          var main_div = document.createElement("div");
-          main_div.setAttribute("class", "chat friend");
-
-          //Photo
-          var photo_div = document.createElement("div");
-          photo_div.setAttribute("class", "user-photo");
-
-          //Image
-          var image = document.createElement("img");
-          image.setAttribute("src","assets/Tyrion Lannister.jpg");
-          image.setAttribute("alt","Tyrion lannister");
-          photo_div.appendChild(image);
-
-          //Message
-          var msg_div = document.createElement("div");
-          msg_div.setAttribute("class", "chat-message");
-          msg_div.appendChild(document.createTextNode(msg.text));
-
-          main_div.appendChild(photo_div);
-          main_div.appendChild(msg_div);
-          chatlog.appendChild(main_div);
+          this.append_in_msg(msg.text);
         }
     }
 
@@ -333,10 +345,20 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     * Currently user-page has subscribed to this event. *
      ****************************************************/
     this.close_chatbox.emit(this.userId);
+  }
 
-    //Send end chat message having destination, to peer.
-    if (this.isstranger == true) {
-      this.chat.sendMsg({'end-chat':{'to':this.userId}});
-    }
+  /**
+   * [end_stranger_chat Send end chat to peer,
+   *                    close chatbox from user-page component]
+   * @return nothing
+   */
+  end_stranger_chat() {
+    this.chat.sendMsg({'end-chat':{'to':this.userId}});
+
+    /********************************************
+    * Emit delete_stranger event, Currently being  *
+    * subscribed by user-page component         *
+     ********************************************/
+    this.delete_stranger.emit(this.userId);
   }
 }

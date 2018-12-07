@@ -1,19 +1,24 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <div class="grid_container">
   <div class="user">
     <div class="photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
     <div class="user_name"><span>{{login.login_handle}}</span></div>
   </div>
-  <div class="logout">
+  <!--<div class="logout">
     <button type = "button" class="btn btn-danger btn-lg" (click)="logout()" name="button"><span class="glyphicon glyphicon-log-out"> Logout</span></button>
   </div>
-  <div class="friend_list">
-    <!--
-       subscribe to openchatbox, is an event sent from active_users component as user clicks for a user.
-    -->
-    <app-active-users (openchatbox)="addchatbox($event)"
-    (snd_active_usr_to_user_page_comp)="create_chatbox_for_friends($event)"></app-active-users>
+  -->
+  <div class="talk_stranger">
+    <button type="button" (click)="add_stranger()" name="button">Talk to stranger</button>
   </div>
-  <div id="chatbox1" class="chat_popup1"></div>
-  <div id="chatbox2" class="chat_popup2"></div>
-  <div id="chatbox3" class="chat_popup3"></div>
+  <div class="connected_persons">
+    <app-active-users (openchatbox)="addchatbox($event)"
+    (snd_active_usr_to_user_page_comp)="create_chatbox($event)"
+    [stranger_list]="stranger_list"></app-active-users>
+  </div>
+  <div class="chat_popup">
+    <div id="chatbox1" class="chat_popup1"></div>
+    <div id="chatbox2" class="chat_popup2"></div>
+    <div id="chatbox3" class="chat_popup3"></div>
+  </div>
 </div>

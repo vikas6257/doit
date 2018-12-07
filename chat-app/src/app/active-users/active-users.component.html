@@ -2,14 +2,41 @@
 <div class="list-group" *ngIf="!showSpinner">
   <div class="list-group-item list-group-item-success list-group-item-success"
      [class]="list-group-item-success"></div>
+
+<div>
+  <div class="stranger_list">
+    <div class="stranger_list_hdr">
+      <i class="fas fa-user stranger_user"></i>
+      Connected strangers
+    </div>
+    <button class="list-group-item" type="button" *ngFor="let stranger of stranger_list"
+    [class.list-group-item-success]="stranger === selected_friend"
+    (mouseover)="onSelectStranger(stranger)" (click)="EnterChatBoxStranger(stranger)">
+      <i class="glyphicon glyphicon-female"><kbd>{{stranger}}</kbd></i>
+    </button>
+  </div>
+  <div class="tmp_txt_stranger" *ngIf="stranger_list.length == 0">
+   Strangers will be visible here.
+  </div>
+  <div class="friend_list">
+    <div class="friend_list_hdr">
+      <i class="fas fa-user-friends userfriends"></i>
+      Friends
+    </div>
+    <button class="list-group-item" type="button" *ngFor="let friend of login.friend_list"
+    [class.list-group-item-success]="friend === selected_friend"
+    (mouseover)="onSelect(friend)" (click)="EnterChatBox(friend)">
+      <i class="glyphicon glyphicon-female"><kbd>  {{friend.username}}</kbd></i>
+    </button>
+  </div>
+  <div class="tmp_txt_friends" *ngIf="login.friend_list == 0">
+    Added friends will be visible here.
+  </div>
+</div>
+  <!--
   <button class="list-group-item" type="button" [class.list-group-item-success]="'Stranger' === selected_friend"
      (mouseover)="onSelect('Stranger')" (click)="EnterChatBoxStranger()" id="Stranger">
        <i class="glyphicon glyphicon-female"><kbd>Stranger</kbd></i>
   </button>
-  <button class="list-group-item" type="button" *ngFor="let friend of login.friend_list"
-  [class.list-group-item-success]="friend === selected_friend"
-  (mouseover)="onSelect(friend)" (click)="EnterChatBox(friend)">
-    <i class="glyphicon glyphicon-female"><kbd>  {{friend.username}}</kbd></i>
-
-  </button>
+  -->
 </div>

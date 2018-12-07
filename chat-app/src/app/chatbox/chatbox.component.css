@@ -129,3 +129,11 @@
   position: relative;
   left: -200px;
 }
+
+.window-header .window-header-opt-end-chat {
+  
+}
+
+.aduser_icon, .close_icon, .endchat_icon, .maximize_icon, .minimize_icon {
+  color: #ff00ff;
+}

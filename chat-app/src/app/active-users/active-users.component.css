@@ -1,0 +1,26 @@
+.stranger_list {
+  margin-bottom: 5px;
+}
+
+.friend_list {
+}
+
+.friend_list img {
+  height: 10px;
+}
+.stranger_list_hdr, .friend_list_hdr {
+  text-align: center;
+  margin-bottom: 10px;
+  border-bottom: solid;
+  border-width: thin;
+}
+
+.userfriends, .stranger_user {
+  color: #ff00ff;
+}
+
+.tmp_txt_stranger, .tmp_txt_friends {
+  text-align: center;
+  color: #ff00ff;
+  margin-bottom: 10px;
+}
