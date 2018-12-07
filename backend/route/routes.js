@@ -82,7 +82,14 @@ router.post ('/add-user-fl', (req,res,next)=> {
           else {
             local_user = entry.connected_users.get(req.body.username);
             if (local_user) {
+               /* As we are adding a user as a friend, we must be changing a user's
+                * identity from stranger to friend. This implies that this user
+                * must be in talking_to_stranger list. So update local cache.
+                */
                local_user.friends.push(req.body.friend_username);
+               local_user.talking_to_stranger.splice(
+                 local_user.talking_to_stranger.indexOf(req.body.friend_username),
+                 1)
             }
             docs.friendlist.push(item_f._id);
             docs.save((err, item)=>{

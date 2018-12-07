@@ -148,6 +148,56 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       }
     }
 
+    /*********************************************************************
+    * A stranger has fired a friend request.                              *
+    **********************************************************************/
+    if(msg['type'] == "recieve-friend-request" && this.isstranger == true) {
+      /*
+       * May want to enable/diable some dom element.
+       */
+
+        /*Must always be true.*/
+      if(msg['from'] == this.userId) {
+          /*
+           * Perform some html operation to show a message for friend-request.
+           * a. If acceptipng call FriendRequestAccepted()
+           * b. If rejecting call FriendRequestRejected()
+           */
+           this.FriendRequestAccepted();
+      }
+    }
+
+    /*********************************************************************
+    * A stranger has approved your friend request.                         *
+    **********************************************************************/
+    if(msg['type'] == "friend-request-approved" && this.isstranger == true) {
+      /*Must always be true.*/
+      if(msg['from'] == this.userId) {
+          let new_friend: Friend = {
+            id: msg['id'],
+            username: this.userId,
+            gender: "male", //put dummy for now
+            onlinestatus: "true", // starnger must be online
+          };
+          this.login.friend_list.push(new_friend);
+          /*
+           * May want to enable/diable some dom element.
+           */
+      }
+    }
+
+    /*********************************************************************
+    * A stranger has declined your friend request.                       *
+    **********************************************************************/
+    if(msg['type'] == "friend-request-declined" && this.isstranger == true) {
+      /*Must always be true.*/
+      if(msg['from'] == this.userId) {
+        /*
+         * May want to enable/diable some dom element.
+         */
+      }
+    }
+
   })/*End of subscribe*/
   }/* End of ngOnInit*/
 
@@ -269,17 +319,53 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   }
 
   /**
-   * [Sends DB post to add friend to the friend-list]
-   * @return nothing
+   * API to be called when user wants to send friend-request to a stranger
    */
   AddUser() {
+    /*
+     * Send a message to server for friend request.
+     */
+    this.chat.sendMsg({'send-friend-request':{'to':this.userId}});
+
+    /*
+     * May want to enable/diable some dom element.
+     */
+
+  }
+
+  /**
+   * API to be called when user recieves a friend request from a stranger and
+   * accepts the friend-request.
+   */
+  FriendRequestAccepted() {
     /*Just ensure that this is a stranger instance and user-id has been user_assigned
-     before adding user to friend-list*/
+      before adding user to friend-list*/
     if(this.isstranger == true && this.userId != 'Stranger') {
+     /*
+      * Do a DB post for adding-myself to friend's friend-list.
+      */
       let header = new Headers();
       header.append('Content-Type', 'application/json');
 
       let User = {
+          'username' : this.userId,
+          'friend_gender': "male", //put dummy for now
+          'friend_username' : this.login.login_handle,
+      };
+
+      this.http.post('http://localhost:3000/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+        /*
+         * Send a message to server that friend request has been accepted and provided
+         * necessadry details.
+         */
+        this.chat.sendMsg({'friend-request-accepted':{'to':this.userId, 'id': res['id'].toString()}});
+
+      });
+
+      /*
+       * Do a DB post for adding-friend in my friend-list.
+       */
+       User = {
           'username' : this.login.login_handle,
           'friend_gender': "male", //put dummy for now
           'friend_username' : this.userId,
@@ -292,12 +378,31 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           username: this.userId,
           gender: "male", //put dummy for now
           onlinestatus: "true", // starnger must be online
+
         };
-
         this.login.friend_list.push(new_friend);
-
+        /*
+         * May want to enable/diable some dom element.
+         */
       });
+
+
     }
+  }
+
+  /**
+   * API to be called when user recieves a friend request from a stranger and
+   * rejects the friend-request.
+   */
+  FriendRequestRejected() {
+    /*
+     * Send a message to server that friend request has been rejected.
+     */
+    this.chat.sendMsg({'friend-request-rejected':{'to':this.userId}});
+
+    /*
+     * May want to enable/diable some dom element.
+     */
   }
 
   /**

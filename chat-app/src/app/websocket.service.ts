@@ -51,17 +51,29 @@ export class WebsocketService {
           else if (data['logout'] != undefined) {
               this.socket.disconnect();
           }
-          else if (data['start-chat'] != undefined) { //will be used in future
+          else if (data['start-chat'] != undefined) {
             console.log("start-chat")
             this.socket.emit('start-chat', data['start-chat']);
           }
-          else if (data['end-chat'] != undefined) { //will be used in future
+          else if (data['end-chat'] != undefined) {
             console.log("end-chat")
             this.socket.emit('end-chat', data['end-chat']);
           }
-          else if (data['i_am_online'] != undefined) { //will be used in future
+          else if (data['i_am_online'] != undefined) {
             console.log("i_am_online")
             this.socket.emit('i_am_online', data['i_am_online']);
+          }
+          else if (data['send-friend-request'] != undefined) {
+            console.log("send-friend-request")
+            this.socket.emit('send-friend-request', data['send-friend-request']);
+          }
+          else if (data['friend-request-accepted'] != undefined) {
+            console.log("friend-request-accepted")
+            this.socket.emit('friend-request-accepted', data['friend-request-accepted']);
+          }
+          else if (data['friend-request-rejected'] != undefined) {
+            console.log("friend-request-rejected")
+            this.socket.emit('friend-request-rejected', data['friend-request-rejected']);
           }
           else {
             console.log("chating msg")
