@@ -108,7 +108,6 @@
 
 .window-header {
   display: flex;
-  flex-flow: row nowrap;
   justify-content: flex-end;
   width: 280px;
   border-bottom-style: ridge;
@@ -118,20 +117,26 @@
 
 .username {
   position: relative;
-  left: -190px;
+  width: 190px;
+  overflow: hidden;
+  text-align: center;
 }
 
+.username:hover {
+  overflow: visible;
+}
 .window-header .window-header-opt {
   margin-left: 5px;
 }
 
 .window-header .window-header-opt-add {
   position: relative;
-  left: -200px;
+  right: 10px;
+  margin-left: 5px;
 }
 
 .window-header .window-header-opt-end-chat {
-  
+
 }
 
 .aduser_icon, .close_icon, .endchat_icon, .maximize_icon, .minimize_icon {
