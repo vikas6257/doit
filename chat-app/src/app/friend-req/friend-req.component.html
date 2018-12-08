@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Friend request recieved</h1>
+<div mat-dialog-content>
+  <mat-list>
+    <mat-list-item *ngFor="let user of data.friend_req | keyvalue">
+      <div class="request">
+        <div class="stranger_name">{{user.key}}</div>
+        <div mat-dialog-actions>
+          <button mat-raised-button class="accept" (click)="accept_fr_req(user.key, user.value)">Accept</button>
+          <button mat-raised-button class="reject" (click)="reject_fr_req(user.key, user.value)">Reject</button>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    </mat-list-item>
+</mat-list>
+</div>

@@ -8,4 +8,10 @@ export class Friend {
   gender?  : string; //either male of female
   inbox? : OfflineMessage[];
   onlinestatus? : string; //either true or false
+
+  /**************************************************************************
+  *variable to handle numbering message recieved during chatbox CloseWindow *
+  **************************************************************************/
+  unseen_message? : number;
+  hasunseen_message? : boolean;
 }

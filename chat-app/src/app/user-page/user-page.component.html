@@ -2,20 +2,28 @@
 <div class="grid_container">
   <div class="user">
     <div class="photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
-    <div class="user_name"><span>{{login.login_handle}}</span></div>
+    <div class="user_name"><span>{{login.login_handle}}</span>
+      <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon class="icon_logout">logout</mat-icon>
+          <span>Logout</span>
+        </button>
+        <button mat-menu-item (click)="show_friend_requests()">
+          <mat-icon class="icon_friend_request">people_outline</mat-icon>
+          <span>Friend Request</span>
+        </button>
+      </mat-menu>
+    </div>
     <!--<input type="file" (change)="onFileSelceted($event)"> For profile pic-->
   </div>
-  <!--<div class="logout">
-    <button type = "button" class="btn btn-danger btn-lg" (click)="logout()" name="button"><span class="glyphicon glyphicon-log-out"> Logout</span></button>
-  </div>
-  -->
   <div class="talk_stranger">
     <button type="button" (click)="add_stranger()" name="button">Talk to stranger</button>
   </div>
   <div class="connected_persons">
-    <app-active-users (openchatbox)="addchatbox($event)"
-    (snd_active_usr_to_user_page_comp)="create_chatbox($event)"
-    [stranger_list]="stranger_list"></app-active-users>
+    <app-active-users (openchatbox)="addchatbox($event)" (snd_active_usr_to_user_page_comp)="create_chatbox($event)" [stranger_list]="stranger_list"></app-active-users>
   </div>
   <div class="chat_popup">
     <div id="chatbox1" class="chat_popup1"></div>

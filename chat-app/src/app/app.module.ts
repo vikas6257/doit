@@ -12,6 +12,21 @@ import { ActiveUsersComponent } from './active-users/active-users.component';
 import { ChatboxComponent } from './chatbox/chatbox.component';
 import { UserPageComponent } from './user-page/user-page.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  MatIconModule,
+  MatMenuModule,
+  MatRippleModule,
+  /*For printing number on a button*/
+  MatBadgeModule,
+  /*For material list*/
+  MatListModule,
+  MatButtonModule,
+  MatDividerModule,
+  MatDialogModule,
+} from '@angular/material';
+import { FriendReqComponent } from './friend-req/friend-req.component';
+
 
 const ROUTES:Routes = [
   {path: 'chat', component: UserPageComponent},
@@ -25,15 +40,25 @@ const ROUTES:Routes = [
     ActiveUsersComponent,
     ChatboxComponent,
     UserPageComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    FriendReqComponent,
   ],
   /*Allow to add component dynamically i.e compile component before hand.*/
-  entryComponents: [ChatboxComponent],
+  entryComponents: [ChatboxComponent, FriendReqComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpModule,
-    RouterModule.forRoot(ROUTES)
+    RouterModule.forRoot(ROUTES),
+    BrowserAnimationsModule,
+    MatIconModule,
+    MatMenuModule,
+    MatRippleModule,
+    MatBadgeModule,
+    MatListModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatDialogModule
   ],
   providers: [
     WebsocketService,

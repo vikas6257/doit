@@ -25,6 +25,11 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   @Output() user_assigned = new EventEmitter<any>();
   @Output() delete_stranger = new EventEmitter<string>();
 
+  /*********************************************************
+   *Inform user-page component for friend request recieved *
+   *********************************************************/
+  @Output() friend_request_recieved = new EventEmitter<string>();
+
   constructor(private chat: ChatserviceService, private login: LoginComponent,
                private http: Http,) { }
 
@@ -105,6 +110,11 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         if(msg['from'] == this.userId) {
           this.msg_rcv = msg.text;
           this.append_in_msg(msg.text);
+          if (this.isMini == true
+            || document.getElementById('chatlog_'+this.userId) == undefined) {
+              this.friend.unseen_message = this.friend.unseen_message+1;
+              this.friend.hasunseen_message = true;
+            }
         }
     }
 
@@ -163,7 +173,9 @@ export class ChatboxComponent implements OnInit, OnDestroy{
            * a. If acceptipng call FriendRequestAccepted()
            * b. If rejecting call FriendRequestRejected()
            */
-           this.FriendRequestAccepted();
+
+          
+           this.friend_request_recieved.emit(this.userId);
       }
     }
 

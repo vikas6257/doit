@@ -10,7 +10,9 @@ import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AppComponent } from '../app.component';
-import { PlatformLocation } from '@angular/common'
+import { PlatformLocation } from '@angular/common';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { FriendReqComponent } from '../friend-req/friend-req.component';
 
 export class chatbox_pop {
   isadded: boolean;
@@ -19,6 +21,16 @@ export class chatbox_pop {
   constructor() {
     this.isadded = false;
     this.username = undefined;
+  }
+}
+
+export class fr_req_dialog {
+  username: string;
+  compref: object;
+
+  constructor() {
+    this.username = undefined;
+    this.compref = undefined;
   }
 }
 @Component({
@@ -32,7 +44,7 @@ export class UserPageComponent implements OnInit {
   constructor(private chat: ChatserviceService, private login: LoginComponent,
     private http: Http, private router: Router, private resolver: ComponentFactoryResolver,
     private injector: Injector, private appRef: ApplicationRef, private myapp: AppComponent,
-    location: PlatformLocation) {
+    location: PlatformLocation, public dialog: MatDialog) {
       /*
        * User has pressed back, so do logout.
        */
@@ -51,6 +63,8 @@ export class UserPageComponent implements OnInit {
   chatbox_friends = new Map();
   stranger_list = [];
   istalk_to_stranger = true;
+
+  friend_requests = new Map();
 
   selectedFile:File;
   dp_url:String = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
@@ -211,8 +225,30 @@ export class UserPageComponent implements OnInit {
   ngOnInit() {
     /*Logout purpose*/
     this.myapp.reset = true;
-
     this.chat.sendMsg({ 'send-user-id': this.login.login_handle });
+  }
+
+  show_friend_requests() {
+    console.log(this.friend_requests);
+    const dialogRef = this.dialog.open(FriendReqComponent, {
+      data: {friend_req: this.friend_requests}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  /**
+   * [userpage_friend_request_recieved Insert friend request to map.
+   *                                    key=>name, value=>component ref]
+   * @param  user    [user name]
+   * @param  compref [component where friend request recieved]
+   * @return         [nothing]
+   */
+  userpage_friend_request_recieved(user, compref) {
+    var fr_req = new fr_req_dialog()
+    fr_req.username = user;
+    fr_req.compref = compref;
+    this.friend_requests.set(user, fr_req);
   }
 
   add_stranger() {
@@ -300,6 +336,11 @@ export class UserPageComponent implements OnInit {
        * or end chat pressed from chatbox                                      *
         ************************************************************************/
       ComponentRef.instance.delete_stranger.subscribe(message => this.userpage_end_chatbox_stranger(message, ComponentRef));
+
+      /***************************************
+       *subscribe to friend request recieved *
+       ***************************************/
+       ComponentRef.instance.friend_request_recieved.subscribe(message => this.userpage_friend_request_recieved(message, ComponentRef));
 
       /***************************
       * Tag chatbox for stranger *

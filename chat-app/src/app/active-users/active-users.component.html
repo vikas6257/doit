@@ -11,7 +11,8 @@
     </div>
     <button class="list-group-item" type="button" *ngFor="let stranger of stranger_list"
     [class.list-group-item-success]="stranger === selected_friend"
-    (mouseover)="onSelectStranger(stranger)" (click)="EnterChatBoxStranger(stranger)">
+    (mouseover)="onSelectStranger(stranger)" (click)="EnterChatBoxStranger(stranger)"
+    >
       <i class="glyphicon glyphicon-female"><kbd>{{stranger}}</kbd></i>
     </button>
   </div>
@@ -25,7 +26,12 @@
     </div>
     <button class="list-group-item" type="button" *ngFor="let friend of login.friend_list"
     [class.list-group-item-success]="friend === selected_friend"
-    (mouseover)="onSelect(friend)" (click)="EnterChatBox(friend)">
+    (mouseover)="onSelect(friend)" (click)="EnterChatBox(friend)"
+    mat-raised-button
+    matBadge="{{friend.unseen_message}}" matBadgePosition="before"
+    matBadgeColor="accent"
+    matBadgeHidden="{{!friend.hasunseen_message}}"
+    >
       <i class="glyphicon glyphicon-female"><kbd>  {{friend.username}}</kbd></i>
     </button>
   </div>

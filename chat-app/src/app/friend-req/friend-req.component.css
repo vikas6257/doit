@@ -1,0 +1,23 @@
+.request {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 25px;
+}
+
+.stranger_name, .accept, .reject {
+  margin: 5px;
+}
+
+.stranger_name {
+  align-self: center;
+  width: 190px;
+  overflow: hidden;
+}
+
+.accept {
+
+}
+
+.reject {
+
+}

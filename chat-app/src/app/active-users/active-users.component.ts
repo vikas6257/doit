@@ -55,7 +55,8 @@ export class ActiveUsersComponent implements OnInit {
           friend.gender =  this.fl[i].gender;
           friend.onlinestatus =  this.fl[i].onlinestatus;
           friend.inbox =  new Array();
-
+          friend.unseen_message = 0;
+          friend.hasunseen_message = false;
         /*
          * Push it to the global friend-list defined in login page.
          */
@@ -136,6 +137,12 @@ export class ActiveUsersComponent implements OnInit {
     Emmit openchatbox event.
     */
     this.openchatbox.emit(friend);
+
+    /************************************************
+     * Chat box has oppened, so no unseen_messages. *
+     ************************************************/
+    friend.unseen_message = 0;
+    friend.hasunseen_message = false;
   }
   EnterChatBoxStranger(stranger_clicked) {
     let stranger = new Friend();
