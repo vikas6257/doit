@@ -22,7 +22,7 @@ export class ActiveUsersComponent implements OnInit {
   @Output() snd_active_usr_to_user_page_comp = new EventEmitter<any>();
 
   // OPTIMIZE: Don't traverse list of friends and strangers just to get stranger
-  @Input() stranger_list: any
+  @Input() stranger_list
 
   fl = []; /*A local list use to push friends into global friend list*/
   selected_friend : Friend;

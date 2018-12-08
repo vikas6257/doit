@@ -13,6 +13,7 @@ import { AppComponent } from '../app.component';
 import { PlatformLocation } from '@angular/common';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FriendReqComponent } from '../friend-req/friend-req.component';
+import { MatSnackBar } from '@angular/material';
 
 export class chatbox_pop {
   isadded: boolean;
@@ -41,10 +42,18 @@ export class fr_req_dialog {
 
 export class UserPageComponent implements OnInit {
 
-  constructor(private chat: ChatserviceService, private login: LoginComponent,
-    private http: Http, private router: Router, private resolver: ComponentFactoryResolver,
-    private injector: Injector, private appRef: ApplicationRef, private myapp: AppComponent,
-    location: PlatformLocation, public dialog: MatDialog) {
+  constructor(
+    private chat: ChatserviceService,
+    private login: LoginComponent,
+    private http: Http,
+    private router: Router,
+    private resolver: ComponentFactoryResolver,
+    private injector: Injector,
+    private appRef: ApplicationRef,
+    private myapp: AppComponent,
+    location: PlatformLocation,
+    public dialog: MatDialog,
+    public snackBar: MatSnackBar) {
       /*
        * User has pressed back, so do logout.
        */
@@ -61,7 +70,7 @@ export class UserPageComponent implements OnInit {
   chatbox_pop_3 = new chatbox_pop();
 
   chatbox_friends = new Map();
-  stranger_list = [];
+  stranger_list = new Map();
   istalk_to_stranger = true;
 
   friend_requests = new Map();
@@ -109,12 +118,13 @@ export class UserPageComponent implements OnInit {
     this.delete_chat_box(userId);
   }
   userpage_end_chatbox_stranger(userId, compref){
-    this.stranger_list.splice(this.stranger_list.indexOf(userId), 1);
+    this.friend_requests.delete(userId);
+    this.stranger_list.delete(userId);
     compref.destroy();
     this.delete_chat_box(userId);
   }
 
-  chatboxpop_userid_assigned(msg) {
+  chatboxpop_userid_assigned(msg, compref) {
     /*
     var oldcomponent = this.chatbox_friends.get(msg['olduserId']);
     this.chatbox_friends.delete(msg['olduserId']);
@@ -123,7 +133,7 @@ export class UserPageComponent implements OnInit {
    var tmp = this.chatbox_friends.get(msg['olduserId']);
    this.chatbox_friends.delete(msg['olduserId']);
    this.chatbox_friends.set(msg['newuserId'], tmp);
-   this.stranger_list.push(msg['newuserId']);
+   this.stranger_list.set(msg['newuserId'], compref);
 
    /********************************************************
    * Allow another stranger on assigning previous stranger *
@@ -137,6 +147,11 @@ export class UserPageComponent implements OnInit {
 
     if($event != undefined) {
       userId = $event.username;
+    }
+
+    var stranger_comp = this.stranger_list.get(userId);
+    if (stranger_comp != undefined) {
+      stranger_comp.instance.unseen_message = 0;
     }
 
     var chatboxElement = undefined;
@@ -253,7 +268,11 @@ export class UserPageComponent implements OnInit {
 
   add_stranger() {
     if (this.istalk_to_stranger == false) {
-      alert('Please wait until previous stranger assignment');
+      this.snackBar.open("Please wait for starnger assignment", 'Undo', {
+        duration: 1500,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
       return;
     }
 
@@ -329,7 +348,7 @@ export class UserPageComponent implements OnInit {
        * data-structures being maintained here. Like chatbox_friends has key   *
        * 'Stranger' before stranger's id assignment                            *
        *************************************************************************/
-      ComponentRef.instance.user_assigned.subscribe(message => this.chatboxpop_userid_assigned(message));
+      ComponentRef.instance.user_assigned.subscribe(message => this.chatboxpop_userid_assigned(message, ComponentRef));
 
        /************************************************************************
        * Triggered from chatbox component on getting delete-stranger from peer *

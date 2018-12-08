@@ -9,14 +9,18 @@
       <i class="fas fa-user stranger_user"></i>
       Connected strangers
     </div>
-    <button class="list-group-item" type="button" *ngFor="let stranger of stranger_list"
-    [class.list-group-item-success]="stranger === selected_friend"
-    (mouseover)="onSelectStranger(stranger)" (click)="EnterChatBoxStranger(stranger)"
+    <button class="list-group-item" type="button" *ngFor="let stranger of stranger_list | keyvalue"
+    [class.list-group-item-success]="stranger.key === selected_friend"
+    (mouseover)="onSelectStranger(stranger.key)" (click)="EnterChatBoxStranger(stranger.key)"
+    mat-raised-button
+    matBadge="{{stranger.value.instance.unseen_message}}" matBadgePosition="before"
+    matBadgeColor="accent"
+    matBadgeHidden="{{!stranger.value.instance.unseen_message}}"
     >
-      <i class="glyphicon glyphicon-female"><kbd>{{stranger}}</kbd></i>
+      <i class="glyphicon glyphicon-female"><kbd>{{stranger.key}}</kbd></i>
     </button>
   </div>
-  <div class="tmp_txt_stranger" *ngIf="stranger_list.length == 0">
+  <div class="tmp_txt_stranger" *ngIf="stranger_list.size == 0">
    Strangers will be visible here.
   </div>
   <div class="friend_list">

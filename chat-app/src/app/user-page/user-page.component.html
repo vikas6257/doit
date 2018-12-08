@@ -4,7 +4,11 @@
     <div class="photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
     <div class="user_name"><span>{{login.login_handle}}</span>
       <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
-        <mat-icon>more_vert</mat-icon>
+        <mat-icon
+        matBadge="{{friend_requests.size}}"
+        matBadgeColor="accent"
+        matBadgeHidden="{{!friend_requests.size}}"
+        >more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="logout()">

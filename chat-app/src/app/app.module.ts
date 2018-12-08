@@ -24,6 +24,7 @@ import {
   MatButtonModule,
   MatDividerModule,
   MatDialogModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { FriendReqComponent } from './friend-req/friend-req.component';
 
@@ -58,7 +59,8 @@ const ROUTES:Routes = [
     MatListModule,
     MatButtonModule,
     MatDividerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [
     WebsocketService,

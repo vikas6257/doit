@@ -12,6 +12,8 @@ import { Http, Headers } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import {formatDate } from '@angular/common';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-chatbox',
@@ -30,8 +32,12 @@ export class ChatboxComponent implements OnInit, OnDestroy{
    *********************************************************/
   @Output() friend_request_recieved = new EventEmitter<string>();
 
-  constructor(private chat: ChatserviceService, private login: LoginComponent,
-               private http: Http,) { }
+  constructor(
+    private chat: ChatserviceService,
+    private login: LoginComponent,
+    private http: Http,
+    public snackBar: MatSnackBar,
+  ) { }
 
   //Tags minimized chatbox window
   isMini: boolean;
@@ -53,6 +59,8 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
   //Tag stranger chatbox window
   isstranger = false;
+
+  unseen_message: number;
 
   /*************************************************
   * Take reference of this component html template *
@@ -103,6 +111,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.isMaxi = false;
     this.isMini = false;
+    this.unseen_message = 0;
     this.subscription = this.chat.messages.subscribe(msg => {
       console.log(msg['type']);
       /*Always check message type. Message type "message" is used for chatting*/
@@ -112,8 +121,13 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           this.append_in_msg(msg.text);
           if (this.isMini == true
             || document.getElementById('chatlog_'+this.userId) == undefined) {
-              this.friend.unseen_message = this.friend.unseen_message+1;
-              this.friend.hasunseen_message = true;
+              if (this.isstranger == false) {
+                this.friend.unseen_message = this.friend.unseen_message+1;
+                this.friend.hasunseen_message = true;
+              }
+              else {
+                this.unseen_message = this.unseen_message+1;
+              }
             }
         }
     }
@@ -174,8 +188,13 @@ export class ChatboxComponent implements OnInit, OnDestroy{
            * b. If rejecting call FriendRequestRejected()
            */
 
-          
+
            this.friend_request_recieved.emit(this.userId);
+           this.snackBar.open(msg['from']+" sent you friend request", 'Undo', {
+             duration: 1500,
+             horizontalPosition: 'center',
+             verticalPosition: 'top',
+           });
       }
     }
 
@@ -192,6 +211,12 @@ export class ChatboxComponent implements OnInit, OnDestroy{
             onlinestatus: "true", // starnger must be online
           };
           this.login.friend_list.push(new_friend);
+
+          this.snackBar.open(msg['from']+" accepted you friend request", 'Undo', {
+            duration: 1500,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+          });
           /*
            * May want to enable/diable some dom element.
            */
@@ -207,6 +232,11 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         /*
          * May want to enable/diable some dom element.
          */
+         this.snackBar.open(msg['from']+" rejected you friend request", 'Undo', {
+           duration: 1500,
+           horizontalPosition: 'center',
+           verticalPosition: 'top',
+         });
       }
     }
 
@@ -447,6 +477,12 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
     if(this.isMini) {
       this.isMaxi = true;
+      if (this.isstranger) {
+        this.unseen_message = 0;
+      }
+      else {
+        this.friend.unseen_message = 0;
+      }
 
       //Fetch id of elements going to be changed.
       var chatboxdiv = document.getElementById(this.userId);
@@ -473,6 +509,13 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     * Currently user-page has subscribed to this event. *
      ****************************************************/
     this.close_chatbox.emit(this.userId);
+
+    if (this.isstranger) {
+      this.unseen_message = 0;
+    }
+    else {
+      this.friend.unseen_message = 0;
+    }
   }
 
   /**

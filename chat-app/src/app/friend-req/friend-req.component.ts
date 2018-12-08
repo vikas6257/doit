@@ -24,7 +24,6 @@ export class FriendReqComponent implements OnInit {
 
   reject_fr_req(user, friend_req) {
     friend_req.compref.instance.FriendRequestRejected();
-    console.log(this.data);
     this.data.friend_req.delete(user);
   }
 }
