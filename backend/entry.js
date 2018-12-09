@@ -320,7 +320,7 @@ io.on('connection', (socket) => {
 
     socket.on('friend-request-rejected', (message)=> {
        friend_request_rejected_for_peer = connected_users.get(message['to']);
-       friend_request_accepted_for_peer.socket.emit('message',{type:'friend-request-declined',
+       friend_request_rejected_for_peer.socket.emit('message',{type:'friend-request-declined',
                        'from': newConnection.user_name});
     });
 
