@@ -1,4 +1,4 @@
-.center {
+/*.center {
   position: absolute;
   top: 40%;
   left: 40%;
@@ -20,4 +20,64 @@ button[type=submit]:hover {
 button[type=submit]:active {
   background-color: #4CAF50;
   transform: translateY(2px);
+}
+*/
+.browser_canvas {
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0;
+  background: url('../../assets/girl-color.jpg') no-repeat;
+  background-size: cover;
+}
+
+.login_box {
+  width: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.textbox {
+  width: 100%;
+  overflow: hidden;
+  font-size: 20px;
+  padding: 8px 0;
+  margin: 8px 0;
+  border-bottom: 1px solid #4caf50;
+}
+
+.textbox i {
+  width: 26px;
+  float: left;
+  text-align: center;
+}
+
+.textbox input {
+    border: none;
+    outline: none;
+    background: none;
+    color: white;
+    font-size: 18px;
+    width: 150px;
+    float: left;
+    margin: 10px;
+}
+
+.button_sign_in {
+  width: 100%;
+  background: none;
+  border: 2px solid #4caf50;
+  color: white;
+  padding: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 12px 0;
 }

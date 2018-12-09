@@ -19,6 +19,8 @@
   left: 0;
   right: 0;
   justify-item: start;
+  /*background: url('../../assets/hills.jpg') no-repeat;
+  background-size: cover;*/
 }
 
 .user {
@@ -113,7 +115,7 @@
 }
 
 .more_vert_button {
-  background-color: white;
+  background-color: tranparent;
   border: none;
   outline: none;
 }

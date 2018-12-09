@@ -24,10 +24,10 @@ import {
   MatButtonModule,
   MatDividerModule,
   MatDialogModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatTabsModule
 } from '@angular/material';
 import { FriendReqComponent } from './friend-req/friend-req.component';
-
 
 const ROUTES:Routes = [
   {path: 'chat', component: UserPageComponent},
@@ -60,7 +60,8 @@ const ROUTES:Routes = [
     MatButtonModule,
     MatDividerModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTabsModule
   ],
   providers: [
     WebsocketService,

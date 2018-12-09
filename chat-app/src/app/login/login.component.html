@@ -1,5 +1,57 @@
-
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<div class="browser_canvas" *ngIf="login_status">
+  <div class="login_box">
+    <mat-tab-group dynamicHeight>
+      <mat-tab label="Login">
+        <form novalidate [formGroup]="form" (ngSubmit)="AddUser(form)" #user_form_login="ngForm">
+          <div class="textbox">
+            <i class="fas fa-user-secret"></i>
+            <input type="text" placeholder="Username" name="" value="" required formControlName="name" autocomplete="username">
+          </div>
+          <div class="textbox">
+            <i class="fas fa-key"></i>
+            <input type="password" placeholder="Password" name="" value="" required formControlName="password" autocomplete="current-password">
+          </div>
+          <input class="button_sign_in" type="submit" name="" value="Sign In" name="login" [disabled]="!user_form_login.form.valid">
+          <div *ngIf="login_error_status">
+            <h5><i>{{login_error_msg}}</i></h5>
+          </div>
+        </form>
+      </mat-tab>
+
+      <mat-tab label="Sign up">
+        <form novalidate [formGroup]="form_register" (ngSubmit)="AddNewUser(form_register)" #user_form="ngForm">
+          <div class="textbox">
+            <i class="fas fa-user-secret"></i>
+            <input type="text" placeholder="Username" name="" value="" formControlName="name" required autocomplete="username">
+          </div>
+          <div class="textbox">
+            <i class="fas fa-key"></i>
+            <input type="password" placeholder="Password" name="" value="" formControlName="password" required autocomplete="current-password">
+          </div>
+          <div class="textbox">
+            <i class="fas fa-key"></i>
+            <input type="password" placeholder="Confirm Password" name="" value="" formControlName="confirm_password" required autocomplete="current-password">
+          </div>
+          <input class="button_sign_in" type="submit" name="" value="Sign Up" [disabled]="!user_form.form.valid">
+          <div *ngIf="register_error_status">
+            <h5><i>{{register_error_msg}}</i></h5>
+          </div>
+        </form>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+
+<div *ngIf="chat_box_status">
+  <router-outlet></router-outlet>
+</div>
+
+
+
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <app-spinner *ngIf="showSpinner"></app-spinner>
@@ -110,4 +162,4 @@
 
 <div *ngIf = "chat_box_status">
   <router-outlet></router-outlet>
-</div>
+</div>-->

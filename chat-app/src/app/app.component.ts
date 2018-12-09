@@ -22,7 +22,7 @@ export class AppComponent {
 
   ngOnInit()  {
     this.reset = true;
-    this.EnterAs = 'NA';
+    this.EnterAs = 'User';
   }
 
 }

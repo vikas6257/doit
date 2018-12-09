@@ -1,4 +1,4 @@
-<app-friend-req *ngIf=false></app-friend-req>
+<!--<app-friend-req *ngIf=false></app-friend-req>
 <div [ngSwitch]="EnterAs" *ngIf=true>
   <div class="center" *ngSwitchCase="'NA'">
     <button type="button" (click)="EnterChatUser()" name="button" class="button">User</button>
@@ -15,4 +15,5 @@
         <app-login [EnterAs]="EnterAs"></app-login>
       <div *ngIf='reset'>
   </div>
-</div>
+</div>-->
+<app-login [EnterAs]="EnterAs"></app-login>
