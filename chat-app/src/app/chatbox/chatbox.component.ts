@@ -148,6 +148,12 @@ export class ChatboxComponent implements OnInit, OnDestroy{
      **************************************************************/
     if (msg['type'] == "delete-stranger") {
       this.delete_stranger.emit(msg['userId']);
+
+      this.snackBar.open("Stranger "+msg['userId']+" has descided to disconnect", 'Undo', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
     }
 
     /********************************************************************
@@ -531,5 +537,12 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     * subscribed by user-page component         *
      ********************************************/
     this.delete_stranger.emit(this.userId);
+
+    /*Notify for stranger disconnect.*/
+    this.snackBar.open("You have disconnected from stranger: "+this.userId, 'Undo', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
   }
 }

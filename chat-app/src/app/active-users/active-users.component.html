@@ -11,7 +11,7 @@
       Connected strangers
     </div>
     <div class="stranger" *ngFor="let stranger of stranger_list | keyvalue">
-      <div class="stranger_pic"><img src="assets/Jon snow.jpg" alt=""></div>
+      <div class="stranger_pic"><img src="assets/Jon snow.jpg" alt="Stranger picture"></div>
       <div class="stranger_name">
         <button mat-raised-button
         (click)="EnterChatBoxStranger(stranger.key)"
@@ -35,7 +35,7 @@
       Friends
     </div>
     <div class="friend" *ngFor="let friend of login.friend_list">
-      <div class="friend_pic"><img src="assets/Jon snow.jpg" alt=""></div>
+      <div class="friend_pic"><img class="fr_class" src="assets/Jon snow.jpg" alt="Friend picture"></div>
       <div class="friend_name">
         <button mat-raised-button
         (click)="EnterChatBox(friend)"
