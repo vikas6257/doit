@@ -123,3 +123,19 @@
 .icon_logout, .icon_friend_request {
   color: #ff00ff;
 }
+
+.upload_pic {
+  grid-row: 2;
+  grid-column: 1;
+  width: 40px;
+  height: 40px;
+}
+
+.upload_pic input {
+  display: none;
+}
+
+.upload_pic i {
+  font-size: 30px;
+  cursor: pointer;
+}

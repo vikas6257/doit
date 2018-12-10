@@ -2,7 +2,7 @@
 <div class="grid_container">
   <div class="user">
     <div class="photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
-    <div class="user_name"><span>{{login.login_handle}}</span>
+    <div class="user_name" title="Options"><span>{{login.login_handle}}</span>
       <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
         <mat-icon
         matBadge="{{friend_requests.size}}"
@@ -23,7 +23,15 @@
     </div>
     <!--<input type="file" (change)="onFileSelceted($event)"> For profile pic-->
   </div>
-  <div class="talk_stranger">
+
+  <div class="upload_pic" title="Change profile picture">
+    <label for="upload_pic_input">
+      <i class="fas fa-camera-retro"></i>
+    </label>
+    <input id="upload_pic_input" type="file" name="" value=""
+    (change)="change_profile_pic($event)">
+  </div>
+  <div class="talk_stranger" title="Find stranger">
     <button type="button" (click)="add_stranger()" name="button">Talk to stranger</button>
   </div>
   <div class="connected_persons">

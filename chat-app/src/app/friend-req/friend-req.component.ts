@@ -19,7 +19,9 @@ export class FriendReqComponent implements OnInit {
 
   accept_fr_req(user, friend_req) {
     friend_req.compref.instance.FriendRequestAccepted();
+    friend_req.compref.instance.isstranger = false;
     this.data.friend_req.delete(user);
+    friend_req.compref.instance.delete_stranger.emit(user);
   }
 
   reject_fr_req(user, friend_req) {

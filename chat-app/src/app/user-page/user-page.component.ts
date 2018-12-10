@@ -378,4 +378,11 @@ export class UserPageComponent implements OnInit {
       ComponentRef.instance.setstranger();
     }
   }
+
+  change_profile_pic(event) {
+    console.log(event);
+    /*
+    File can be accessed as event.target.files[0]
+    */
+  }
 }

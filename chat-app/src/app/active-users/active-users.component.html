@@ -45,8 +45,12 @@
         matBadgeHidden="{{!friend.hasunseen_message}}"
         >{{friend.username}}</button>
       </div>
-      <div class="line_status_white" *ngIf="friend.onlinestatus == 'false'"></div>
-      <div class="line_status_green" *ngIf="friend.onlinestatus == 'true'"></div>
+      <div class="line_status_white"
+      *ngIf="friend.onlinestatus == 'false'"
+      title="online or offline status"></div>
+      <div class="line_status_green"
+      *ngIf="friend.onlinestatus == 'true'"
+      title="online or offline status"></div>
     </div>
   </div>
   <div class="tmp_txt_friends" *ngIf="login.friend_list == 0">
