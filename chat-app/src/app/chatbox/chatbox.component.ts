@@ -14,6 +14,10 @@ import { Subscription } from 'rxjs';
 import {formatDate } from '@angular/common';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material';
+import {
+  UserConfirmationComponent
+} from '../user-confirmation/user-confirmation.component';
 
 @Component({
   selector: 'app-chatbox',
@@ -37,6 +41,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     private login: LoginComponent,
     private http: Http,
     public snackBar: MatSnackBar,
+    public dialog: MatDialog,
   ) { }
 
   //Tags minimized chatbox window
@@ -530,19 +535,27 @@ export class ChatboxComponent implements OnInit, OnDestroy{
    * @return nothing
    */
   end_stranger_chat() {
-    this.chat.sendMsg({'end-chat':{'to':this.userId}});
+    const dialogRef = this.dialog.open(UserConfirmationComponent, {
+      data: {message: "Disconnect from stranger : "+this.userId}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+      if (result == true) {
+        this.chat.sendMsg({'end-chat':{'to':this.userId}});
 
-    /********************************************
-    * Emit delete_stranger event, Currently being  *
-    * subscribed by user-page component         *
-     ********************************************/
-    this.delete_stranger.emit(this.userId);
+        /********************************************
+        * Emit delete_stranger event, Currently being  *
+        * subscribed by user-page component         *
+         ********************************************/
+        this.delete_stranger.emit(this.userId);
 
-    /*Notify for stranger disconnect.*/
-    this.snackBar.open("You have disconnected from stranger: "+this.userId, 'Undo', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
+        /*Notify for stranger disconnect.*/
+        this.snackBar.open("You have disconnected from stranger: "+this.userId, 'Undo', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+      }
     });
   }
 }

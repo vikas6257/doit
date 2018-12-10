@@ -1,19 +1,1 @@
-<!--<app-friend-req *ngIf=false></app-friend-req>
-<div [ngSwitch]="EnterAs" *ngIf=true>
-  <div class="center" *ngSwitchCase="'NA'">
-    <button type="button" (click)="EnterChatUser()" name="button" class="button">User</button>
-    <button type="button" (click)="EnterChatGuest()" name="button" class="button">Guest</button>
-  </div>
-
-  <div *ngSwitchCase="'User'">
-    <div *ngIf = 'reset'>
-      <app-login [EnterAs]="EnterAs"></app-login>
-    </div>
-  </div>
-  <div *ngSwitchCase="'Guest'">
-      <div *ngIf ='reset'>
-        <app-login [EnterAs]="EnterAs"></app-login>
-      <div *ngIf='reset'>
-  </div>
-</div>-->
 <app-login [EnterAs]="EnterAs"></app-login>

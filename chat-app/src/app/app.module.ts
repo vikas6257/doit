@@ -28,6 +28,7 @@ import {
   MatTabsModule
 } from '@angular/material';
 import { FriendReqComponent } from './friend-req/friend-req.component';
+import { UserConfirmationComponent } from './user-confirmation/user-confirmation.component';
 
 const ROUTES:Routes = [
   {path: 'chat', component: UserPageComponent},
@@ -43,9 +44,10 @@ const ROUTES:Routes = [
     UserPageComponent,
     SpinnerComponent,
     FriendReqComponent,
+    UserConfirmationComponent,
   ],
   /*Allow to add component dynamically i.e compile component before hand.*/
-  entryComponents: [ChatboxComponent, FriendReqComponent],
+  entryComponents: [ChatboxComponent, FriendReqComponent, UserConfirmationComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
