@@ -139,6 +139,11 @@ export class UserPageComponent implements OnInit {
    * Allow another stranger on assigning previous stranger *
     ********************************************************/
    this.istalk_to_stranger = true;
+   this.snackBar.open("Stranger " +msg['newuserId']+ " assigned to you, Say Hello!", 'Undo', {
+     duration: 1500,
+     horizontalPosition: 'center',
+     verticalPosition: 'top',
+   });
   }
 
   addchatbox($event) {
@@ -280,6 +285,12 @@ export class UserPageComponent implements OnInit {
     *Block stranger addition until this stranger gets assigned *
      ***********************************************************/
     this.istalk_to_stranger = false;
+
+    this.snackBar.open("Searching for a stranger", 'Undo', {
+      duration: 1500,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
 
     this.create_chatbox(undefined);
   }

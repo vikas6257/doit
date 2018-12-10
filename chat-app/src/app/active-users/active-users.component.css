@@ -24,3 +24,70 @@
   color: #ff00ff;
   margin-bottom: 10px;
 }
+
+.friend, .stranger {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 15px;
+  align-items: center;
+  border-bottom: ridge;
+  border-width: 1px;
+}
+
+.friend_pic, .stranger_pic {
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+  margin-bottom: 2px;
+}
+
+.friend_pic img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.stranger_pic img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.friend_name, .stranger_name {
+  margin-right: 5px;
+  width: 150px;
+  margin-bottom: 5px;
+}
+
+.friend_name button {
+  margin-right: 5px;
+  width: 100%;
+  margin-bottom: 5px;
+  outline: none;
+}
+
+.stranger_name button {
+  margin-right: 5px;
+  width: 100%;
+  margin-bottom: 5px;
+  outline: none;
+}
+
+.line_status_white {
+  border-style: dashed;
+  width: 12px;
+  height: 12px;
+  border-radius: 10px;
+  border-width: 1px;
+  margin-bottom: 5px;
+}
+
+.line_status_green {
+  width: 12px;
+  height: 12px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  background-color: #008000;
+}
