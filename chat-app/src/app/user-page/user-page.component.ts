@@ -34,6 +34,7 @@ export class fr_req_dialog {
     this.compref = undefined;
   }
 }
+
 @Component({
   selector: 'app-user-page',
   templateUrl: './user-page.component.html',
@@ -75,13 +76,17 @@ export class UserPageComponent implements OnInit {
 
   friend_requests = new Map();
 
+  /*
+   * Member variables to add profile pic.
+  */
   selectedFile:File;
   dp_url:String = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
+
 
   /*
    * API to add profile pic.
   */
-  onFileSelceted(event) {
+  change_profile_pic(event) {
     this.selectedFile = <File>event.target.files[0];
     const fd = new FormData();
 
@@ -109,8 +114,10 @@ export class UserPageComponent implements OnInit {
   */
   logout() {
     this.chat.sendMsg({ 'logout': true });
-    this.myapp.reset = true;
-    this.myapp.EnterAs = 'NA';
+    this.myapp.reset = false;
+    setTimeout(()=>{
+      this.myapp.reset = true;
+    }, 1000);
     this.router.navigate(['/logout']);
   }
 
@@ -243,8 +250,6 @@ export class UserPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    /*Logout purpose*/
-    this.myapp.reset = true;
     this.chat.sendMsg({ 'send-user-id': this.login.login_handle });
   }
 
@@ -256,6 +261,7 @@ export class UserPageComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
+
 
   /**
    * [userpage_friend_request_recieved Insert friend request to map.
@@ -377,12 +383,5 @@ export class UserPageComponent implements OnInit {
        ***************************/
       ComponentRef.instance.setstranger();
     }
-  }
-
-  change_profile_pic(event) {
-    console.log(event);
-    /*
-    File can be accessed as event.target.files[0]
-    */
   }
 }

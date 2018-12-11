@@ -10,6 +10,7 @@ export class AppComponent {
   reset: boolean;
   title = 'openup';
   EnterAs:string = 'NA';
+
   EnterChatUser() {
     this.EnterAs = 'User';
     console.log(this.EnterAs);
@@ -21,8 +22,8 @@ export class AppComponent {
   }
 
   ngOnInit()  {
-    this.reset = true;
     this.EnterAs = 'User';
+    this.reset = true;
   }
 
 }

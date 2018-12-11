@@ -5,6 +5,7 @@ var bodyparser = require("body-parser");
 var cors = require("cors");
 var logger = require("node-logger").createLogger("backend_entry.log");
 var multer = require('multer');
+const path = require('path');
 
 /*******************************************************************/
 /*                            MIIDLEWARE                           */

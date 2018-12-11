@@ -166,4 +166,11 @@ export class LoginComponent implements OnInit {
       gender: new FormControl('male')
     });
   }
+
+  ngOnDestroy() {
+    console.log("Destroying login comp");
+    this.login_handle = "";
+    this.friend_list.length = 0;
+  }
+
 }

@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <div class="grid_container">
   <div class="user">
-    <div class="photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
+    <div class="photo"><img src={{dp_url}} alt="Image not found" onerror="this.src='./assets/Tyrion Lannister.jpg'"></div>
     <div class="user_name" title="Options"><span>{{login.login_handle}}</span>
       <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
         <mat-icon
