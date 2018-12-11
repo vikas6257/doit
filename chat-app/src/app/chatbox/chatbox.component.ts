@@ -67,6 +67,10 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
   unseen_message: number;
 
+  //Used for profile-pic
+  dp_url:string;
+
+  my_dp_url:string  = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
   /*************************************************
   * Take reference of this component html template *
    *************************************************/
@@ -88,8 +92,10 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
     //Image
     var image = document.createElement("img");
-    image.setAttribute("src","assets/Tyrion Lannister.jpg");
-    image.setAttribute("alt","Tyrion lannister");
+    image.setAttribute("src",this.dp_url);
+    image.setAttribute("alt",this.userId);
+    image.setAttribute("onerror", "this.src='./assets/Tyrion Lannister.jpg'");
+
     photo_div.appendChild(image);
 
     //Message
@@ -143,6 +149,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
      ************************************************************************/
     if (msg['type'] == "assigned-stranger") {
       if (this.userId == "Stranger") {
+        this.dp_url = "http://localhost:3000/uploads/" + msg['userId'] + ".jpg";
         this.user_assigned.emit({'olduserId':this.userId, 'newuserId':msg['userId']});
         this.AddChatboxIdForStanger(msg['userId']);
       }
@@ -318,8 +325,9 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     var photo_div = document.createElement("div");
     photo_div.setAttribute("class", "user-photo");
     var image = document.createElement("img");
-    image.setAttribute("src","assets/Tyrion Lannister.jpg");
-    image.setAttribute("alt","Tyrion lannister");
+    image.setAttribute("src",this.my_dp_url);
+    image.setAttribute("alt",this.login.login_handle);
+    image.setAttribute("onerror", "this.src='./assets/Tyrion Lannister.jpg'");
     photo_div.appendChild(image);
 
     var msg_div = document.createElement("div");
@@ -352,6 +360,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
     this.friend = friend;
     this.userId = userId;
+    this.dp_url = "http://localhost:3000/uploads/" + this.userId + ".jpg";
   }
 
   /*
@@ -431,7 +440,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           username: this.userId,
           gender: "male", //put dummy for now
           onlinestatus: "true", // starnger must be online
-
+          dp_url : "http://localhost:3000/uploads/" + this.userId + ".jpg",
         };
         this.login.friend_list.push(new_friend);
         /*

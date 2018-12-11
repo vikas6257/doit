@@ -57,6 +57,8 @@ export class ActiveUsersComponent implements OnInit {
           friend.inbox =  new Array();
           friend.unseen_message = 0;
           friend.hasunseen_message = false;
+          friend.dp_url = "http://localhost:3000/uploads/" +
+                             friend.username + ".jpg";
         /*
          * Push it to the global friend-list defined in login page.
          */

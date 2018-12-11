@@ -208,6 +208,18 @@ io.on('connection', (socket) => {
       }
     }
 
+      //Traverse through all starngers in the list and emit delete starnger
+      for(let i =0;i<newConnection.talking_to_stranger.length;i++) {
+        // Get connection object from talking_to_stranger entry
+        stranger_friend = connected_users.get(newConnection.talking_to_stranger[i]);
+        // Emit message to only online friends that I am going offline
+        if(stranger_friend) {
+          stranger_friend.socket.emit('message',{type:'delete-stranger',
+                          userId: newConnection.user_name});
+        }
+
+    }
+
     /*TODO:- Confirm whether deleteion of friend list is required ? As we are deleting
              the entire object.*/
 

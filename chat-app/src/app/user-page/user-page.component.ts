@@ -80,7 +80,7 @@ export class UserPageComponent implements OnInit {
    * Member variables to add profile pic.
   */
   selectedFile:File;
-  dp_url:String = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
+  dp_url:string = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
 
 
   /*

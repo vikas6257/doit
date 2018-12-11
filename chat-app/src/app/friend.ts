@@ -14,4 +14,5 @@ export class Friend {
   **************************************************************************/
   unseen_message? : number;
   hasunseen_message? : boolean;
+  dp_url? : string;
 }
