@@ -8,14 +8,19 @@ import { Observable, Subject } from 'rxjs';
 export class ChatserviceService {
   messages: Subject<any>;
 
-  // Our constructor calls our wsService connect method
+
   constructor(private wsService: WebsocketService) {
-    this.messages = <Subject<any>>wsService
-      .connect()
    }
+
+  // Calls our wsService connect method
+  myConnect() {
+    this.messages = <Subject<any>>this.wsService
+      .connect()
+  }
 
   // Our simplified interface for sending
   // messages back to our socket.io server
+  // Our constructor calls our wsService connect method
   sendMsg(msg) {
     this.messages.next(msg);
   }

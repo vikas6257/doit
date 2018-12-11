@@ -250,6 +250,7 @@ export class UserPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.chat.myConnect();
     this.chat.sendMsg({ 'send-user-id': this.login.login_handle });
   }
 
