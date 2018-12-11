@@ -280,7 +280,7 @@ export class UserPageComponent implements OnInit {
 
   add_stranger() {
     if (this.istalk_to_stranger == false) {
-      this.snackBar.open("Please wait for starnger assignment", 'Undo', {
+      this.snackBar.open("Please wait for stranger assignment", 'Undo', {
         duration: 1500,
         horizontalPosition: 'center',
         verticalPosition: 'top',

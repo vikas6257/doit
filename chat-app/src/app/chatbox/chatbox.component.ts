@@ -161,7 +161,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     if (msg['type'] == "delete-stranger") {
       this.delete_stranger.emit(msg['userId']);
 
-      this.snackBar.open("Stranger "+msg['userId']+" has descided to disconnect", 'Undo', {
+      this.snackBar.open("Stranger "+msg['userId']+" has decided to disconnect", 'Undo', {
         duration: 3000,
         horizontalPosition: 'center',
         verticalPosition: 'top',
@@ -208,7 +208,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
 
            this.friend_request_recieved.emit(this.userId);
-           this.snackBar.open(msg['from']+" sent you friend request", 'Undo', {
+           this.snackBar.open(msg['from']+" sent you a friend request", 'Undo', {
              duration: 1500,
              horizontalPosition: 'center',
              verticalPosition: 'top',
@@ -230,7 +230,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           };
           this.login.friend_list.push(new_friend);
 
-          this.snackBar.open(msg['from']+" accepted you friend request", 'Undo', {
+          this.snackBar.open(msg['from']+" accepted your friend request", 'Undo', {
             duration: 1500,
             horizontalPosition: 'center',
             verticalPosition: 'top',
@@ -250,7 +250,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         /*
          * May want to enable/diable some dom element.
          */
-         this.snackBar.open(msg['from']+" rejected you friend request", 'Undo', {
+         this.snackBar.open(msg['from']+" rejected your friend request", 'Undo', {
            duration: 1500,
            horizontalPosition: 'center',
            verticalPosition: 'top',
@@ -388,6 +388,12 @@ export class ChatboxComponent implements OnInit, OnDestroy{
      * Send a message to server for friend request.
      */
     this.chat.sendMsg({'send-friend-request':{'to':this.userId}});
+
+    this.snackBar.open("A friend request has been sent to "+ this.userId, 'Undo', {
+      duration: 1500,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
 
     /*
      * May want to enable/diable some dom element.

@@ -3,7 +3,8 @@
   <mat-list>
     <mat-list-item *ngFor="let user of data.friend_req | keyvalue">
       <div class="request">
-        <div class="stranger_pic"><img src="assets/Jon snow.jpg" alt="Stranger picture"></div>
+        <div class="stranger_pic"><img src = {{user.value.compref.instance.dp_url}} alt="Image not found"
+          onerror="this.src='./assets/Tyrion Lannister.jpg'"></div>
         <div class="stranger_name">{{user.key}}</div>
         <div mat-dialog-actions>
           <button mat-raised-button class="accept" (click)="accept_fr_req(user.key, user.value)">Accept</button>
