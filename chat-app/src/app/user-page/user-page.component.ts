@@ -14,6 +14,7 @@ import { PlatformLocation } from '@angular/common';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FriendReqComponent } from '../friend-req/friend-req.component';
 import { MatSnackBar } from '@angular/material';
+import { EventManager } from '@angular/platform-browser';
 
 export class chatbox_pop {
   isadded: boolean;
@@ -54,12 +55,21 @@ export class UserPageComponent implements OnInit {
     private myapp: AppComponent,
     location: PlatformLocation,
     public dialog: MatDialog,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private event_mngr: EventManager
+  ) {
       /*
        * User has pressed back, so do logout.
        */
       location.onPopState(() => {
           this.logout();
+      });
+
+      /***********************************************
+       * User confirmation on page close or refresh. *
+       ***********************************************/
+      this.event_mngr.addGlobalEventListener("window", 'beforeunload', function(event) {
+        event.returnValue = '';
       });
      }
 
