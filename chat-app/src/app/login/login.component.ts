@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit {
           this.register_status = false;
           this.login_error_status = false;
           this.register_error_status = false;
-          this.router.navigate(['/chat']);
+          this.router.navigate(['/chat'], { skipLocationChange: true });
         }
         else if (this.status == 0){
           this.login_status = true;

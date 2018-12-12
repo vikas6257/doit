@@ -53,18 +53,10 @@ export class UserPageComponent implements OnInit {
     private injector: Injector,
     private appRef: ApplicationRef,
     private myapp: AppComponent,
-    location: PlatformLocation,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private event_mngr: EventManager
   ) {
-      /*
-       * User has pressed back, so do logout.
-       */
-      location.onPopState(() => {
-          this.logout();
-      });
-
       /***********************************************
        * User confirmation on page close or refresh. *
        ***********************************************/
