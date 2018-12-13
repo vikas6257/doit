@@ -1,15 +1,24 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <div class="grid_container">
+  <div class="userpage_header"></div>
   <div class="user">
-    <div class="photo"><img src={{dp_url}} alt="Image not found" onerror="this.src='./assets/Tyrion Lannister.jpg'"></div>
-    <div class="user_name" title="Options"><span>{{login.login_handle}}</span>
+    <div class="photo">
+      <!--Image-->
+      <img src={{dp_url}} alt="Image not found" onerror="this.src='./assets/Tyrion Lannister.jpg'">
+    </div>
+
+    <!--Camera for image upload-->
+    <div class="upload_pic" title="Change profile picture">
+      <label for="upload_pic_input">
+        <i class="fas fa-camera-retro"></i>
+      </label>
+      <input id="upload_pic_input" type="file" name="" value="" (change)="change_profile_pic($event)">
+      <!--Three dot Options-->
       <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
-        <mat-icon
-        matBadge="{{friend_requests.size}}"
-        matBadgeColor="accent"
-        matBadgeHidden="{{!friend_requests.size}}"
-        >more_vert</mat-icon>
+        <mat-icon matBadge="{{friend_requests.size}}" matBadgeColor="accent" matBadgeHidden="{{!friend_requests.size}}">more_vert</mat-icon>
       </button>
+
+      <!--Three dot menu-->
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="logout()">
           <mat-icon class="icon_logout">logout</mat-icon>
@@ -21,19 +30,15 @@
         </button>
       </mat-menu>
     </div>
-    <!--<input type="file" (change)="onFileSelceted($event)"> For profile pic-->
   </div>
 
-  <div class="upload_pic" title="Change profile picture">
-    <label for="upload_pic_input">
-      <i class="fas fa-camera-retro"></i>
-    </label>
-    <input id="upload_pic_input" type="file" name="" value=""
-    (change)="change_profile_pic($event)">
+  <div class="welcome_find_stranger">
+    <div class="user_name" title="Options">You are welcome {{login.login_handle}}!</div>
+    <div class="talk_stranger" title="Find stranger">
+      <button type="button" (click)="add_stranger()" name="button">Talk to stranger</button>
+    </div>
   </div>
-  <div class="talk_stranger" title="Find stranger">
-    <button type="button" (click)="add_stranger()" name="button">Talk to stranger</button>
-  </div>
+
   <div class="connected_persons">
     <app-active-users (openchatbox)="addchatbox($event)" (snd_active_usr_to_user_page_comp)="create_chatbox($event)" [stranger_list]="stranger_list"></app-active-users>
   </div>
@@ -42,4 +47,5 @@
     <div id="chatbox2" class="chat_popup2"></div>
     <div id="chatbox3" class="chat_popup3"></div>
   </div>
+  <div class="userpage_footer">Designed and Developed by Haris & Vikas</div>
 </div>
