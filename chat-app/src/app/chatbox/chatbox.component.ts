@@ -478,15 +478,17 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     var chatboxdiv = document.getElementById(this.userId);
     var inputdiv = document.getElementById("input_msg_"+this.userId);
     var chatlogdiv = document.getElementById("chatlog_"+this.userId);
+    var header = document.getElementById("header_"+this.userId);
 
     //Hide chatlog portion of chatbox window
-    chatlogdiv.setAttribute("style", "display: none");
+    chatlogdiv.setAttribute("style", "visibility: hidden");
 
     //Hide input form portion of chatbox window
-    inputdiv.setAttribute("style", "display: none");
+    inputdiv.setAttribute("style", "visibility: hidden");
 
     //Reduce height of chatbox window to have an effect of minimize.
-    chatboxdiv.setAttribute("style","height: 40px; margin-top: 350px;");
+    chatboxdiv.setAttribute("style","height: 7%; margin-top:115%; padding:unset");
+    header.setAttribute("style","height: 100%");
   }/*End of MinimizeWindow*/
 
   /**
@@ -508,13 +510,14 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       var chatboxdiv = document.getElementById(this.userId);
       var inputdiv = document.getElementById("input_msg_"+this.userId);
       var chatlogdiv = document.getElementById("chatlog_"+this.userId);
+      var header = document.getElementById("header_"+this.userId);
 
       //Incease height of chatbox window
-      chatboxdiv.setAttribute("style","height: 400px;");
+      chatboxdiv.setAttribute("style","height: 100%");
+      header.setAttribute("style","height: 7%");
+      chatlogdiv.setAttribute("style", "visibility: visible");
+      inputdiv.setAttribute("style", "visibility: visible;");
 
-      //Change attributes to default
-      chatlogdiv.setAttribute("style","display: block");
-      inputdiv.setAttribute("style", "display: flex");
       this.isMini = false
     }
   }/*End of MaximizeWindow*/
