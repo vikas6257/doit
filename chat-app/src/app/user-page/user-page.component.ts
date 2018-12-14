@@ -67,6 +67,7 @@ export class UserPageComponent implements OnInit {
 
   chat_start_status = false;
   chat_end_status = true;
+  stranger_button_name = 'Talk To Stranger';
 
   chatbox_pop_1 = new chatbox_pop();
   chatbox_pop_2 = new chatbox_pop();
@@ -153,6 +154,7 @@ export class UserPageComponent implements OnInit {
      horizontalPosition: 'center',
      verticalPosition: 'top',
    });
+   this.stranger_button_name = 'Talk To Stranger'
   }
 
   addchatbox($event) {
@@ -294,6 +296,7 @@ export class UserPageComponent implements OnInit {
     *Block stranger addition until this stranger gets assigned *
      ***********************************************************/
     this.istalk_to_stranger = false;
+    this.stranger_button_name = 'Searching..'
 
     this.snackBar.open("Searching for a stranger", 'Undo', {
       duration: 1500,

@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<div class="canvas_parent">
 <div class="browser_canvas" *ngIf="login_status">
   <div class="login_box">
     <mat-tab-group dynamicHeight>
@@ -44,122 +45,8 @@
     </mat-tab-group>
   </div>
 </div>
+</div>
 
 <div *ngIf="chat_box_status">
   <router-outlet></router-outlet>
 </div>
-
-
-
-<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-<app-spinner *ngIf="showSpinner"></app-spinner>
-
-<div class= "row" *ngIf="!showSpinner">
-  <div class=col-md-1></div>
-  <div class=col-md-4>
-      <div *ngIf = "login_status">
-          <h2><span class="label label-success">Existing User ?</span></h2>
-          <hr>
-        <div class="well">
-        <form novalidate [formGroup]="form" (ngSubmit)="AddUser(form)"  #user_form="ngForm">
-          <div [ngSwitch]="EnterAs">
-            <div *ngSwitchCase="'User'">
-
-              <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                <input class="form-control" type="text" name="" value="" formControlName="name"
-                      required placeholder="User name" autocomplete="username">
-             </div>
-
-             <div class="input-group">
-               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-               <input class="form-control" type="password" name="" value=""
-                  formControlName="password" required placeholder="Password" autocomplete="current-password">
-             </div>
-
-             <hr>
-
-             <div class ="row">
-               <div class ="col-md-2">
-                 <div class="input-group">
-                   <button class="btn btn-success btn-md" type="submit" name="login" [disabled]="!user_form.form.valid">
-                     <h4><span class="glyphicon glyphicon-log-in"> LogIn</span></h4></button>
-                 </div>
-               </div>
-             </div>
-
-           </div>
-         </div>
-       </form>
-
-       <hr>
-       <div *ngIf = "login_error_status" class="alert alert-danger">
-         <h5><i>{{login_error_msg}}</i></h5>
-       </div>
-
-     </div>
-   </div>
- </div>
-
-<div class=col-md-2></div>
-
- <div class=col-md-4>
-     <div *ngIf = "register_status">
-       <h2><span class="label label-success">New User ?</span></h2>
-       <hr>
-      <div class="well">
-       <form novalidate [formGroup]="form_register" (ngSubmit)="AddNewUser(form_register)"  #user_form="ngForm">
-         <div [ngSwitch]="EnterAs">
-           <div *ngSwitchCase="'User'">
-             <div class="input-group">
-               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-               <input class="form-control" type="text" name="" value="" formControlName="name"
-                     required placeholder="User name" autocomplete="username">
-            </div>
-
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input class="form-control" type="password" name="" value=""
-                 formControlName="password" required placeholder="Password" autocomplete="current-password">
-            </div>
-
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input class="form-control" type="password" name="" value=""
-                 formControlName="confirm_password" required placeholder="Confirm Password" autocomplete="current-password">
-            </div>
-            <hr>Select Gender:<br>
-            <input type="radio" formControlName="gender" value="male"> Male
-            <input type="radio" formControlName="gender" value="female"> Female
-
-            <hr>
-
-            <div class ="row">
-              <div class ="col-md-2">
-                <div class="input-group">
-                  <button class="btn btn-success btn-md" type="submit" name="login" [disabled]="!user_form.form.valid">
-                    <h4><span class="glyphicon glyphicon-plus-sign"> SignUp</span></h4></button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </form>
-
-      <hr>
-      <div *ngIf = "register_error_status" class="alert alert-danger">
-        <h5><i>{{register_error_msg}}</i></h5>
-      </div>
-
-    </div>
-   </div>
- </div>
- <div class=col-md-1></div>
-</div>
-
-<div *ngIf = "chat_box_status">
-  <router-outlet></router-outlet>
-</div>-->

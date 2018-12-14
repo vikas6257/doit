@@ -6,22 +6,21 @@
 }
 
 .chatbox {
-  width: 300px;
-  min-width: 100px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   background: #fff;
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
   padding-top: 5px;
-  border-style: ridge;
   box-shadow: 3px 3px #ccc;
   position: relative;
+  border-radius: 20px;
 }
 
 .chatlog {
   width: 100%;
-  height: 78%;
+  height: 83%;
   padding: -100px;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -69,11 +68,11 @@
 }
 
 .friend .chat-message {
-  background: #1adda4;
+  background: #605f5f;
 }
 
 .self .chat-message {
-  background: #1ddced;
+  background: #12867c7a;
   order: -1;
   justify-content: flex-end;
 }
@@ -81,14 +80,15 @@
 .chat-form {
   display: flex;
   align-items: flex-start;
+  height: 10%;
 }
 
 .chat-form input {
   width: 100%;
-  height: 60px;
+  height: 100%;
   border-top-style: ridge;
   border-width: 1px;
-  border-color: black;
+  border-color: #12867c7a;
   resize: none;
   font-size: 16px;
   border-bottom: none;
@@ -109,10 +109,11 @@
 .window-header {
   display: flex;
   justify-content: flex-end;
-  width: 280px;
-  border-bottom-style: ridge;
-  border-width: 1.5px;
+  width: 100%;
   margin-bottom: 2px;
+  background-color: #636c87;
+  border-radius: 20px;
+  height: 7%;
 }
 
 .username {
@@ -120,25 +121,39 @@
   width: 190px;
   overflow: hidden;
   text-align: center;
+  color: white;
+  align-self: center;
 }
 
 .username:hover {
   overflow: visible;
 }
-.window-header .window-header-opt {
-  margin-left: 5px;
+
+.window-header-opt {
+  align-self: center;
 }
 
 .window-header .window-header-opt-add {
   position: relative;
   right: 10px;
-  margin-left: 5px;
+  margin-right: 5px;
 }
 
+.window-header-opt-add {
+  align-self: center;
+}
 .window-header .window-header-opt-end-chat {
 
 }
 
-.aduser_icon, .close_icon, .endchat_icon, .maximize_icon, .minimize_icon {
-  color: #ff00ff;
+.close_icon, .maximize_icon, .minimize_icon {
+  color: white;
+  margin-right: 5px;
+  align-self: center;
+}
+
+.aduser_icon, .endchat_icon {
+  margin-left: 5px;
+  color: white;
+  align-self: center;
 }
