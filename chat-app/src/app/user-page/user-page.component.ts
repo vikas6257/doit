@@ -96,7 +96,6 @@ export class UserPageComponent implements OnInit {
     fd.append(this.login.login_handle+".jpg", this.selectedFile);
 
     this.http.post('http://localhost:3000/add', fd ).pipe(map(res => res.json())).subscribe((res) => {
-      console.log(res);
     });
 
     if (event.target.files && event.target.files[0]) {
@@ -211,13 +210,10 @@ export class UserPageComponent implements OnInit {
       chatboxElement.appendChild(this.chatbox_friends.get(userId));
       /*
       if (userId == 'Stranger') {
-        console.log('Deleting chatbox component for this stranger');
         this.chatbox_friends.delete(userId);
       }
       */
     }
-
-    console.log('open chatbox for '+userId);
   }
 
   delete_chat_box(userId) {
@@ -259,7 +255,6 @@ export class UserPageComponent implements OnInit {
   }
 
   show_friend_requests() {
-    console.log(this.friend_requests);
     const dialogRef = this.dialog.open(FriendReqComponent, {
       data: {friend_req: this.friend_requests}
     });
@@ -352,12 +347,9 @@ export class UserPageComponent implements OnInit {
     * Adding each chatbox to a list *
      ********************************/
     this.chatbox_friends.set(userId, domElement)
-    console.log('inside create chatbox');
-    console.log(friend);
     if (friend != undefined) {
       if (friend.inbox != undefined) {
         friend.inbox.forEach(function (ele) {
-          console.log('append msg: '+ele.text+' to user: '+friend.username);
           ComponentRef.instance.append_in_msg(ele.text);
         });
       }

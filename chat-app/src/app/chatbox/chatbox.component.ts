@@ -124,7 +124,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     this.isMini = false;
     this.unseen_message = 0;
     this.subscription = this.chat.messages.subscribe(msg => {
-      console.log(msg['type']);
       /*Always check message type. Message type "message" is used for chatting*/
       if (msg['type'] == "message") {
         if(msg['from'] == this.userId) {
@@ -293,7 +292,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       };
 
       this.http.post('http://localhost:3000/api/send-inbox-msg', send_msg, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-          console.log(res);
       });
     }
     else {
@@ -369,9 +367,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
    */
   AddChatboxIdForStanger(userId) {
     /*Friend object must be NULL for stranger*/
-    if(this.friend != undefined) {
-      console.log("Something wrong");
-    }
     this.userId = userId;
   }
 
@@ -440,7 +435,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       };
 
       this.http.post('http://localhost:3000/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-        console.log(res);
         let new_friend: Friend = {
           id: res['id'].toString(),
           username: this.userId,
@@ -554,7 +548,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       data: {message: "Disconnect from stranger : "+this.userId}
     });
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result == true) {
         this.chat.sendMsg({'end-chat':{'to':this.userId}});
 

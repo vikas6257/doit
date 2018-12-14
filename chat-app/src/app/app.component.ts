@@ -13,12 +13,10 @@ export class AppComponent {
 
   EnterChatUser() {
     this.EnterAs = 'User';
-    console.log(this.EnterAs);
   }
 
   EnterChatGuest() {
     this.EnterAs = 'Guest';
-    console.log(this.EnterAs);
   }
 
   ngOnInit()  {

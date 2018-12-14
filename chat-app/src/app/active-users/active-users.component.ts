@@ -39,7 +39,6 @@ export class ActiveUsersComponent implements OnInit {
      };
 
     this.http.post('http://localhost:3000/api/get-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-      console.log(res);
       /*
        * We got reply from DB about friend-list. Populate fl with the reply
        * and start iterating over fl to create each friend object and push it
@@ -108,7 +107,6 @@ export class ActiveUsersComponent implements OnInit {
                 id : this.login.friend_list[i].id,
              };
              this.http.post('http://localhost:3000/api/delete-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-               console.log(res);
              });
              /***************************************************************
               * Send all active user to user-page component, to instantiate *
@@ -122,12 +120,6 @@ export class ActiveUsersComponent implements OnInit {
 
   onSelect(friend: Friend) {
     this.selected_friend = friend;
-    console.log(friend.username+ " is online: "+ friend.onlinestatus);
-    if (friend.inbox) {
-      for(let i=0;i<friend.inbox.length;i++) {
-        console.log("Message:- time: "+ friend.inbox[i].timestamp +" ,text: "+ friend.inbox[i].text);
-      }
-    }
   }
 
   onSelectStranger(stranger) {

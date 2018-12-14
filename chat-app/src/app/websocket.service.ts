@@ -21,8 +21,6 @@ export class WebsocketService {
     // from our socket.io server.
     let observable = new Observable(observer => {
         this.socket.on('message', (data) => {
-          console.log("Received message from Websocket Server: ");
-          console.log(data);
           observer.next(data);
         })
 
@@ -41,42 +39,32 @@ export class WebsocketService {
     messages from client to server*/
     let observer = {
         next: (data: Object) => {
-          console.log(data);
           if (data != undefined) {
            if(data['send-user-id'] != undefined) {
-             console.log("Send user id");
-             console.log(data);
             this.socket.emit('user_id', data['send-user-id']);
           }
           else if (data['logout'] != undefined) {
               this.socket.disconnect();
           }
           else if (data['start-chat'] != undefined) {
-            console.log("start-chat")
             this.socket.emit('start-chat', data['start-chat']);
           }
           else if (data['end-chat'] != undefined) {
-            console.log("end-chat")
             this.socket.emit('end-chat', data['end-chat']);
           }
           else if (data['i_am_online'] != undefined) {
-            console.log("i_am_online")
             this.socket.emit('i_am_online', data['i_am_online']);
           }
           else if (data['send-friend-request'] != undefined) {
-            console.log("send-friend-request")
             this.socket.emit('send-friend-request', data['send-friend-request']);
           }
           else if (data['friend-request-accepted'] != undefined) {
-            console.log("friend-request-accepted")
             this.socket.emit('friend-request-accepted', data['friend-request-accepted']);
           }
           else if (data['friend-request-rejected'] != undefined) {
-            console.log("friend-request-rejected")
             this.socket.emit('friend-request-rejected', data['friend-request-rejected']);
           }
-          else {
-            console.log("chating msg")
+          else {            
             this.socket.emit('message', data);
           }
         }

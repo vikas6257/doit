@@ -49,8 +49,6 @@ export class LoginComponent implements OnInit {
 
   AddUser(form) {
     this.showSpinner = true;
-    //debug
-    console.log(form.value);
     let newUser: Login = {
       username : form.value.name,
       password: form.value.password,
@@ -61,9 +59,6 @@ export class LoginComponent implements OnInit {
     var header = new Headers();
     header.append('Content-Type', 'application/json');
     if (this.EnterAs == 'User'){
-      //debug
-      console.log('Trying to login');
-      console.log("Existing user with data: "+ newUser);
       this.login_handle = form.value.name;
       this.http.post('http://localhost:3000/api/login', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         this.showSpinner = false;
@@ -99,9 +94,7 @@ export class LoginComponent implements OnInit {
   }
 
 
-  AddNewUser(form_register) {
-    //debug
-    console.log(form_register.value);
+  AddNewUser(form_register) {    
     this.showSpinner = true;
     if(form_register.value.password != form_register.value.confirm_password) {
       this.register_error_msg = "Password entered in password and Retype password section is not same";
@@ -123,9 +116,6 @@ export class LoginComponent implements OnInit {
       var header = new Headers();
       header.append('Content-Type', 'application/json');
 
-      //debug
-      console.log('Trying to Register');
-      console.log("Existing user with data: "+ newUser);
       this.login_handle = form_register.value.name;
       this.http.post('http://localhost:3000/api/register', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
 
@@ -169,7 +159,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    console.log("Destroying login comp");
     this.login_handle = "";
     this.friend_list.length = 0;
   }
