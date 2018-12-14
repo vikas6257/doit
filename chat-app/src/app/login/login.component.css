@@ -12,6 +12,15 @@
   background-size: cover;
 }
 
+.logo_frontpage {
+  width: 15%;
+  margin-left: 5%;
+}
+
+.logo_frontpage img {
+  transform: scale(1.2);
+}
+
 .login_box {
   width: 320px;
   position: absolute;
@@ -65,5 +74,5 @@
 }
 
 .canvas_parent {
-  
+
 }
