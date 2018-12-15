@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit {
   }
 
 
-  AddNewUser(form_register) {    
+  AddNewUser(form_register) {
     this.showSpinner = true;
     if(form_register.value.password != form_register.value.confirm_password) {
       this.register_error_msg = "Password entered in password and Retype password section is not same";
@@ -103,6 +103,7 @@ export class LoginComponent implements OnInit {
       this.chat_box_status = false;
       this.register_status =  true;
       this.register_error_status = true;
+      this.showSpinner = false;
     }
     else if (this.EnterAs == 'User'){
       let newUser: Login = {

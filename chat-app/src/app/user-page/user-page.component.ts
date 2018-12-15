@@ -85,7 +85,6 @@ export class UserPageComponent implements OnInit {
   selectedFile:File;
   dp_url:string = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
 
-
   /*
    * API to add profile pic.
   */
@@ -119,8 +118,8 @@ export class UserPageComponent implements OnInit {
     this.myapp.reset = false;
     setTimeout(()=>{
       this.myapp.reset = true;
+      this.router.navigate(['/logout']);
     }, 1000);
-    this.router.navigate(['/logout']);
   }
 
   userpage_close_chatbox(userId){

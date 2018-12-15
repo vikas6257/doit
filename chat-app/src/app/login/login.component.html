@@ -6,7 +6,7 @@
   <div class="logo_frontpage">
     <img src="../assets/Logo front_page.png" alt="Logo not found">
   </div>
-  <div class="login_box">
+  <div class="login_box" *ngIf="!showSpinner">
     <mat-tab-group dynamicHeight>
       <mat-tab label="Login">
         <form novalidate [formGroup]="form" (ngSubmit)="AddUser(form)" #user_form_login="ngForm">
@@ -47,6 +47,7 @@
       </mat-tab>
     </mat-tab-group>
   </div>
+  <app-spinner *ngIf="showSpinner"></app-spinner>
 </div>
 </div>
 

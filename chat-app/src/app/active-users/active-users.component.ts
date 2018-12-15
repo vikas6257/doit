@@ -70,7 +70,9 @@ export class ActiveUsersComponent implements OnInit {
        */
       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
 
-      this.showSpinner = false;
+      if (this.login.friend_list.length == 0) {
+        this.showSpinner = false;
+      }
 
       /*
        * Once friend list is populated, it's time for offline messages.
@@ -100,6 +102,10 @@ export class ActiveUsersComponent implements OnInit {
                 this.login.friend_list[i].inbox.push(inbox);
             }
 
+            if(i == this.login.friend_list.length -1) {
+              this.showSpinner = false;
+            }
+            
             /*
              * Once we populate our front-end with inbox message, send a delete to DB. *
              */
