@@ -14,6 +14,9 @@
   border-bottom: solid;
   border-width: thin;
   color: white;
+  font-style: italic;
+  font-weight: bold;
+  font-size:20px;
 }
 
 .userfriends, .stranger_user {
@@ -24,6 +27,8 @@
   text-align: center;
   color: white;
   margin-bottom: 10px;
+  font-style: italic;
+  font-size: 15px;
 }
 
 .friend, .stranger {

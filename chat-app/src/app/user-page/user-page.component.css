@@ -56,6 +56,9 @@
   justify-content: space-between;
   grid-row: 3;
   grid-column: 3/8;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 30px;
 }
 
 .user_name {
@@ -180,11 +183,14 @@
 .userpage_footer {
   grid-row: 13;
   grid-column: 1/11;
-  text-align: center;
+  text-align: right;
   border-top: solid;
   border-width: 3px;
-  color: black;
-  border-color: #12867c7a;
+  color: Black;
+  font-size: 18px;
+  background-color: #12867c7a;
+  font-style: italic;
+  font-weight: bold;
 }
 
 .nonlogo {
