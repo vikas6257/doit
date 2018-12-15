@@ -20,6 +20,6 @@
   </div>
   <div class="chat-form">
       <input type="text" placeholder="Write something. And press enter to send." onfocus="this.placeholder = ''" onblur="this.placeholder = 'Write something. And press enter to send.'"
-        id="input_msg_{{userId}}" (keydown.enter)="sendMessage(this.value)" (keydown.shift.enter)="enter_on_test($event)" autocomplete="off">
+        id="input_msg_{{userId}}" (keydown.enter)="sendMessage()" autocomplete="off">
   </div>
 </div>

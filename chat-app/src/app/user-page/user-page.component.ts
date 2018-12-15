@@ -46,7 +46,7 @@ export class UserPageComponent implements OnInit {
 
   constructor(
     private chat: ChatserviceService,
-    private login: LoginComponent,
+    public login: LoginComponent,
     private http: Http,
     private router: Router,
     private resolver: ComponentFactoryResolver,
