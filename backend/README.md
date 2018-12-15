@@ -21,4 +21,7 @@ DB_NAME=onlinestranger_db
 NODE_HOST=localhost
 
 #Node js server port
-NODE_PORT=4200
+NODE_PORT=3000
+
+#Cors
+REMOTE_CLIENT=http://localhost:4200
