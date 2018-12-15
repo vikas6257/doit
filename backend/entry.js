@@ -32,24 +32,24 @@ mongoose.connection.on('error', (err)=> {
   console.log(err);
 });
 
-//port used for backend server
-const port = 3000;
-
-
 //middleware
-app.use(cors({origin : "http://"+process.env.NODE_HOST+process.env.NODE_PORT, credentials : true}));
+app.use(cors({origin : "http://localhost:4200", credentials : true}));
 app.use(bodyparser.json());
 app.use('/api',   route);
 
 let http = require('http').Server(app);
 
 //Start back end server
-var server = app.listen(port, ()=>{
+var server = app.listen(process.env.NODE_PORT, ()=>{
   logger.info('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
   console.log('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
 });
 
 let io = require('socket.io').listen(server)
+
+/*Send front end to client upon entering just ip:port*/
+app.use(express.static('../chat-app/dist/chat-app/'));
+app.get('/', (req, res)=>res.sendFile(path.join('../chat-app/dist/chat-app/')));
 
 /*connection object*/
 let connection = {
