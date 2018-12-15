@@ -7,6 +7,7 @@ import { Friend } from '../friend';
 import { OfflineMessage } from '../offline_message';
 import { map } from 'rxjs/operators';
 import { ChatserviceService } from '../chatservice.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-active-users',
@@ -38,7 +39,7 @@ export class ActiveUsersComponent implements OnInit {
         username : this.login.login_handle,
      };
 
-    this.http.post('http://localhost:3000/api/get-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+    this.http.post(environment.http_address+'/api/get-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
       /*
        * We got reply from DB about friend-list. Populate fl with the reply
        * and start iterating over fl to create each friend object and push it
@@ -56,7 +57,7 @@ export class ActiveUsersComponent implements OnInit {
           friend.inbox =  new Array();
           friend.unseen_message = 0;
           friend.hasunseen_message = false;
-          friend.dp_url = "http://localhost:3000/uploads/" +
+          friend.dp_url = environment.http_address+'/uploads/' +
                              friend.username + ".jpg";
         /*
          * Push it to the global friend-list defined in login page.
@@ -89,7 +90,7 @@ export class ActiveUsersComponent implements OnInit {
          /*
           * Note: Different http post request will be send for each friends.
           */
-         this.http.post('http://localhost:3000/api/get-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+         this.http.post(environment.http_address+'/api/get-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
             /*
              * res will be a list of inbox messages for a particular friend.
              */
@@ -105,14 +106,14 @@ export class ActiveUsersComponent implements OnInit {
             if(i == this.login.friend_list.length -1) {
               this.showSpinner = false;
             }
-            
+
             /*
              * Once we populate our front-end with inbox message, send a delete to DB. *
              */
             let User: Friend = {
                 id : this.login.friend_list[i].id,
              };
-             this.http.post('http://localhost:3000/api/delete-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+             this.http.post(environment.http_address+'/api/delete-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
              });
              /***************************************************************
               * Send all active user to user-page component, to instantiate *

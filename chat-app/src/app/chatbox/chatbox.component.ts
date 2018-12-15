@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material';
 import {
   UserConfirmationComponent
 } from '../user-confirmation/user-confirmation.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-chatbox',
@@ -70,7 +71,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   //Used for profile-pic
   dp_url:string;
 
-  my_dp_url:string  = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
+  my_dp_url:string  = environment.http_address+'/uploads/' + this.login.login_handle + ".jpg";
   /*************************************************
   * Take reference of this component html template *
    *************************************************/
@@ -148,7 +149,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
      ************************************************************************/
     if (msg['type'] == "assigned-stranger") {
       if (this.userId == "Stranger") {
-        this.dp_url = "http://localhost:3000/uploads/" + msg['userId'] + ".jpg";
+        this.dp_url = environment.http_address+'/uploads/' + msg['userId'] + ".jpg";
         this.user_assigned.emit({'olduserId':this.userId, 'newuserId':msg['userId']});
         this.AddChatboxIdForStanger(msg['userId']);
       }
@@ -291,7 +292,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         text: out_msg,
       };
 
-      this.http.post('http://localhost:3000/api/send-inbox-msg', send_msg, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/send-inbox-msg', send_msg, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
       });
     }
     else {
@@ -358,7 +359,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
     this.friend = friend;
     this.userId = userId;
-    this.dp_url = "http://localhost:3000/uploads/" + this.userId + ".jpg";
+    this.dp_url = environment.http_address+'/uploads/' + this.userId + ".jpg";
   }
 
   /*
@@ -416,7 +417,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           'friend_username' : this.login.login_handle,
       };
 
-      this.http.post('http://localhost:3000/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         /*
          * Send a message to server that friend request has been accepted and provided
          * necessadry details.
@@ -434,13 +435,13 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           'friend_username' : this.userId,
       };
 
-      this.http.post('http://localhost:3000/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         let new_friend: Friend = {
           id: res['id'].toString(),
           username: this.userId,
           gender: "male", //put dummy for now
           onlinestatus: "true", // starnger must be online
-          dp_url : "http://localhost:3000/uploads/" + this.userId + ".jpg",
+          dp_url : environment.http_address+'/uploads/' + this.userId + ".jpg",
         };
         this.login.friend_list.push(new_friend);
         /*

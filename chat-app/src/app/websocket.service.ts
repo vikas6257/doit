@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs';
 import * as Rx from 'rxjs';
-//import { environment } from '../environments/environment';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class WebsocketService {
     // If you aren't familiar with environment variables then
     // you can hard code `environment.ws_url` as `http://localhost:5000`
     //this.socket = io(environment.ws_url);
-    this.socket = io('http://localhost:3000');
+    this.socket = io(environment.http_address);
 
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
@@ -64,7 +64,7 @@ export class WebsocketService {
           else if (data['friend-request-rejected'] != undefined) {
             this.socket.emit('friend-request-rejected', data['friend-request-rejected']);
           }
-          else {            
+          else {
             this.socket.emit('message', data);
           }
         }

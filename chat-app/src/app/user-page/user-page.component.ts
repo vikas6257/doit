@@ -15,6 +15,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FriendReqComponent } from '../friend-req/friend-req.component';
 import { MatSnackBar } from '@angular/material';
 import { EventManager } from '@angular/platform-browser';
+import { environment } from '../../environments/environment';
 
 export class chatbox_pop {
   isadded: boolean;
@@ -83,7 +84,7 @@ export class UserPageComponent implements OnInit {
    * Member variables to add profile pic.
   */
   selectedFile:File;
-  dp_url:string = "http://localhost:3000/uploads/" + this.login.login_handle + ".jpg";
+  dp_url:string = environment.http_address+'/uploads/' + this.login.login_handle + ".jpg";
 
   /*
    * API to add profile pic.
@@ -94,7 +95,7 @@ export class UserPageComponent implements OnInit {
 
     fd.append(this.login.login_handle+".jpg", this.selectedFile);
 
-    this.http.post('http://localhost:3000/add', fd ).pipe(map(res => res.json())).subscribe((res) => {
+    this.http.post(environment.http_address+'/add', fd ).pipe(map(res => res.json())).subscribe((res) => {
     });
 
     if (event.target.files && event.target.files[0]) {

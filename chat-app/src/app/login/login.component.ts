@@ -4,7 +4,7 @@ import {Http, Headers } from '@angular/http';
 import { Login } from '../login';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
-
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
     header.append('Content-Type', 'application/json');
     if (this.EnterAs == 'User'){
       this.login_handle = form.value.name;
-      this.http.post('http://localhost:3000/api/login', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/login', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         this.showSpinner = false;
         this.status = res['status'];
 
@@ -118,7 +118,7 @@ export class LoginComponent implements OnInit {
       header.append('Content-Type', 'application/json');
 
       this.login_handle = form_register.value.name;
-      this.http.post('http://localhost:3000/api/register', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/register', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
 
         this.status = res['status'];
         this.showSpinner = false;
