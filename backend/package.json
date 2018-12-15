@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "backend server",
-  "main": "entry.js",
+  "main": "bin/dev",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +16,8 @@
     "multer": "^1.4.1",
     "node-logger": "^0.0.1",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "dotenv": "^6.2.0"
   }
 }

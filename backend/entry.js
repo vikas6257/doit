@@ -18,7 +18,9 @@ const route = require("./route/routes");
 
 //connect to mongo db server
 //TODO: Verify whether DB Name is required
-mongoose.connect('mongodb://localhost:27017/')
+const db_uri = 'mongodb://'+process.env.DB_USERNAME+':'+process.env.DB_PASS+'@'+process.env.DB_HOST+':'+process.env.DB_PORT+'/'+process.env.DB_NAME
+console.log(db_uri);
+mongoose.connect(db_uri, { useNewUrlParser: true })
 
 //on succesful connection
 mongoose.connection.on('connected', ()=> {
@@ -35,7 +37,7 @@ const port = 3000;
 
 
 //middleware
-app.use(cors({origin : "http://localhost:4200", credentials : true}));
+app.use(cors({origin : "http://"+process.env.NODE_HOST+process.env.NODE_PORT, credentials : true}));
 app.use(bodyparser.json());
 app.use('/api',   route);
 
@@ -43,7 +45,7 @@ let http = require('http').Server(app);
 
 //Start back end server
 var server = app.listen(port, ()=>{
-  logger.info('Backend server started at port : '+port);
+  logger.info('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
 });
 
 let io = require('socket.io').listen(server)
