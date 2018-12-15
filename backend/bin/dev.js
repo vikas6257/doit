@@ -30,4 +30,9 @@ if (process.env.NODE_PORT == undefined || process.env.NODE_PORT == '') {
   console.log('NODE_PORT: Node port not defined in dotenv');
   return;
 }
+
+if (process.env.REMOTE_CLIENT == undefined || process.env.REMOTE_CLIENT == '') {
+  console.log('REMOTE_CLIENT: remote client not defined in dotenv');
+  return;
+}
 require('../entry.js');

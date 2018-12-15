@@ -33,7 +33,7 @@ mongoose.connection.on('error', (err)=> {
 });
 
 //middleware
-app.use(cors({origin : "http://localhost:4200", credentials : true}));
+app.use(cors({origin : process.env.REMOTE_CLIENT, credentials : true}));
 app.use(bodyparser.json());
 app.use('/api',   route);
 
