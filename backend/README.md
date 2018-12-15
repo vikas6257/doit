@@ -1,3 +1,6 @@
+backend/.env file is mendatory to start nodejs server.
+
+Format of .env file as follow.
 
 # Mongo DB username.
 DB_USERNAME=onlinestranger
