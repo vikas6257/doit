@@ -6,6 +6,7 @@ var cors = require("cors");
 var logger = require("node-logger").createLogger("backend_entry.log");
 var multer = require('multer');
 const path = require('path');
+var fs = require('fs');
 
 /*******************************************************************/
 /*                            MIIDLEWARE                           */
@@ -39,10 +40,21 @@ app.use('/api',   route);
 
 let http = require('http').Server(app);
 
+let https = require('https').Server({
+  ca: fs.readFileSync('sslcert/ca_bundle.crt'),
+  key: fs.readFileSync('sslcert/private.key'),
+  cert: fs.readFileSync('sslcert/certificate.crt')
+}, app);
+
 //Start back end server
 var server = app.listen(process.env.NODE_PORT, ()=>{
   logger.info('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
   console.log('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
+});
+
+var server_https = app.listen(process.env.NODE_PORT_HTTPS, ()=>{
+  logger.info('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT_HTTPS);
+  console.log('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT_HTTPS);
 });
 
 let io = require('socket.io').listen(server)

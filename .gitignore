@@ -3,6 +3,11 @@
 #Environment file
 /backend/.env
 
+/backend/sslcert
+/backend/sslcert/*
+/backend/uploads
+/backend/uploads/*
+
 # compiled output
 /chat-app/dist
 /tmp

@@ -35,4 +35,9 @@ if (process.env.REMOTE_CLIENT == undefined || process.env.REMOTE_CLIENT == '') {
   console.log('REMOTE_CLIENT: remote client not defined in dotenv');
   return;
 }
+
+if (process.env.NODE_PORT_HTTPS == undefined || process.env.NODE_PORT_HTTPS == '') {
+  console.log('NODE_PORT_HTTPS: Node https port not defined in dotenv');
+  return;
+}
 require('../entry.js');
