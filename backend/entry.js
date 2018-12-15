@@ -46,6 +46,7 @@ let http = require('http').Server(app);
 //Start back end server
 var server = app.listen(port, ()=>{
   logger.info('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
+  console.log('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
 });
 
 let io = require('socket.io').listen(server)
