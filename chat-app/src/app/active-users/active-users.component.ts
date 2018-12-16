@@ -63,6 +63,13 @@ export class ActiveUsersComponent implements OnInit {
          * Push it to the global friend-list defined in login page.
          */
         this.login.friend_list.push(friend);
+        /***************************************************************
+         * Send all active user to user-page component, to instantiate *
+         * chatbox for all friends. It's must her so that we can at    *
+         * subscrie for chat-service the moment with populate our      *
+        *  friend-list.                                                *
+         ***************************************************************/
+        this.snd_active_usr_to_user_page_comp.emit(friend);
       }
 
       /*
@@ -115,11 +122,6 @@ export class ActiveUsersComponent implements OnInit {
              };
              this.http.post(environment.http_address+'/api/delete-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
              });
-             /***************************************************************
-              * Send all active user to user-page component, to instantiate *
-              * chatbox for all friends                                     *
-              ***************************************************************/
-             this.snd_active_usr_to_user_page_comp.emit(this.login.friend_list[i]);
           });
       }
     });
