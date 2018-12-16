@@ -32,6 +32,19 @@ export class ActiveUsersComponent implements OnInit {
                private http: Http, private login: LoginComponent) { }
 
   ngOnInit() {
+    this.getFriendList();
+   /*
+    * Emit a message to server saying that I am online. It is used to notify friends
+    * about my online status.
+    */
+    this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
+  }
+
+  /*
+   * Do a DB get for fetching friend-list for the user. It internally call
+   * other routines to get/delete inbox messages from DB.
+   */
+  getFriendList() {
     var header = new Headers();
     header.append('Content-Type', 'application/json');
 
@@ -48,6 +61,7 @@ export class ActiveUsersComponent implements OnInit {
        */
       this.fl = res["User"];
 
+      /*Switch off the spinner.*/
       if(this.fl.length == 0){
         this.showSpinner = false;
       }
@@ -70,62 +84,77 @@ export class ActiveUsersComponent implements OnInit {
           */
           this.login.friend_list.push(friend);
 
-        /*
-        * Create an object for each friend in the friend list to send a get-inbox
-        * http post request.
-        */
-        let User: Friend = {
-            id : friend.id,
-         };
+          this.getInboxMessages(friend);
 
-         /*
-          * Note: Different http post request will be send for each friends.
-          */
-         this.http.post(environment.http_address+'/api/get-inbox-msg',
-             User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-            /*
-             * res will be a list of inbox messages for a particular friend.
-             */
-              for (let j=0;j<res.length;j++) {
-                /*Create a inbox object*/
-                let inbox: OfflineMessage = {
-                  timestamp: res[j].timestamp,
-                  text: res[j].text,
-                };
-                friend.inbox.push(inbox);
-            }
-
-            /***************************************************************
-            * Send all active user to user-page component, to instantiate *
-            * chatbox for all friends. It's must her so that we can at    *
-            * subscrie for chat-service the moment with populate our      *
-            *  friend-list.                                                *
-            ***************************************************************/
-            this.snd_active_usr_to_user_page_comp.emit(friend);
-
-            /*
-            * Once we populate our front-end with inbox message, send a delete to
-            *  DB.
-            */
-            let User: Friend = {
-              id : friend.id,
-            };
-            this.http.post(environment.http_address+'/api/delete-inbox-msg',
-              User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-              });
-          });
-
+          /*Switch off the spinner.*/
           if(i == this.fl.length-1) {
             this.showSpinner = false;
           }
-        }
       });
+  }
 
-      /*
-       * Emit a message to server saying that I am online. It is used to notify friends
-       * about my online status.
-       */
-       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
+  /*
+   * Do a DB get for fetching inbox messages for a particular friend. It
+   * internally calls routine to delete inbox messages from DB once local
+   * cache(friend.inbox) is populated.
+   */
+  getInboxMessages(friend) {
+    var header = new Headers();
+    header.append('Content-Type', 'application/json');
+
+    /*
+    * Create an object for each friend in the friend list to send a get-inbox
+    * http post request.
+    */
+    let User: Friend = {
+        id : friend.id,
+     };
+
+     /*
+      * Note: Different http post request will be send for each friends.
+      */
+     this.http.post(environment.http_address+'/api/get-inbox-msg',
+         User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+        /*
+         * res will be a list of inbox messages for a particular friend.
+         */
+        for (let j=0;j<res.length;j++) {
+          /*Create a inbox object*/
+          let inbox: OfflineMessage = {
+            timestamp: res[j].timestamp,
+            text: res[j].text,
+          };
+          friend.inbox.push(inbox);
+        }
+
+        /***************************************************************
+        * Send each friend to user-page component, to instantiate      *
+        * chatbox for all friends. It's must be done here to get inbox *
+        * messages as well as to get chat subscribtion for other msg.  *
+        ***************************************************************/
+        this.snd_active_usr_to_user_page_comp.emit(friend);
+        this.deleteInboxMessages(friend);
+      });
+  }
+
+  /*
+   * Do a DB post for deleting inbox messages for a particular friend. It must
+   * be called only if local cache(friend.inbox) is populated.
+   */
+  deleteInboxMessages(friend) {
+    var header = new Headers();
+    header.append('Content-Type', 'application/json');
+
+    /*
+    * Once we populate our front-end with inbox messages, send a delete to
+    *  DB.
+    */
+    let User: Friend = {
+      id : friend.id,
+    };
+    this.http.post(environment.http_address+'/api/delete-inbox-msg',
+      User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+    });
   }
 
   onSelect(friend: Friend) {
