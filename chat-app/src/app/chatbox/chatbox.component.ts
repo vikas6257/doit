@@ -114,6 +114,20 @@ export class ChatboxComponent implements OnInit, OnDestroy{
      * Scroll down to bottom on sending message.*
      ********************************************/
     chatlog.scrollTop = chatlog.scrollHeight;
+
+    /********************************************
+     * Do a pop up count for unseen messages.   *
+     ********************************************/
+    if (this.isMini == true
+      || document.getElementById('chatlog_'+this.userId) == undefined) {
+        if (this.isstranger == false) {
+          this.friend.unseen_message = this.friend.unseen_message+1;
+          this.friend.hasunseen_message = true;
+        }
+        else {
+          this.unseen_message = this.unseen_message+1;
+        }
+      }
   }
   /**
    * [ngOnInit Subscribes to messages recieved from websocket]
@@ -131,16 +145,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         if(msg['from'] == this.userId) {
           this.msg_rcv = msg.text;
           this.append_in_msg(msg.text);
-          if (this.isMini == true
-            || document.getElementById('chatlog_'+this.userId) == undefined) {
-              if (this.isstranger == false) {
-                this.friend.unseen_message = this.friend.unseen_message+1;
-                this.friend.hasunseen_message = true;
-              }
-              else {
-                this.unseen_message = this.unseen_message+1;
-              }
-            }
         }
     }
 

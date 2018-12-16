@@ -48,6 +48,10 @@ export class ActiveUsersComponent implements OnInit {
        */
       this.fl = res["User"];
 
+      if(this.fl.length == 0){
+        this.showSpinner = false;
+      }
+
       for(let i=0;i<this.fl.length;i++) {
         /*Create friend object*/
         let friend = new Friend();
@@ -60,39 +64,18 @@ export class ActiveUsersComponent implements OnInit {
           friend.hasunseen_message = false;
           friend.dp_url = environment.http_address+'/uploads/' +
                              friend.username + ".jpg";
-        /*
-         * Push it to the global friend-list defined in login page.
-         */
-        this.login.friend_list.push(friend);
-        /***************************************************************
-         * Send all active user to user-page component, to instantiate *
-         * chatbox for all friends. It's must her so that we can at    *
-         * subscrie for chat-service the moment with populate our      *
-        *  friend-list.                                                *
-         ***************************************************************/
-        this.snd_active_usr_to_user_page_comp.emit(friend);
-      }
 
-      /*
-       * Emit a message to server saying that I am online. It is used to notify friends
-       * about my online status.
-       */
-      this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
+         /*
+          * Push it to the global friend-list defined in login page.
+          */
+          this.login.friend_list.push(friend);
 
-      if (this.login.friend_list.length == 0) {
-        this.showSpinner = false;
-      }
-
-      /*
-       * Once friend list is populated, it's time for offline messages.
-       */
-      for(let i=0;i<this.login.friend_list.length;i++) {
         /*
         * Create an object for each friend in the friend list to send a get-inbox
         * http post request.
         */
         let User: Friend = {
-            id : this.login.friend_list[i].id,
+            id : friend.id,
          };
 
          /*
@@ -109,25 +92,40 @@ export class ActiveUsersComponent implements OnInit {
                   timestamp: res[j].timestamp,
                   text: res[j].text,
                 };
-                this.login.friend_list[i].inbox.push(inbox);
+                friend.inbox.push(inbox);
             }
 
-            if(i == this.login.friend_list.length -1) {
-              this.showSpinner = false;
-            }
+            /***************************************************************
+            * Send all active user to user-page component, to instantiate *
+            * chatbox for all friends. It's must her so that we can at    *
+            * subscrie for chat-service the moment with populate our      *
+            *  friend-list.                                                *
+            ***************************************************************/
+            this.snd_active_usr_to_user_page_comp.emit(friend);
 
             /*
-             * Once we populate our front-end with inbox message, send a delete to DB. *
-             */
+            * Once we populate our front-end with inbox message, send a delete to
+            *  DB.
+            */
             let User: Friend = {
-                id : this.login.friend_list[i].id,
-             };
-             this.http.post(environment.http_address+'/api/delete-inbox-msg',
-                User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
-             });
+              id : friend.id,
+            };
+            this.http.post(environment.http_address+'/api/delete-inbox-msg',
+              User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+              });
           });
-      }
-    });
+
+          if(i == this.fl.length-1) {
+            this.showSpinner = false;
+          }
+        }
+      });
+
+      /*
+       * Emit a message to server saying that I am online. It is used to notify friends
+       * about my online status.
+       */
+       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
   }
 
   onSelect(friend: Friend) {

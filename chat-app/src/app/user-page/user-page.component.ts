@@ -97,6 +97,7 @@ export class UserPageComponent implements OnInit {
 
     this.http.post(environment.http_address+'/add', fd )
       .pipe(map(res => res.json())).subscribe((res) => {
+        console.log(res);
     });
 
     if (event.target.files && event.target.files[0]) {
@@ -348,12 +349,18 @@ export class UserPageComponent implements OnInit {
     /********************************
     * Adding each chatbox to a list *
      ********************************/
-    this.chatbox_friends.set(userId, domElement)
+    this.chatbox_friends.set(userId, domElement);
+
+    /***********************************************************************
+    * Append all th inbox messages in chatlog and delete the inbox messages*
+    * from friend object.                                                  *
+    ***********************************************************************/
     if (friend != undefined) {
       if (friend.inbox != undefined) {
         friend.inbox.forEach(function (ele) {
           ComponentRef.instance.append_in_msg(ele.text);
         });
+        friend.inbox.length = 0;
       }
     }
 
