@@ -74,10 +74,27 @@ export class UserPageComponent implements OnInit {
   chatbox_pop_2 = new chatbox_pop();
   chatbox_pop_3 = new chatbox_pop();
 
+  /*
+  * Map to hold dom elements for all chat boxes.
+  * key: userId
+  * value: DOM element
+  */
   chatbox_friends = new Map();
+
+  /*
+  * Map to hold component refrences  for all stranger's chat boxes.
+  * key: userId
+  * value: comp reference
+  */
   stranger_list = new Map();
+
   istalk_to_stranger = true;
 
+  /*
+  * Map to hold incoming friend requests for starngers.
+  * key: userId
+  * value: fr_req_dialog
+  */
   friend_requests = new Map();
 
   /*
@@ -125,16 +142,61 @@ export class UserPageComponent implements OnInit {
     }, 1000);
   }
 
+  /*
+  * API to be called once user click on close button inside chatbox.
+  * It just clears the chatbox component specific dom from chatbox pop-up element.
+  */
   userpage_close_chatbox(userId){
     this.delete_chat_box(userId);
   }
+
+  /*
+  * API to be called once user clicks on "Talk to stranger"
+  */
+  add_stranger() {
+    if (this.istalk_to_stranger == false) {
+      this.snackBar.open("Please wait for stranger assignment", 'Undo', {
+        duration: 1500,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
+    /***********************************************************
+    *Block stranger addition until this stranger gets assigned *
+     ***********************************************************/
+    this.istalk_to_stranger = false;
+    this.stranger_button_name = 'Searching..'
+
+    this.snackBar.open("Searching for a stranger", 'Undo', {
+      duration: 1500,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+
+    this.create_chatbox(undefined);
+  }
+
+  /*
+  * API to be called once a stranger is disconnected(either locally or remotely).
+  * It performs entry deletion from chatbox_friends list, stranger_list and
+  * chatbox_friends and then finally destroys the component.
+  */
   userpage_end_chatbox_stranger(userId, compref){
     this.friend_requests.delete(userId);
     this.stranger_list.delete(userId);
+    this.chatbox_friends.delete(userId);
     compref.destroy();
     this.delete_chat_box(userId);
   }
 
+  /*
+  * API to be called once a stranger is assigned. It performs entry deletion
+  * from chatbox_friends list and again populate it with new key as stranger's
+  * user-id. Then it populates the stranger_list with key as stranger's id and
+  * value as comp reference.
+  */
   chatboxpop_userid_assigned(msg, compref) {
     /*
     var oldcomponent = this.chatbox_friends.get(msg['olduserId']);
@@ -158,6 +220,18 @@ export class UserPageComponent implements OnInit {
    this.stranger_button_name = 'Talk To Stranger'
   }
 
+  /*
+  * API to gracefully move stranger form stranger's list to friend-list.
+  */
+  userpage_friend_request_accepted(friend , compref) {
+    compref.instance.friend = friend;
+    compref.instance.isstranger = false;
+    this.stranger_list.delete(friend.username);
+  }
+
+  /*
+  * API to be called if user clicks on any of the members in active-user component.
+  */
   addchatbox($event) {
     /*userId will be stranger for the interim time till a stranger is assigned*/
     let userId = 'Stranger';
@@ -218,6 +292,12 @@ export class UserPageComponent implements OnInit {
     }
   }
 
+  /*
+  * API clears the chatbox component specific dom from chatbox pop-up element.
+  * API to be called :-
+  *    a. if user closes chat box to remove its dom elements from chatbox popup.
+  *    b. if user has ended the chat for any stranger.
+  */
   delete_chat_box(userId) {
     if (this.chatbox_pop_1.isadded == true) {
       if (this.chatbox_pop_1.username.match(userId) != null) {
@@ -264,7 +344,6 @@ export class UserPageComponent implements OnInit {
     });
   }
 
-
   /**
    * [userpage_friend_request_recieved Insert friend request to map.
    *                                    key=>name, value=>component ref]
@@ -277,31 +356,6 @@ export class UserPageComponent implements OnInit {
     fr_req.username = user;
     fr_req.compref = compref;
     this.friend_requests.set(user, fr_req);
-  }
-
-  add_stranger() {
-    if (this.istalk_to_stranger == false) {
-      this.snackBar.open("Please wait for stranger assignment", 'Undo', {
-        duration: 1500,
-        horizontalPosition: 'center',
-        verticalPosition: 'top',
-      });
-      return;
-    }
-
-    /***********************************************************
-    *Block stranger addition until this stranger gets assigned *
-     ***********************************************************/
-    this.istalk_to_stranger = false;
-    this.stranger_button_name = 'Searching..'
-
-    this.snackBar.open("Searching for a stranger", 'Undo', {
-      duration: 1500,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-    });
-
-    this.create_chatbox(undefined);
   }
 
   create_chatbox(friend) {
@@ -387,6 +441,12 @@ export class UserPageComponent implements OnInit {
        ***************************************/
        ComponentRef.instance.friend_request_recieved.subscribe(message =>
          this.userpage_friend_request_recieved(message, ComponentRef));
+
+      /***************************************
+       *subscribe to friend request recieved *
+       ***************************************/
+       ComponentRef.instance.friend_request_accepted.subscribe(message =>
+         this.userpage_friend_request_accepted(message, ComponentRef));
 
       /***************************
       * Tag chatbox for stranger *

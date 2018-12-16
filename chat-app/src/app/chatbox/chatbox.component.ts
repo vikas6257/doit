@@ -31,6 +31,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   @Output() close_chatbox = new EventEmitter<string>();
   @Output() user_assigned = new EventEmitter<any>();
   @Output() delete_stranger = new EventEmitter<string>();
+  @Output() friend_request_accepted = new EventEmitter<any>();
 
   /*********************************************************
    *Inform user-page component for friend request recieved *
@@ -241,8 +242,10 @@ export class ChatboxComponent implements OnInit, OnDestroy{
             verticalPosition: 'top',
           });
           /*
-           * May want to enable/diable some dom element.
+           * Emit an event on approval to user-page so that newly added user
+           * will be gracefully trasnfered from stranger's list to friend-list.
            */
+           this.friend_request_accepted.emit(new_friend);
       }
     }
 
@@ -454,8 +457,10 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         };
         this.login.friend_list.push(new_friend);
         /*
-         * May want to enable/diable some dom element.
+         * Emit an event on approval to user-page so that newly added user
+         * will be gracefully trasnfered from stranger's list to friend-list.
          */
+         this.friend_request_accepted.emit(new_friend);
       });
 
 
