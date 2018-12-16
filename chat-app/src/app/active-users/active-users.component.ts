@@ -90,7 +90,8 @@ export class ActiveUsersComponent implements OnInit {
           if(i == this.fl.length-1) {
             this.showSpinner = false;
           }
-      });
+      }
+    });
   }
 
   /*

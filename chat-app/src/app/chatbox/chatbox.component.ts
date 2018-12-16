@@ -364,6 +364,8 @@ export class ChatboxComponent implements OnInit, OnDestroy{
 
     if(friend != undefined) {
       userId = friend.username;
+      this.friend.unseen_message = 0;
+      this.friend.hasunseen_message = false;
     }
 
     this.friend = friend;

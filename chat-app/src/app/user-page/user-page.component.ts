@@ -227,6 +227,14 @@ export class UserPageComponent implements OnInit {
   userpage_friend_request_accepted(friend , compref) {
     compref.instance.friend = friend;
     compref.instance.isstranger = false;
+    if(compref.instance.unseen_message > 0) {
+      compref.instance.friend.unseen_message = compref.instance.unseen_message;
+      compref.instance.friend.hasunseen_message = true;
+    }
+    else {
+      compref.instance.friend.unseen_message = 0;
+      compref.instance.friend.hasunseen_message = false;
+    }
     this.stranger_list.delete(friend.username);
   }
 
@@ -420,6 +428,7 @@ export class UserPageComponent implements OnInit {
     }
 
     if (userId.match('Stranger') != null) {
+      console.log("Hi");
       this.chat.sendMsg({'start-chat':'NA'});
 
       /*************************************************************************
