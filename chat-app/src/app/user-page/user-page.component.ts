@@ -95,7 +95,8 @@ export class UserPageComponent implements OnInit {
 
     fd.append(this.login.login_handle+".jpg", this.selectedFile);
 
-    this.http.post(environment.http_address+'/add', fd ).pipe(map(res => res.json())).subscribe((res) => {
+    this.http.post(environment.http_address+'/add', fd )
+      .pipe(map(res => res.json())).subscribe((res) => {
     });
 
     if (event.target.files && event.target.files[0]) {
@@ -341,7 +342,8 @@ export class UserPageComponent implements OnInit {
     /***************************************************
     * Close window pressed from active-users component *
      ***************************************************/
-    ComponentRef.instance.close_chatbox.subscribe(message => this.userpage_close_chatbox(message));
+    ComponentRef.instance.close_chatbox.subscribe(message =>
+      this.userpage_close_chatbox(message));
 
     /********************************
     * Adding each chatbox to a list *
@@ -363,18 +365,21 @@ export class UserPageComponent implements OnInit {
        * data-structures being maintained here. Like chatbox_friends has key   *
        * 'Stranger' before stranger's id assignment                            *
        *************************************************************************/
-      ComponentRef.instance.user_assigned.subscribe(message => this.chatboxpop_userid_assigned(message, ComponentRef));
+      ComponentRef.instance.user_assigned.subscribe(message =>
+        this.chatboxpop_userid_assigned(message, ComponentRef));
 
        /************************************************************************
        * Triggered from chatbox component on getting delete-stranger from peer *
        * or end chat pressed from chatbox                                      *
         ************************************************************************/
-      ComponentRef.instance.delete_stranger.subscribe(message => this.userpage_end_chatbox_stranger(message, ComponentRef));
+      ComponentRef.instance.delete_stranger.subscribe(message =>
+        this.userpage_end_chatbox_stranger(message, ComponentRef));
 
       /***************************************
        *subscribe to friend request recieved *
        ***************************************/
-       ComponentRef.instance.friend_request_recieved.subscribe(message => this.userpage_friend_request_recieved(message, ComponentRef));
+       ComponentRef.instance.friend_request_recieved.subscribe(message =>
+         this.userpage_friend_request_recieved(message, ComponentRef));
 
       /***************************
       * Tag chatbox for stranger *

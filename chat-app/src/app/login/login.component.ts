@@ -60,7 +60,8 @@ export class LoginComponent implements OnInit {
     header.append('Content-Type', 'application/json');
     if (this.EnterAs == 'User'){
       this.login_handle = form.value.name;
-      this.http.post(environment.http_address+'/api/login', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/login', newUser,
+        {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         this.showSpinner = false;
         this.status = res['status'];
 
@@ -97,7 +98,8 @@ export class LoginComponent implements OnInit {
   AddNewUser(form_register) {
     this.showSpinner = true;
     if(form_register.value.password != form_register.value.confirm_password) {
-      this.register_error_msg = "Password entered in password and Retype password section is not same";
+      this.register_error_msg = "Password entered in password and Retype" + 
+      " password section is not same";
       this.login_status = true;
       this.login_error_status = false;
       this.chat_box_status = false;
@@ -118,7 +120,8 @@ export class LoginComponent implements OnInit {
       header.append('Content-Type', 'application/json');
 
       this.login_handle = form_register.value.name;
-      this.http.post(environment.http_address+'/api/register', newUser, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/register', newUser,
+        {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
 
         this.status = res['status'];
         this.showSpinner = false;

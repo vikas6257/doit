@@ -39,7 +39,8 @@ export class ActiveUsersComponent implements OnInit {
         username : this.login.login_handle,
      };
 
-    this.http.post(environment.http_address+'/api/get-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+    this.http.post(environment.http_address+'/api/get-user-fl', User,
+        {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
       /*
        * We got reply from DB about friend-list. Populate fl with the reply
        * and start iterating over fl to create each friend object and push it
@@ -97,7 +98,8 @@ export class ActiveUsersComponent implements OnInit {
          /*
           * Note: Different http post request will be send for each friends.
           */
-         this.http.post(environment.http_address+'/api/get-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+         this.http.post(environment.http_address+'/api/get-inbox-msg',
+             User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
             /*
              * res will be a list of inbox messages for a particular friend.
              */
@@ -120,7 +122,8 @@ export class ActiveUsersComponent implements OnInit {
             let User: Friend = {
                 id : this.login.friend_list[i].id,
              };
-             this.http.post(environment.http_address+'/api/delete-inbox-msg', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+             this.http.post(environment.http_address+'/api/delete-inbox-msg',
+                User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
              });
           });
       }

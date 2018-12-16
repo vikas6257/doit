@@ -71,7 +71,8 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   //Used for profile-pic
   dp_url:string;
 
-  my_dp_url:string  = environment.http_address+'/uploads/' + this.login.login_handle + ".jpg";
+  my_dp_url:string  = environment.http_address+'/uploads/' +
+                      this.login.login_handle + ".jpg";
   /*************************************************
   * Take reference of this component html template *
    *************************************************/
@@ -292,7 +293,8 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         text: out_msg,
       };
 
-      this.http.post(environment.http_address+'/api/send-inbox-msg', send_msg, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/send-inbox-msg', send_msg,
+        {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
       });
     }
     else {
@@ -417,12 +419,14 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           'friend_username' : this.login.login_handle,
       };
 
-      this.http.post(environment.http_address+'/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/add-user-fl', User,
+          {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         /*
-         * Send a message to server that friend request has been accepted and provided
-         * necessadry details.
+         * Send a message to server that friend request has been accepted and
+         * provided necessadry details.
          */
-        this.chat.sendMsg({'friend-request-accepted':{'to':this.userId, 'id': res['id'].toString()}});
+        this.chat.sendMsg({'friend-request-accepted':
+                    {'to':this.userId, 'id': res['id'].toString()}});
 
       });
 
@@ -435,7 +439,8 @@ export class ChatboxComponent implements OnInit, OnDestroy{
           'friend_username' : this.userId,
       };
 
-      this.http.post(environment.http_address+'/api/add-user-fl', User, {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+      this.http.post(environment.http_address+'/api/add-user-fl', User,
+          {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
         let new_friend: Friend = {
           id: res['id'].toString(),
           username: this.userId,
