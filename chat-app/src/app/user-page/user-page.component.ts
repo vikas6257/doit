@@ -143,8 +143,9 @@ export class UserPageComponent implements OnInit {
   }
 
   /*
-  * API to be called once user click on close button inside chatbox.
-  * It just clears the chatbox component specific dom from chatbox pop-up element.
+  * API to be called once user click on close button inside chatbox(emitted
+  * from chatbox component). It just clears the chatbox component specific DOM
+  * from chatbox pop-up element.
   */
   userpage_close_chatbox(userId){
     this.delete_chat_box(userId);
