@@ -361,6 +361,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
    */
   AddChatboxId(friend) {
     let userId = 'Stranger';
+    this.friend = friend;
 
     if(friend != undefined) {
       userId = friend.username;
@@ -368,7 +369,6 @@ export class ChatboxComponent implements OnInit, OnDestroy{
       this.friend.hasunseen_message = false;
     }
 
-    this.friend = friend;
     this.userId = userId;
     this.dp_url = environment.http_address+'/uploads/' + this.userId + ".jpg";
   }

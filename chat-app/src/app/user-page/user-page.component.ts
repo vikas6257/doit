@@ -428,7 +428,6 @@ export class UserPageComponent implements OnInit {
     }
 
     if (userId.match('Stranger') != null) {
-      console.log("Hi");
       this.chat.sendMsg({'start-chat':'NA'});
 
       /*************************************************************************
