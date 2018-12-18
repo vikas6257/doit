@@ -77,6 +77,10 @@
   justify-content: flex-end;
 }
 
+.chat-message {
+  word-wrap: break-word; 
+}
+
 .chat-form {
   display: flex;
   align-items: flex-start;
