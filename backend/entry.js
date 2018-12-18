@@ -271,8 +271,10 @@ io.on('connection', (socket) => {
       my_stranger = connected_users.get(newConnection.talking_to_stranger[i]);
       /* We may want to notify all other users to whom this user was talking with
        * as starnger.*/
-      my_stranger.talking_to_stranger.splice(
-        my_stranger.talking_to_stranger.indexOf(newConnection.user_name), 1);
+       if(my_stranger) {
+         my_stranger.talking_to_stranger.splice(
+           my_stranger.talking_to_stranger.indexOf(newConnection.user_name), 1);
+       }
     }
     newConnection.talking_to_stranger.length = 0;
     pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
@@ -358,24 +360,31 @@ io.on('connection', (socket) => {
     socket.on('send-friend-request', (message)=> {
        friend_request_for_peer = connected_users.get(message['to']);
        //assert
-       if(newConnection.talking_to_stranger.includes(friend_request_for_peer.user_name)
+       if(friend_request_for_peer &&
+          newConnection.talking_to_stranger.includes(friend_request_for_peer.user_name)
           == false) {
            logger.log("ERROR: Sending friend request for user other than my strangers");
        }
-       friend_request_for_peer.socket.emit('message',{type:'recieve-friend-request',
-                       'from': newConnection.user_name});
+       if(friend_request_for_peer) {
+         friend_request_for_peer.socket.emit('message',{type:'recieve-friend-request',
+                        'from': newConnection.user_name});
+       }
     });
 
     socket.on('friend-request-accepted', (message)=> {
        friend_request_accepted_for_peer = connected_users.get(message['to']);
-       friend_request_accepted_for_peer.socket.emit('message',{type:'friend-request-approved',
-                       'from': newConnection.user_name, 'id': message['id']});
+       if(friend_request_accepted_for_peer) {
+         friend_request_accepted_for_peer.socket.emit('message',{type:'friend-request-approved',
+                        'from': newConnection.user_name, 'id': message['id']});
+        }
     });
 
     socket.on('friend-request-rejected', (message)=> {
        friend_request_rejected_for_peer = connected_users.get(message['to']);
-       friend_request_rejected_for_peer.socket.emit('message',{type:'friend-request-declined',
+       if(friend_request_rejected_for_peer) {
+         friend_request_rejected_for_peer.socket.emit('message',{type:'friend-request-declined',
                        'from': newConnection.user_name});
+        }
     });
 
 });
