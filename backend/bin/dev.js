@@ -4,6 +4,11 @@ if (result.error) {
   throw result.error;
 }
 
+if (process.env.IS_PRODUCTION == undefined || process.env.IS_PRODUCTION == '') {
+  console.log('IS_PRODUCTION: production not defined in dotenv');
+  return;
+}
+
 if (process.env.DB_USERNAME == undefined || process.env.DB_USERNAME == '') {
   console.log('DB_USERNAME: mongodb username not defined in dotenv');
   return;
@@ -26,8 +31,8 @@ if (process.env.DB_NAME == undefined || process.env.DB_NAME == '') {
   return;
 }
 
-if (process.env.NODE_PORT == undefined || process.env.NODE_PORT == '') {
-  console.log('NODE_PORT: Node port not defined in dotenv');
+if (process.env.NODE_PORT_HTTP == undefined || process.env.NODE_PORT_HTTP == '') {
+  console.log('NODE_PORT_HTTP: Node http port not defined in dotenv');
   return;
 }
 

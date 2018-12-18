@@ -1,8 +1,10 @@
 1. backend/.env file is mendatory to start nodejs server.
 2. create backend/sslcert dir and paste ssl certificates here for https service.
 
-
 Format of .env file as follow.
+
+/*Code for production.*/
+IS_PRODUCTION=false
 
 # Mongo DB username.
 DB_USERNAME=onlinestranger
@@ -23,10 +25,10 @@ DB_NAME=onlinestranger_db
 NODE_HOST=localhost
 
 #Node js server port
-NODE_PORT=3000
+NODE_PORT_HTTP=3000
 
 #Node js server https
-NODE_PORT_HTTPS=443
+NODE_PORT_HTTPS=3001
 
 #Cors
 REMOTE_CLIENT=http://localhost:4200

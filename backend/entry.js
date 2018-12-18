@@ -8,12 +8,6 @@ var multer = require('multer');
 const path = require('path');
 var fs = require('fs');
 
-/*******************************************************************/
-/*                            MIIDLEWARE                           */
-/*******************************************************************/
-//instantiate express
-var app = express();
-
 //import route module
 const route = require("./route/routes");
 
@@ -33,38 +27,67 @@ mongoose.connection.on('error', (err)=> {
   console.log(err);
 });
 
+var server = undefined;
+
+/*******************************************************************/
+/*                            MIIDLEWARE                           */
+/*******************************************************************/
+//instantiate express
+
+/*
+ * For production:
+ * 1. Create two server i.e HTTPS and HTTP.
+ *    HTTPS is for all front end operations and HTPP is just to redirect
+ *    all its requests to HTTPS.
+ *
+ * For Non production:
+ * 1. Create just one HTTP server.
+ */
+if (process.env.IS_PRODUCTION == 'true') {
+  /*HTPPS app*/
+  var app = express();
+
+  /*HTTP app*/
+  var apphttp = express();
+
+  /*Listen HTTP port*/
+  let http = require('http').createServer(apphttp).listen(process.env.NODE_PORT_HTTP, ()=>{
+         console.log('Node server started at : '+process.env.NODE_PORT_HTTP);
+  });
+
+  /*Redirect everything recieved on HTTP to HTTPS.*/
+  apphttp.get('*', (req, res)=>{
+         res.redirect('https://' + req.headers.host + req.url);
+  });
+
+  /*HTTPS certificates passed as options and start to listen to it.*/
+  server = require('https').createServer({
+    ca: fs.readFileSync('sslcert/chain.pem'),
+    key: fs.readFileSync('sslcert/privkey.pem'),
+    cert: fs.readFileSync('sslcert/cert.pem')
+  }, app).listen(process.env.NODE_PORT_HTTPS, ()=>{
+         console.log('Node server started at :'+process.env.NODE_PORT_HTTPS);
+  });
+}
+else {
+  /*HTTP app*/
+  var app = express();
+
+  /*Listen to HTTP port*/
+  server = require('http').createServer(app).listen(process.env.NODE_PORT_HTTP, ()=>{
+         console.log('Node server started at : '+process.env.NODE_PORT_HTTP);
+  });
+}
+
 //middleware
 app.use(cors({origin : process.env.REMOTE_CLIENT, credentials : true}));
 app.use(bodyparser.json());
 app.use('/api',   route);
 
-let http = require('http').Server(app);
-
-/* Just commenting it out for time being to avoid compilation issue.
-let https = require('https').Server({
-  ca: fs.readFileSync('sslcert/ca_bundle.crt'),
-  key: fs.readFileSync('sslcert/private.key'),
-  cert: fs.readFileSync('sslcert/certificate.crt')
-}, app);
-*/
-
-//Start back end server
-var server = app.listen(process.env.NODE_PORT, ()=>{
-  logger.info('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
-  console.log('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT);
-});
-
-
-var server_https = app.listen(process.env.NODE_PORT_HTTPS, ()=>{
-  logger.info('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT_HTTPS);
-  console.log('Backend server started at : '+process.env.NODE_HOST+':'+process.env.NODE_PORT_HTTPS);
-});
-
 let io = require('socket.io').listen(server)
 
 /*Send front end to client upon entering just ip:port*/
 app.use(express.static('../chat-app/dist/chat-app/'));
-app.get('/', (req, res)=>res.sendFile(path.join('../chat-app/dist/chat-app/')));
 
 /*connection object*/
 let connection = {
