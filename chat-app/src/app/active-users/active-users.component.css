@@ -14,9 +14,9 @@
   border-bottom: solid;
   border-width: thin;
   color: white;
-  font-style: italic;
   font-weight: bold;
   font-size:20px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 .userfriends, .stranger_user {
@@ -28,7 +28,8 @@
   color: white;
   margin-bottom: 10px;
   font-style: italic;
-  font-size: 15px;
+  font-size: 17px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 .friend, .stranger {
@@ -72,6 +73,8 @@
   width: 100%;
   margin-bottom: 5px;
   outline: none;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 15px;
 }
 
 .stranger_name button {
@@ -79,6 +82,8 @@
   width: 100%;
   margin-bottom: 5px;
   outline: none;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 15px;
 }
 
 .line_status_white {
