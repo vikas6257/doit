@@ -255,21 +255,29 @@ export class UserPageComponent implements OnInit {
     }
 
     var chatboxElement = undefined;
-    if (this.chatbox_pop_1.isadded == true) {
-      if (this.chatbox_pop_1.username.match(userId) != null) {
+    if (this.chatbox_pop_1.username == userId) {
         return;
       }
-    }
-    if (this.chatbox_pop_2.isadded == true) {
-      if (this.chatbox_pop_2.username.match(userId) != null) {;
+
+    if (this.chatbox_pop_2.username == userId) {
         return;
       }
-    }
-    if (this.chatbox_pop_3.isadded == true){
-      if (this.chatbox_pop_3.username.match(userId) == null) {
+
+    if (this.chatbox_pop_3.username == userId) {
         return;
       }
+
+    /*If all are filled, mark all unfilled*/
+    if (this.chatbox_pop_1.isadded == true
+      && this.chatbox_pop_2.isadded == true
+      && this.chatbox_pop_3.isadded == true
+    )
+    {
+      this.chatbox_pop_1.isadded = false;
+      this.chatbox_pop_2.isadded = false;
+      this.chatbox_pop_3.isadded = false;
     }
+
     if (this.chatbox_pop_1.isadded == false){
       chatboxElement = document.getElementById("chatbox1");
       this.chatbox_pop_1.username = userId;
@@ -281,9 +289,7 @@ export class UserPageComponent implements OnInit {
     }else if (this.chatbox_pop_3.isadded == false){
       chatboxElement = document.getElementById("chatbox3");
       this.chatbox_pop_3.username = userId;
-
-      this.chatbox_pop_1.isadded = false;
-      this.chatbox_pop_2.isadded = false;
+      this.chatbox_pop_3.isadded = true;
     }
     if (chatboxElement != undefined) {
       if (chatboxElement.hasChildNodes()) {
@@ -293,11 +299,6 @@ export class UserPageComponent implements OnInit {
         this.create_chatbox($event);
       }
       chatboxElement.appendChild(this.chatbox_friends.get(userId));
-      /*
-      if (userId == 'Stranger') {
-        this.chatbox_friends.delete(userId);
-      }
-      */
     }
   }
 
@@ -308,36 +309,27 @@ export class UserPageComponent implements OnInit {
   *    b. if user has ended the chat for any stranger.
   */
   delete_chat_box(userId) {
-    if (this.chatbox_pop_1.isadded == true) {
-      if (this.chatbox_pop_1.username.match(userId) != null) {
-        this.chatbox_pop_1.isadded = false;
-        var chatboxElement = document.getElementById("chatbox1");
-        if (chatboxElement.hasChildNodes()) {
-          chatboxElement.removeChild(chatboxElement.firstChild);
-        }
-        return;
-      }
+    var chatbox = document.getElementById(userId);
+
+    /**********************************
+     * GRAND PARENT   => chatbox1,2,3 *
+     * PARENT         => app-chatbox  *
+     * CHILS          => chatbox      *
+     **********************************/
+    if (chatbox.parentElement.parentElement.id == 'chatbox1') {
+      this.chatbox_pop_1.username = undefined;
+      this.chatbox_pop_1.isadded = false;
     }
-    if (this.chatbox_pop_2.isadded == true) {
-      if (this.chatbox_pop_2.username.match(userId) != null) {
-        this.chatbox_pop_2.isadded = false;
-        var chatboxElement = document.getElementById("chatbox2");
-        if (chatboxElement.hasChildNodes()) {
-          chatboxElement.removeChild(chatboxElement.firstChild);
-        }
-        return
-      }
+    else if (chatbox.parentElement.parentElement.id == 'chatbox2') {
+      this.chatbox_pop_2.username = undefined;
+      this.chatbox_pop_2.isadded = false;
     }
-    if (this.chatbox_pop_3.isadded == true){
-      if (this.chatbox_pop_3.username.match(userId) != null) {
-        this.chatbox_pop_3.isadded = false;
-        var chatboxElement = document.getElementById("chatbox3");
-        if (chatboxElement.hasChildNodes()) {
-          chatboxElement.removeChild(chatboxElement.firstChild);
-        }
-        return;
-      }
+    else if (chatbox.parentElement.parentElement.id == 'chatbox3') {
+      this.chatbox_pop_3.username = undefined;
+      this.chatbox_pop_3.isadded = false;
     }
+    /*Remove app-chatbox from chatbox1,2,3*/
+    chatbox.parentElement.parentElement.removeChild(chatbox.parentElement);
   }
 
   ngOnInit() {
@@ -427,7 +419,7 @@ export class UserPageComponent implements OnInit {
       }
     }
 
-    if (userId.match('Stranger') != null) {
+    if (userId == 'Stranger') {
       this.chat.sendMsg({'start-chat':'NA'});
 
       /*************************************************************************
