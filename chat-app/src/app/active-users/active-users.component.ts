@@ -33,11 +33,10 @@ export class ActiveUsersComponent implements OnInit {
 
   ngOnInit() {
     this.getFriendList();
-   /*
-    * Emit a message to server saying that I am online. It is used to notify friends
-    * about my online status.
-    */
-    this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
+    /*For transient cases, let's keep sending this keepalive message to backend*/
+    setInterval(() => {
+         this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
+    }, 10000);
   }
 
   /*
@@ -54,6 +53,14 @@ export class ActiveUsersComponent implements OnInit {
 
     this.http.post(environment.http_address+'/api/get-user-fl', User,
         {headers:header}).pipe(map(res => res.json())).subscribe((res) => {
+       /*
+        * Emit a message to server saying that I am online. It is used to notify
+        * friends about my online status. This message msut be placed here when
+        * we get response for friend_list to ensure that server must have populated
+        * my friend list in local cache.
+        */
+       this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
+
       /*
        * We got reply from DB about friend-list. Populate fl with the reply
        * and start iterating over fl to create each friend object and push it
@@ -83,12 +90,11 @@ export class ActiveUsersComponent implements OnInit {
           * Push it to the global friend-list defined in login page.
           */
           this.login.friend_list.push(friend);
-
-          this.getInboxMessages(friend);
-
-          /*Switch off the spinner.*/
-          if(i == this.fl.length-1) {
-            this.showSpinner = false;
+          if (i == this.fl.length-1) {
+            this.getInboxMessages(friend, true);
+          }
+          else {
+            this.getInboxMessages(friend, false);
           }
       }
     });
@@ -99,7 +105,7 @@ export class ActiveUsersComponent implements OnInit {
    * internally calls routine to delete inbox messages from DB once local
    * cache(friend.inbox) is populated.
    */
-  getInboxMessages(friend) {
+  getInboxMessages(friend, spinner) {
     var header = new Headers();
     header.append('Content-Type', 'application/json');
 
@@ -128,13 +134,17 @@ export class ActiveUsersComponent implements OnInit {
           friend.inbox.push(inbox);
         }
 
+        this.deleteInboxMessages(friend);
+
         /***************************************************************
         * Send each friend to user-page component, to instantiate      *
         * chatbox for all friends. It's must be done here to get inbox *
         * messages as well as to get chat subscribtion for other msg.  *
         ***************************************************************/
         this.snd_active_usr_to_user_page_comp.emit(friend);
-        this.deleteInboxMessages(friend);
+        if(spinner) {
+          this.showSpinner = false;
+        }
       });
   }
 
