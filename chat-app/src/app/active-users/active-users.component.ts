@@ -8,6 +8,7 @@ import { OfflineMessage } from '../offline_message';
 import { map } from 'rxjs/operators';
 import { ChatserviceService } from '../chatservice.service';
 import { environment } from '../../environments/environment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-active-users',
@@ -28,15 +29,23 @@ export class ActiveUsersComponent implements OnInit {
   fl = []; /*A local list use to push friends into global friend list*/
   selected_friend : Friend;
   showSpinner: boolean = true;
+  //This window's subscription to websocket
+  subscription: Subscription;
+
   constructor(private chat: ChatserviceService,
                private http: Http, private login: LoginComponent) { }
 
   ngOnInit() {
-    this.getFriendList();
-    /*For transient cases, let's keep sending this keepalive message to backend*/
-    setInterval(() => {
-         this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
-    }, 10000);
+    this.subscription = this.chat.messages.subscribe(msg => {
+      if (msg['type'] == "socket-created") {
+        console.log("Successfully cretaed scoket")
+        this.getFriendList();
+        /*For transient cases, let's keep sending this keepalive message to backend*/
+        setInterval(() => {
+           this.chat.sendMsg({ 'i_am_online': this.login.login_handle });
+         }, 30000);
+       }
+    });
   }
 
   /*
@@ -188,9 +197,15 @@ export class ActiveUsersComponent implements OnInit {
     friend.unseen_message = 0;
     friend.hasunseen_message = false;
   }
+
   EnterChatBoxStranger(stranger_clicked) {
     let stranger = new Friend();
     stranger.username = stranger_clicked;
     this.openchatbox.emit(stranger);
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
 }

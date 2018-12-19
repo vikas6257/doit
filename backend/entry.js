@@ -229,6 +229,7 @@ io.on('connection', (socket) => {
     connected_users.set(message, newConnection);
     logger.log('User got connected :' + message);
     logger.log('Total user connected :' + connected_users.size);
+    socket.emit('message',{type:'socket-created'});
   });
 
   /* Message 'i_am_online' will be send by client to trigger his/her online chat_end_status
