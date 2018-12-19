@@ -17,11 +17,6 @@ export class WebsocketService {
     //this.socket = io(environment.ws_url);
     this.socket = io(environment.http_address);
 
-    this.socket.on('disconnect', () => {
-        alert("You are disconnected from the Server. Please login again");
-        window.location = window.location.reload(true);
-    });
-
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
     let observable = new Observable(observer => {
