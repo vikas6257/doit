@@ -202,11 +202,11 @@ function dump_tables() {
         logger.log("My Friend is: "+user.friends[i]);
       }
       for(let i=0;i<user.talking_to_stranger.length;i++) {
-        logger.log("My talking_to_strangeris: "+user.talking_to_stranger[i]);
+        logger.log("My talking_to_stranger is: "+user.talking_to_stranger[i]);
       }
   }
   for(let i=0;i<pending_users.length;i++) {
-      logger.log("Pendng users are: "+pending_users[i]);
+      logger.log("Pending users are: "+pending_users[i]);
   }
   logger.log("----------------");
 }
@@ -266,6 +266,7 @@ io.on('connection', (socket) => {
              the entire object.*/
 
     newConnection.friends.length = 0;
+
     /* When an user disconnects, remove that user from talking_to_stranger list of all
      * other users to whom he/she was talking.*/
     for(let i= 0; i < newConnection.talking_to_stranger.length;i++) {
@@ -273,12 +274,21 @@ io.on('connection', (socket) => {
       /* We may want to notify all other users to whom this user was talking with
        * as starnger.*/
        if(my_stranger) {
-         my_stranger.talking_to_stranger.splice(
-           my_stranger.talking_to_stranger.indexOf(newConnection.user_name), 1);
+         let splice_index =
+            my_stranger.talking_to_stranger.indexOf(newConnection.user_name);
+         if(splice_index > -1) {
+           my_stranger.talking_to_stranger.splice(splice_index, 1);
+         }
        }
     }
+
     newConnection.talking_to_stranger.length = 0;
-    pending_users.splice(pending_users.indexOf(newConnection.user_name), 1);
+
+    let splice_index = pending_users.indexOf(newConnection.user_name);
+    if (splice_index > -1) {
+      pending_users.splice(splice_index, 1);
+    }
+
     connected_users.delete(newConnection.user_name);
   });
 
@@ -297,7 +307,6 @@ io.on('connection', (socket) => {
       connection_peer =  connected_users.get(message['to']);
       /*Must always be true*/
       if(connection_peer != undefined) {
-        dump_tables();
         connection_peer.socket.emit('message',{type:'message', text: message['msg'],
                             from: newConnection.user_name});
       }
@@ -331,7 +340,10 @@ io.on('connection', (socket) => {
             }
             newConnection.talking_to_stranger.push(strangerId);
             stranger_peer.talking_to_stranger.push(newConnection.user_name);
-            pending_users.splice(pending_users.indexOf(strangerId), 1);
+            let splice_index = pending_users.indexOf(strangerId);
+            if(splice_index > -1) {
+              pending_users.splice(splice_index, 1);
+            }
         }
         else {
             pending_users.push(newConnection.user_name);
@@ -347,10 +359,17 @@ io.on('connection', (socket) => {
       if(stranger_peer != undefined) {
           stranger_peer.socket.emit('message',{type:'delete-stranger',
                           userId: newConnection.user_name});
-          newConnection.talking_to_stranger.splice(
-            newConnection.talking_to_stranger.indexOf(stranger_peer.user_name) ,1);
-          stranger_peer.talking_to_stranger.splice(
-            stranger_peer.talking_to_stranger.indexOf(newConnection.user_name) ,1);
+          let splice_index =
+              newConnection.talking_to_stranger.indexOf(stranger_peer.user_name);
+          if(splice_index > -1) {
+            newConnection.talking_to_stranger.splice(splice_index ,1);
+          }
+
+          splice_index =
+              stranger_peer.talking_to_stranger.indexOf(newConnection.user_name);
+          if(splice_index > -1) {
+            stranger_peer.talking_to_stranger.splice(splice_index,1);
+          }
         }
     });
 
