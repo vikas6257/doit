@@ -38,7 +38,6 @@ export class ActiveUsersComponent implements OnInit {
   ngOnInit() {
     this.subscription = this.chat.messages.subscribe(msg => {
       if (msg['type'] == "socket-created") {
-        console.log("Successfully cretaed scoket")
         this.getFriendList();
         /*For transient cases, let's keep sending this keepalive message to backend*/
         setInterval(() => {
