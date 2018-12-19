@@ -138,7 +138,7 @@ export class UserPageComponent implements OnInit {
     this.myapp.reset = false;
     setTimeout(()=>{
       this.myapp.reset = true;
-      this.router.navigate(['/logout']);
+      this.router.navigate(['/logout'], {skipLocationChange: true});
     }, 1000);
   }
 
