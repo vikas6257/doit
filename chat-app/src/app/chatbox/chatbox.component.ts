@@ -117,7 +117,9 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     /********************************************
      * Scroll down to bottom on sending message.*
      ********************************************/
-     chatlog.scrollTop = chatlog.scrollHeight;
+     if (this.isMini == false) {
+       chatlog.scrollTop = chatlog.scrollHeight;
+     }
 
     /********************************************
      * Do a pop up count for unseen messages.   *
