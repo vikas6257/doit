@@ -79,7 +79,7 @@ export class UserPageComponent implements OnInit {
   * key: userId
   * value: DOM element
   */
-  chatbox_friends = new Map();
+  chatbox_instances = new Map();
 
   /*
   * Map to hold component refrences  for all stranger's chat boxes.
@@ -181,32 +181,27 @@ export class UserPageComponent implements OnInit {
 
   /*
   * API to be called once a stranger is disconnected(either locally or remotely).
-  * It performs entry deletion from chatbox_friends list, stranger_list and
-  * chatbox_friends and then finally destroys the component.
+  * It performs entry deletion from chatbox_instances list, stranger_list and
+  * chatbox_instances and then finally destroys the component.
   */
   userpage_end_chatbox_stranger(userId, compref){
     this.friend_requests.delete(userId);
     this.stranger_list.delete(userId);
-    this.chatbox_friends.delete(userId);
+    this.chatbox_instances.delete(userId);
     compref.destroy();
     this.delete_chat_box(userId);
   }
 
   /*
   * API to be called once a stranger is assigned. It performs entry deletion
-  * from chatbox_friends list and again populate it with new key as stranger's
+  * from chatbox_instances list and again populate it with new key as stranger's
   * user-id. Then it populates the stranger_list with key as stranger's id and
   * value as comp reference.
   */
   chatboxpop_userid_assigned(msg, compref) {
-    /*
-    var oldcomponent = this.chatbox_friends.get(msg['olduserId']);
-    this.chatbox_friends.delete(msg['olduserId']);
-    this.chatbox_friends.set(msg['newuserId'], oldcomponent);
-    */
-   var tmp = this.chatbox_friends.get(msg['olduserId']);
-   this.chatbox_friends.delete(msg['olduserId']);
-   this.chatbox_friends.set(msg['newuserId'], tmp);
+   var tmp = this.chatbox_instances.get(msg['olduserId']);
+   this.chatbox_instances.delete(msg['olduserId']);
+   this.chatbox_instances.set(msg['newuserId'], tmp);
    this.stranger_list.set(msg['newuserId'], compref);
 
    /********************************************************
@@ -295,10 +290,17 @@ export class UserPageComponent implements OnInit {
       if (chatboxElement.hasChildNodes()) {
         chatboxElement.removeChild(chatboxElement.firstChild);
       }
-      if (this.chatbox_friends.has(userId) == false) {
+      if (this.chatbox_instances.has(userId) == false) {
         this.create_chatbox($event);
       }
-      chatboxElement.appendChild(this.chatbox_friends.get(userId));
+      chatboxElement.appendChild(
+        this.get_domelement_from_component(
+          this.chatbox_instances.get(userId)
+        )
+      );
+
+      /*Set last scroll position*/
+      this.chatbox_instances.get(userId).instance.set_chatbox_scroll();
     }
   }
 
@@ -359,6 +361,14 @@ export class UserPageComponent implements OnInit {
     this.friend_requests.set(user, fr_req);
   }
 
+  get_domelement_from_component(ComponentRef) {
+    /***************************************************
+     *HTML element that can be attached to any HTML DOM *
+     ****************************************************/
+     const domElement = (ComponentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
+     return domElement;
+  }
+
   create_chatbox(friend) {
     /*userId will be stranger for the interim time till a stranger is assigned*/
     let userId = 'Stranger';
@@ -377,11 +387,6 @@ export class UserPageComponent implements OnInit {
     *attachView, so that this component get to know when any variable changes *
      **************************************************************************/
     this.appRef.attachView(ComponentRef.hostView);
-
-    /***************************************************
-    *HTML element that can be attached to any HTML DOM *
-     ***************************************************/
-    const domElement = (ComponentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
 
     /*******************************************************************************
     *Add friend object to the newly instantiated chatbox component. Friend will be *
@@ -404,7 +409,7 @@ export class UserPageComponent implements OnInit {
     /********************************
     * Adding each chatbox to a list *
      ********************************/
-    this.chatbox_friends.set(userId, domElement);
+    this.chatbox_instances.set(userId, ComponentRef);
 
     /***********************************************************************
     * Append all th inbox messages in chatlog and delete the inbox messages*
@@ -424,7 +429,7 @@ export class UserPageComponent implements OnInit {
 
       /*************************************************************************
        * Upon assigning id to stranger from chatbox, propogate that change to  *
-       * data-structures being maintained here. Like chatbox_friends has key   *
+       * data-structures being maintained here. Like chatbox_instances has key   *
        * 'Stranger' before stranger's id assignment                            *
        *************************************************************************/
       ComponentRef.instance.user_assigned.subscribe(message =>

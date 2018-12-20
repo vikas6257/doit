@@ -8,7 +8,7 @@
     <div class="window-header-opt" (click)="MaximizeWindow()"><i class="far fa-window-maximize maximize_icon"></i></div>
     <div class="window-header-opt" (click)="CloseWindow()"><i class="far fa-window-close close_icon"></i></div>
   </div>
-  <div id="chatlog_{{userId}}" #chatlog_ref class="chatlog">
+  <div id="chatlog_{{userId}}" #chatlog_ref class="chatlog"  (scroll)="scrollit($event)">
     <!--<div class="chat friend">
         <div class="user-photo"><img src="assets/Tyrion Lannister.jpg" alt="Tyrion lannister"></div>
         <div class="chat-message">Hello!!</div>

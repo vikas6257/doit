@@ -52,6 +52,9 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   //Tags maximized chatbox window
   isMaxi: boolean;
 
+  //Store previous scroll position
+  scrollposition: number;
+
   //User-id of this instance of chatbox window
   userId: string;
 
@@ -114,7 +117,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     /********************************************
      * Scroll down to bottom on sending message.*
      ********************************************/
-    chatlog.scrollTop = chatlog.scrollHeight;
+     chatlog.scrollTop = chatlog.scrollHeight;
 
     /********************************************
      * Do a pop up count for unseen messages.   *
@@ -140,6 +143,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     this.isMaxi = false;
     this.isMini = false;
     this.unseen_message = 0;
+    this.scrollposition = 0;
     this.subscription = this.chat.messages.subscribe(msg => {
       /*Always check message type. Message type "message" is used for chatting*/
       if (msg['type'] == "message") {
@@ -585,5 +589,19 @@ export class ChatboxComponent implements OnInit, OnDestroy{
         });
       }
     });
+  }
+
+  scrollit($event) {
+    console.log($event);
+    this.scrollposition = event.srcElement.scrollTop;
+  }
+
+  /**
+   * [set_chatbox_scroll set last scroll position]
+   * @return nothing
+   */
+  set_chatbox_scroll() {
+    var chatlog = document.getElementById("chatlog_"+this.userId);
+    chatlog.scrollTop = this.scrollposition;
   }
 }
