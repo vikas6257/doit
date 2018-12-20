@@ -2,7 +2,7 @@
 <div class="grid_container">
   <div class="userpage_header">
     <div class="logo_userpage">
-      <img src="../assets/Logo user_page.png" alt="Logo not found">
+      <img src="../assets/Logo user_page.png" alt="Logo not found" title="Online stranger logo">
     </div>
     <div class="nonlogo">
       <div class="talk_stranger" title="Find stranger">
@@ -17,14 +17,14 @@
     </div>
 
     <!--Camera for image upload-->
-    <div class="upload_pic" title="Change profile picture">
+    <div class="upload_pic">
       <label for="upload_pic_input">
-        <i class="fas fa-camera-retro"></i>
+        <i class="fas fa-camera-retro" title="Change profile picture"></i>
       </label>
       <input id="upload_pic_input" type="file" name="" value="" (change)="change_profile_pic($event)">
       <!--Three dot Options-->
       <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
-        <mat-icon matBadge="{{friend_requests.size}}" matBadgeColor="accent" matBadgeHidden="{{!friend_requests.size}}">more_vert</mat-icon>
+        <mat-icon matBadge="{{friend_requests.size}}" matBadgeColor="accent" matBadgeHidden="{{!friend_requests.size}}" title="More options">more_vert</mat-icon>
       </button>
 
       <!--Three dot menu-->
@@ -42,7 +42,7 @@
   </div>
 
   <div class="welcome_find_stranger">
-    <div class="user_name" title="Options">Welcome {{login.login_handle}}!</div>
+    <div class="user_name">Welcome {{login.login_handle}}!</div>
   </div>
 
   <div class="connected_persons">

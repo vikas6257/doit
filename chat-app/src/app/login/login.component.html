@@ -3,7 +3,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <div class="canvas_parent">
 <div class="browser_canvas" *ngIf="login_status">
-  <div class="logo_frontpage">
+  <div class="logo_frontpage" title="Online stranger logo">
     <img src="../assets/Logo front_page.png" alt="Logo not found">
   </div>
   <div class="login_box" *ngIf="!showSpinner">
@@ -11,11 +11,11 @@
       <mat-tab label="Login">
         <form novalidate [formGroup]="form" (ngSubmit)="AddUser(form)" #user_form_login="ngForm">
           <div class="textbox">
-            <i class="fas fa-user-secret"></i>
+            <i class="fas fa-user-secret" title="Anonymous username"></i>
             <input type="text" placeholder="Username" name="" value="" required formControlName="name" autocomplete="username">
           </div>
           <div class="textbox">
-            <i class="fas fa-key"></i>
+            <i class="fas fa-key" title="Pass key"></i>
             <input type="password" placeholder="Password" name="" value="" required formControlName="password" autocomplete="current-password">
           </div>
           <input class="button_sign_in" type="submit" name="" value="Sign In" name="login" [disabled]="!user_form_login.form.valid">

@@ -7,7 +7,7 @@
   <!-- Stranger list starts here-->
   <div class="stranger_list">
     <div class="stranger_list_hdr">
-      <i class="fas fa-user stranger_user"></i>
+      <i class="fas fa-user stranger_user" title="Stranger icon"></i>
       Connected Strangers
     </div>
     <div class="stranger" *ngFor="let stranger of stranger_list | keyvalue">
@@ -20,6 +20,7 @@
         matBadge="{{stranger.value.instance.unseen_message}}" matBadgePosition="before"
         matBadgeColor="accent"
         matBadgeHidden="{{!stranger.value.instance.unseen_message}}"
+        title="Press to open chat"
         >{{stranger.key}}</button>
       </div>
     </div>
@@ -32,7 +33,7 @@
   <!-- Friend list starts here-->
   <div class="friend_list">
     <div class="friend_list_hdr">
-      <i class="fas fa-user-friends userfriends"></i>
+      <i class="fas fa-user-friends userfriends" title="Friend icon"></i>
       Friends
     </div>
     <div class="friend" *ngFor="let friend of login.friend_list">
@@ -45,14 +46,15 @@
         matBadge="{{friend.unseen_message}}" matBadgePosition="before"
         matBadgeColor="accent"
         matBadgeHidden="{{!friend.hasunseen_message}}"
+        title="Press to open chat"
         >{{friend.username}}</button>
       </div>
       <div class="line_status_white"
       *ngIf="friend.onlinestatus == 'false'"
-      title="online or offline status"></div>
+      title="Offline"></div>
       <div class="line_status_green"
       *ngIf="friend.onlinestatus == 'true'"
-      title="online or offline status"></div>
+      title="Online"></div>
     </div>
   </div>
   <div class="tmp_txt_friends" *ngIf="login.friend_list == 0">

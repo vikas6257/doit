@@ -1,12 +1,12 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <div id={{userId}} class="chatbox">
   <div id="header_{{userId}}" class="window-header">
-    <div class="window-header-opt-add" *ngIf="isstranger" (click)="AddUser()"><i class="far fa-plus-square aduser_icon"></i></div>
-    <div class="window-header-opt-add" *ngIf="isstranger" (click)="end_stranger_chat()"><i class="far fa-hand-paper endchat_icon"></i></div>
+    <div class="window-header-opt-add" *ngIf="isstranger" (click)="AddUser()"><i class="far fa-plus-square aduser_icon" title="Add as friend"></i></div>
+    <div class="window-header-opt-add" *ngIf="isstranger" (click)="end_stranger_chat()"><i class="far fa-hand-paper endchat_icon" title="Disconnect"></i></div>
     <div class="username">{{userId}}</div>
-    <div class="window-header-opt" (click)="MinimizeWindow()"><i class="far fa-window-minimize minimize_icon"></i></div>
-    <div class="window-header-opt" (click)="MaximizeWindow()"><i class="far fa-window-maximize maximize_icon"></i></div>
-    <div class="window-header-opt" (click)="CloseWindow()"><i class="far fa-window-close close_icon"></i></div>
+    <div class="window-header-opt" (click)="MinimizeWindow()"><i class="far fa-window-minimize minimize_icon" title="Minimize"></i></div>
+    <div class="window-header-opt" (click)="MaximizeWindow()"><i class="far fa-window-maximize maximize_icon" title="Maximize"></i></div>
+    <div class="window-header-opt" (click)="CloseWindow()"><i class="far fa-window-close close_icon" title="Close"></i></div>
   </div>
   <div id="chatlog_{{userId}}" #chatlog_ref class="chatlog"  (scroll)="scrollit($event)">
     <!--<div class="chat friend">
