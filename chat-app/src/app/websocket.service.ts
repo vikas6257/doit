@@ -11,11 +11,19 @@ export class WebsocketService {
 
   private socket;
 
+  logout: boolean = false;
+
   connect(): Rx.Subject<MessageEvent> {
     // If you aren't familiar with environment variables then
     // you can hard code `environment.ws_url` as `http://localhost:5000`
     //this.socket = io(environment.ws_url);
     this.socket = io(environment.http_address);
+
+    this.socket.on('disconnect', ()=> {
+        if(this.logout == false) {
+          alert("Oops!!! You have lost the connectivity from the Server. Please login again");
+        }
+    });
 
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
@@ -44,7 +52,9 @@ export class WebsocketService {
             this.socket.emit('user_id', data['send-user-id']);
           }
           else if (data['logout'] != undefined) {
+              this.logout = true;
               this.socket.disconnect();
+              this.logout = false;
           }
           else if (data['start-chat'] != undefined) {
             this.socket.emit('start-chat', data['start-chat']);
