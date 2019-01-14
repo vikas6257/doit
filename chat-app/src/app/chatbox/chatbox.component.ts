@@ -289,6 +289,11 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   sendMessage() {
     var input_text_ele = document.getElementById("input_msg_"+this.userId);
     var out_msg = (<HTMLInputElement>input_text_ele).value;
+
+    /*Return is message is empty.*/
+    if (out_msg.length == 0) {
+      return;
+    }
     /*Remove message from input field*/
     (<HTMLInputElement>input_text_ele).value = "";
 
