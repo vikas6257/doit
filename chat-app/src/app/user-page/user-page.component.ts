@@ -312,6 +312,13 @@ export class UserPageComponent implements OnInit {
   */
   delete_chat_box(userId) {
     var chatbox = document.getElementById(userId);
+    if (chatbox == null) {
+      return;
+    }
+
+    if (chatbox == undefined) {
+      return;
+    }
 
     /**********************************
      * GRAND PARENT   => chatbox1,2,3 *
