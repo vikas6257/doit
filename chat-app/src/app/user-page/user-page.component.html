@@ -3,55 +3,60 @@
   <div class="userpage_header">
     <div class="logo_userpage">
       <img src="../assets/Logo user_page.png" alt="Logo not found" title="Online stranger logo">
-    </div>
-    <div class="nonlogo">
       <div class="talk_stranger" title="Find stranger">
         <button type="button" (click)="add_stranger()" name="button">{{stranger_button_name}}</button>
       </div>
     </div>
-  </div>
-  <div class="user">
-    <div class="photo">
-      <!--Image-->
-      <img src={{dp_url}} alt="Image not found" onerror="this.src='./assets/Tyrion Lannister.jpg'">
+    <div class="nonlogo">
+      <div class="user">
+
+        <div class="welcome_find_stranger">
+          <div class="user_name">{{login.login_handle}}</div>
+        </div>
+
+        <!--Camera for image upload-->
+        <div class="upload_pic">
+          <label for="upload_pic_input">
+            <i class="fas fa-camera-retro" title="Change profile picture"></i>
+          </label>
+          <input id="upload_pic_input" type="file" name="" value="" (change)="change_profile_pic($event)">
+          <!--Three dot Options-->
+          <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
+            <mat-icon matBadge="{{friend_requests.size}}" matBadgeColor="accent" matBadgeHidden="{{!friend_requests.size}}" title="More options">more_vert</mat-icon>
+          </button>
+
+          <!--Three dot menu-->
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="logout()">
+              <mat-icon class="icon_logout">logout</mat-icon>
+              <span>Logout</span>
+            </button>
+            <button mat-menu-item (click)="show_friend_requests()">
+              <mat-icon class="icon_friend_request">people_outline</mat-icon>
+              <span>Friend Requests</span>
+            </button>
+          </mat-menu>
+        </div>
+
+        <div class="photo">
+          <!--Image-->
+          <img src={{dp_url}} alt="Image not found" onerror="this.src='./assets/Tyrion Lannister.jpg'">
+        </div>
+      </div>
     </div>
-
-    <!--Camera for image upload-->
-    <div class="upload_pic">
-      <label for="upload_pic_input">
-        <i class="fas fa-camera-retro" title="Change profile picture"></i>
-      </label>
-      <input id="upload_pic_input" type="file" name="" value="" (change)="change_profile_pic($event)">
-      <!--Three dot Options-->
-      <button type="button" name="button" mat-icon-button class="more_vert_button" [matMenuTriggerFor]="menu" matRipple [matRippleCentered]="true" [matRippleUnbounded]="true" enterDuration="5" exitDuration="5">
-        <mat-icon matBadge="{{friend_requests.size}}" matBadgeColor="accent" matBadgeHidden="{{!friend_requests.size}}" title="More options">more_vert</mat-icon>
-      </button>
-
-      <!--Three dot menu-->
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="logout()">
-          <mat-icon class="icon_logout">logout</mat-icon>
-          <span>Logout</span>
-        </button>
-        <button mat-menu-item (click)="show_friend_requests()">
-          <mat-icon class="icon_friend_request">people_outline</mat-icon>
-          <span>Friend Requests</span>
-        </button>
-      </mat-menu>
-    </div>
-  </div>
-
-  <div class="welcome_find_stranger">
-    <div class="user_name">Welcome {{login.login_handle}}!</div>
   </div>
 
   <div class="connected_persons">
     <app-active-users (openchatbox)="addchatbox($event)" (snd_active_usr_to_user_page_comp)="create_chatbox($event)" [stranger_list]="stranger_list"></app-active-users>
   </div>
-  <div class="chat_popup">
+  <!--<div class="chat_popup">
     <div id="chatbox1" class="chat_popup1"></div>
     <div id="chatbox2" class="chat_popup2"></div>
     <div id="chatbox3" class="chat_popup3"></div>
+  </div>-->
+
+  <div id="userpage_chatboxid" class="userpage_chatbox">
+    <!--<app-chatbox></app-chatbox>-->
   </div>
   <div class="userpage_footer">Designed and Developed by Haris & Vikas</div>
 </div>

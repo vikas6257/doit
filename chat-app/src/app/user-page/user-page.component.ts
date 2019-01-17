@@ -250,6 +250,7 @@ export class UserPageComponent implements OnInit {
     }
 
     var chatboxElement = undefined;
+    /*
     if (this.chatbox_pop_1.username == userId) {
         return;
       }
@@ -263,6 +264,7 @@ export class UserPageComponent implements OnInit {
       }
 
     /*If all are filled, mark all unfilled*/
+    /*
     if (this.chatbox_pop_1.isadded == true
       && this.chatbox_pop_2.isadded == true
       && this.chatbox_pop_3.isadded == true
@@ -286,22 +288,25 @@ export class UserPageComponent implements OnInit {
       this.chatbox_pop_3.username = userId;
       this.chatbox_pop_3.isadded = true;
     }
+    */
+
+   chatboxElement = document.getElementById("userpage_chatboxid");
     if (chatboxElement != undefined) {
       if (chatboxElement.hasChildNodes()) {
         chatboxElement.removeChild(chatboxElement.firstChild);
       }
-      if (this.chatbox_instances.has(userId) == false) {
-        this.create_chatbox($event);
-      }
-      chatboxElement.appendChild(
-        this.get_domelement_from_component(
-          this.chatbox_instances.get(userId)
-        )
-      );
-
-      /*Set last scroll position*/
-      this.chatbox_instances.get(userId).instance.set_chatbox_scroll();
     }
+    if (this.chatbox_instances.has(userId) == false) {
+      this.create_chatbox($event);
+    }
+    chatboxElement.appendChild(
+      this.get_domelement_from_component(
+        this.chatbox_instances.get(userId)
+      )
+    );
+
+    /*Set last scroll position*/
+    this.chatbox_instances.get(userId).instance.set_chatbox_scroll();
   }
 
   /*
