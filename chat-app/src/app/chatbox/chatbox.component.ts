@@ -170,7 +170,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
     /**************************************************************
     *   Remove stranger chatbox on peer stranger chatbox removal. *
      **************************************************************/
-    if (msg['type'] == "delete-stranger") {
+    if (msg['type'] == "delete-stranger" && this.userId == msg['userId']) {
       this.delete_stranger.emit(msg['userId']);
 
       this.snackBar.open("Stranger "+msg['userId']+" has decided to disconnect", 'Undo', {
