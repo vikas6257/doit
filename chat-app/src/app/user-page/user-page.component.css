@@ -37,7 +37,8 @@
 .user {
   display: flex;
   justify-content: flex-end;
-  width: 100%
+  width: 100%;
+  padding-right: 20px;
 }
 
 .photo {
@@ -52,10 +53,12 @@
 }
 
 .welcome_find_stranger {
-  width: auto;
+  min-width: 30%;
   max-width: 40%;
   overflow: hidden;
-  height: 70%;
+  height: 60%;
+  padding-right: 10px;
+  padding-left: 10px;
 }
 
 .welcome_find_stranger:hover {

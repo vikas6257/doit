@@ -8,15 +8,7 @@
 .chatbox {
   width: 100%;
   height: 100%;
-  /*
-  background: #fff;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
-  padding-top: 5px;
-  box-shadow: 3px 3px #ccc;
-  */
- background: #12867c7a;
+  background: #12867c7a;
   position: relative;
   border-radius: 20px;
 }
@@ -24,7 +16,6 @@
 .chatlog {
   width: 100%;
   height: 86%;
-  /* padding: -100px; */
   overflow-x: hidden;
   overflow-y: scroll;
   margin-bottom: 5px;
@@ -40,9 +31,6 @@
 }
 
 .chat {
-  /* display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start; */
   margin-bottom: 10px;
 }
 
@@ -66,8 +54,8 @@
   border-radius: 20px;
 }
 .chat .chat-message {
-  max-width: 70%;
-  width: auto;
+  max-width: 40%;
+  min-width: 20%;
   padding: 5px;
   margin: 0 5px 0;
   background: #1ddced;
@@ -123,6 +111,7 @@
   outline: none;
   background: #ecececc2;
   border-radius: 10px;
+  padding: 10px;
 }
 
 .chat-form input::-webkit-scrollbar {

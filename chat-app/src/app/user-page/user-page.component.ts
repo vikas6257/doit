@@ -250,63 +250,24 @@ export class UserPageComponent implements OnInit {
     }
 
     var chatboxElement = undefined;
-    /*
-    if (this.chatbox_pop_1.username == userId) {
-        return;
+
+    chatboxElement = document.getElementById("userpage_chatboxid");
+      if (chatboxElement != undefined) {
+        if (chatboxElement.hasChildNodes()) {
+          chatboxElement.removeChild(chatboxElement.firstChild);
+        }
       }
-
-    if (this.chatbox_pop_2.username == userId) {
-        return;
+      if (this.chatbox_instances.has(userId) == false) {
+        this.create_chatbox($event);
       }
+      chatboxElement.appendChild(
+        this.get_domelement_from_component(
+          this.chatbox_instances.get(userId)
+        )
+      );
 
-    if (this.chatbox_pop_3.username == userId) {
-        return;
-      }
-
-    /*If all are filled, mark all unfilled*/
-    /*
-    if (this.chatbox_pop_1.isadded == true
-      && this.chatbox_pop_2.isadded == true
-      && this.chatbox_pop_3.isadded == true
-    )
-    {
-      this.chatbox_pop_1.isadded = false;
-      this.chatbox_pop_2.isadded = false;
-      this.chatbox_pop_3.isadded = false;
-    }
-
-    if (this.chatbox_pop_1.isadded == false){
-      chatboxElement = document.getElementById("chatbox1");
-      this.chatbox_pop_1.username = userId;
-      this.chatbox_pop_1.isadded = true;
-    }else if (this.chatbox_pop_2.isadded == false){
-      chatboxElement = document.getElementById("chatbox2");
-      this.chatbox_pop_2.username = userId;
-      this.chatbox_pop_2.isadded = true;
-    }else if (this.chatbox_pop_3.isadded == false){
-      chatboxElement = document.getElementById("chatbox3");
-      this.chatbox_pop_3.username = userId;
-      this.chatbox_pop_3.isadded = true;
-    }
-    */
-
-   chatboxElement = document.getElementById("userpage_chatboxid");
-    if (chatboxElement != undefined) {
-      if (chatboxElement.hasChildNodes()) {
-        chatboxElement.removeChild(chatboxElement.firstChild);
-      }
-    }
-    if (this.chatbox_instances.has(userId) == false) {
-      this.create_chatbox($event);
-    }
-    chatboxElement.appendChild(
-      this.get_domelement_from_component(
-        this.chatbox_instances.get(userId)
-      )
-    );
-
-    /*Set last scroll position*/
-    this.chatbox_instances.get(userId).instance.set_chatbox_scroll();
+      /*Set last scroll position*/
+      this.chatbox_instances.get(userId).instance.set_chatbox_scroll();
   }
 
   /*
