@@ -337,9 +337,10 @@ io.on('connection', (socket) => {
               //send message to stranger2
               stranger_peer.socket.emit('message',{type:'assigned-stranger',
                               userId: newConnection.user_name});
+              stranger_peer.talking_to_stranger.push(newConnection.user_name);
             }
             newConnection.talking_to_stranger.push(strangerId);
-            stranger_peer.talking_to_stranger.push(newConnection.user_name);
+
             let splice_index = pending_users.indexOf(strangerId);
             if(splice_index > -1) {
               pending_users.splice(splice_index, 1);
