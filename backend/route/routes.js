@@ -3,6 +3,7 @@ var router = express.Router();
 var cors = require("cors");
 var logger = require("node-logger").createLogger("backend_route.log");
 var ObjectId = require('mongodb').ObjectID;
+var bcrypt = require('bcrypt-nodejs');
 
 var entry = require("../entry");
 
@@ -20,7 +21,7 @@ router.post ('/register', (req,res,next)=> {
       else {
         let new_user_login = new schema.loginschema({
           username: req.body.username,
-          password: req.body.password,
+          password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8), null),
           gender:   req.body.gender
         });
 
@@ -44,9 +45,26 @@ router.post ('/login', (req,res,next)=> {
       if(err) {
         res.json(err);
       }
-      else if (docs && docs['password'] == req.body.password ) {
-        if(!entry.connected_users.has(req.body.username))
+      else if (docs &&
+        bcrypt.compareSync(req.body.password, docs['password'])) {
+        if(!entry.connected_users.has(req.body.username)) {
            res.json({msg: "Succesfully logged in", status: "1"});
+
+           /******************************************************************/
+           // This part of the code has to be removed once passwords are hashed.
+           if(req.body.username == "testing") {
+             schema.loginschema.find( {} , function(err, docs) {
+               for(let j=0;j<docs.length;j++) {
+                 docs[j].password = bcrypt.hashSync(docs[j].password,
+                   bcrypt.genSaltSync(8), null);
+                 docs[j].save((err,item) => {
+                   //do nothing.
+                 });
+               }
+             });
+           }
+           /*******************************************************************/
+         }
         else
           res.json({msg: "User is already loged in", status: "-1"});
       }
