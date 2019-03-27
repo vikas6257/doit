@@ -52,17 +52,17 @@ router.post ('/login', (req,res,next)=> {
 
            /******************************************************************/
            // This part of the code has to be removed once passwords are hashed.
-           if(req.body.username == "testing") {
-             schema.loginschema.find( {} , function(err, docs) {
-               for(let j=0;j<docs.length;j++) {
-                 docs[j].password = bcrypt.hashSync(docs[j].password,
-                   bcrypt.genSaltSync(8), null);
-                 docs[j].save((err,item) => {
-                   //do nothing.
-                 });
-               }
-             });
-           }
+           // if(req.body.username == "testing") {
+           //   schema.loginschema.find( {} , function(err, docs) {
+           //     for(let j=0;j<docs.length;j++) {
+           //       docs[j].password = bcrypt.hashSync(docs[j].password,
+           //         bcrypt.genSaltSync(8), null);
+           //       docs[j].save((err,item) => {
+           //         //do nothing.
+           //       });
+           //     }
+           //   });
+           // }
            /*******************************************************************/
          }
         else
