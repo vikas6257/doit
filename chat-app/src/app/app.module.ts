@@ -28,10 +28,7 @@ import {
   MatTabsModule
 } from '@angular/material';
 import { FriendReqComponent } from './friend-req/friend-req.component';
-import {
-  UserConfirmationComponent
-} from './user-confirmation/user-confirmation.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { UserConfirmationComponent } from './user-confirmation/user-confirmation.component';
 
 const ROUTES:Routes = [
   {path: 'chat', component: UserPageComponent},
@@ -66,8 +63,7 @@ const ROUTES:Routes = [
     MatDividerModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatTabsModule,
-    FlexLayoutModule
+    MatTabsModule
   ],
   providers: [
     WebsocketService,

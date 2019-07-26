@@ -122,7 +122,7 @@ export class UserPageComponent implements OnInit {
 
       reader.readAsDataURL(event.target.files[0]); // read file as data url
 
-      reader.onload = (event: any) => { // called once readAsDataURL is completed
+      reader.onload = (event) => { // called once readAsDataURL is completed
         this.dp_url = event.target.result;
       }
     }

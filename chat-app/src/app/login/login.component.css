@@ -5,6 +5,8 @@
 }
 
 .logo_frontpage {
+  width: 15%;
+  margin-left: 5%;
 }
 
 .logo_frontpage img {
@@ -12,6 +14,11 @@
 }
 
 .login_box {
+  width: 320px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: white;
 }
 
