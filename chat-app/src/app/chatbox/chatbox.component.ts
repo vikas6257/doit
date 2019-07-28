@@ -80,7 +80,7 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   /*************************************************
   * Take reference of this component html template *
    *************************************************/
-  @ViewChild('chatlog_ref') chatlog_ref: ElementRef;
+   @ViewChild('chatlog_ref', {static: false}) chatlog_ref: ElementRef;
 
   append_in_msg(msg) {
     /***********************************************************
@@ -599,8 +599,8 @@ export class ChatboxComponent implements OnInit, OnDestroy{
   }
 
   scrollit($event) {
-    console.log($event);
-    this.scrollposition = event.srcElement.scrollTop;
+   console.log($event);
+   this.scrollposition = (<HTMLInputElement>event.srcElement).scrollTop;
   }
 
   /**
