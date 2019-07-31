@@ -1,21 +1,21 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-<div class="grid_container">
-  <div class="userpage_header">
-    <div class="logo_userpage">
-      <img src="../assets/Logo user_page.png" alt="Logo not found" title="Online stranger logo">
-      <div class="talk_stranger" title="Find stranger">
-        <button type="button" (click)="add_stranger()" name="button">{{stranger_button_name}}</button>
+<div class="grid_container" fxLayout="column" fxLayoutAlign="center center" ngStyle.gt-md="width:80%; margin-left: 10%">
+  <div class="userpage_header" fxLayout="row" fxLayoutAlign="center center" fxFlex="15" fxFlexFill>
+    <div class="logo_userpage" fxLayout="row" fxLayoutAlign="center center" fxFlex="35" fxFlexFill>
+      <div  class="talk_stranger" title="Find stranger">
+        <button type="button" (click)="add_stranger()" name="button">
+          <img src="../assets/Logo user_page_cropped.png" alt="Logo not found" title="Online stranger logo">
+        </button>
       </div>
     </div>
-    <div class="nonlogo">
-      <div class="user">
-
-        <div class="welcome_find_stranger">
+    <div class="nonlogo" fxLayout="row" fxLayoutAlign="space-around center" fxFlex="65" fxFlexFill>
+      <div class="user" fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
+        <div fxHide class="welcome_find_stranger">
           <div class="user_name">{{login.login_handle}}</div>
         </div>
 
         <!--Camera for image upload-->
-        <div class="upload_pic">
+        <div  class="upload_pic" fxLayout="row" fxLayoutAlign="end end" fxFlex="60" fxFlexFill>
           <label for="upload_pic_input">
             <i class="fas fa-camera-retro" title="Change profile picture"></i>
           </label>
@@ -38,7 +38,7 @@
           </mat-menu>
         </div>
 
-        <div class="photo">
+        <div class="photo" fxFlex="40">
           <!--Image-->
           <img src={{dp_url}} alt="Image not found" onerror="this.src='./assets/Tyrion Lannister.jpg'">
         </div>
@@ -46,17 +46,18 @@
     </div>
   </div>
 
-  <div class="connected_persons">
-    <app-active-users (openchatbox)="addchatbox($event)" (snd_active_usr_to_user_page_comp)="create_chatbox($event)" [stranger_list]="stranger_list"></app-active-users>
-  </div>
-  <!--<div class="chat_popup">
-    <div id="chatbox1" class="chat_popup1"></div>
-    <div id="chatbox2" class="chat_popup2"></div>
-    <div id="chatbox3" class="chat_popup3"></div>
-  </div>-->
+    <div class="user_page_middle" fxFlex="75" fxFlex.lt-lg="85" fxLayout="row" fxFlexFill>
+      <div id="userpage_chatboxid" class="userpage_chatbox"
+      fxShow [fxHide.lt-lg]="!show_chatbox" fxFlex="80" fxFlex.lt-lg="100">
+        <!--<app-chatbox></app-chatbox>-->
+      </div>
+      <div class="connected_persons" [fxHide.lt-lg]="show_chatbox"
+      fxFlex="20" fxFlex.lt-lg="100">
+        <app-active-users (openchatbox)="addchatbox($event)"
+        (snd_active_usr_to_user_page_comp)="create_chatbox($event)"
+        [stranger_list]="stranger_list"></app-active-users>
+      </div>
+    </div>
 
-  <div id="userpage_chatboxid" class="userpage_chatbox">
-    <!--<app-chatbox></app-chatbox>-->
-  </div>
-  <div class="userpage_footer"></div>
+  <div class="userpage_footer" fxFlex="10" fxShow fxHide.lt-lg fxFlexFill></div>
 </div>

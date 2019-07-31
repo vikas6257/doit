@@ -62,12 +62,6 @@
   height: 100%;
   width: 100%;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0;
-  padding: 0;
   background: url('../../assets/apple-device-beverage-chat.jpg') no-repeat;
   background-size: cover;
 }

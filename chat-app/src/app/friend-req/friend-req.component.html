@@ -2,13 +2,17 @@
 <div mat-dialog-content>
   <mat-list>
     <mat-list-item *ngFor="let user of data.friend_req | keyvalue">
-      <div class="request">
-        <div class="stranger_pic"><img src = {{user.value.compref.instance.dp_url}} alt="Image not found"
+      <div class="request" fxLayout="row" fxLayoutAlign="space-between center" fxFill>
+        <div class="stranger_pic" fxFlex="20"><img src = {{user.value.compref.instance.dp_url}} alt="Image not found"
           onerror="this.src='./assets/Tyrion Lannister.jpg'"></div>
-        <div class="stranger_name">{{user.key}}</div>
-        <div mat-dialog-actions>
-          <button mat-raised-button class="accept" (click)="accept_fr_req(user.key, user.value)">Accept</button>
-          <button mat-raised-button class="reject" (click)="reject_fr_req(user.key, user.value)">Reject</button>
+        <div class="stranger_name" fxFlex="40">vikas</div>
+        <div mat-dialog-actions fxLayout="row" fxLayoutAlign="center center" fxFlex="40">
+          <button mat-icon-button class="accept" (click)="accept_fr_req(user.key, user.value)">
+            <mat-icon>person_add</mat-icon>
+          </button>
+          <button mat-icon-button class="reject" (click)="reject_fr_req(user.key, user.value)">
+            <mat-icon>person_outline</mat-icon>
+          </button>
         </div>
       </div>
       <mat-divider></mat-divider>

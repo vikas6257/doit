@@ -5,28 +5,25 @@
 }
 
 .stranger_name, .accept, .reject {
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 .stranger_name {
   align-self: center;
-  width: 190px;
+  /* width: 190px; */
   overflow: hidden;
+  max-width: 40%;
 }
 
 .accept {
-
 }
 
 .reject {
-
 }
 
 .stranger_pic {
-  width: 50px;
-  height: 50px;
-  margin-right: 5px;
-  margin-bottom: 2px;
+  max-width: 50px;
+  max-height: 50px;
 }
 
 .stranger_pic img {

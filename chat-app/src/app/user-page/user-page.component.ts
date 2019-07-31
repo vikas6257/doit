@@ -11,7 +11,8 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AppComponent } from '../app.component';
 import { PlatformLocation } from '@angular/common';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef,
+  MAT_DIALOG_DATA, MatDialogConfig} from '@angular/material';
 import { FriendReqComponent } from '../friend-req/friend-req.component';
 import { MatSnackBar } from '@angular/material';
 import { EventManager } from '@angular/platform-browser';
@@ -65,7 +66,7 @@ export class UserPageComponent implements OnInit {
         event.returnValue = '';
       });
      }
-
+  show_chatbox = false;
   chat_start_status = false;
   chat_end_status = true;
   stranger_button_name = 'Talk To Stranger';
@@ -148,6 +149,7 @@ export class UserPageComponent implements OnInit {
   * from chatbox pop-up element.
   */
   userpage_close_chatbox(userId){
+    this.show_chatbox = false;
     this.delete_chat_box(userId);
   }
 
@@ -190,6 +192,7 @@ export class UserPageComponent implements OnInit {
     this.chatbox_instances.delete(userId);
     compref.destroy();
     this.delete_chat_box(userId);
+    this.show_chatbox = false;
   }
 
   /*
@@ -268,6 +271,7 @@ export class UserPageComponent implements OnInit {
 
       /*Set last scroll position*/
       this.chatbox_instances.get(userId).instance.set_chatbox_scroll();
+      this.show_chatbox = true;
   }
 
   /*
