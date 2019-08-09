@@ -21,6 +21,9 @@
   },
   "devDependencies": {
     "dotenv": "^6.2.0",
-    "nodemon": "^1.19.1"
+    "iltorb": "^2.4.3",
+    "node-zopfli": "^2.0.3",
+    "nodemon": "^1.19.1",
+    "shrink-ray": "^0.1.3"
   }
 }
