@@ -7,7 +7,6 @@ var logger = require("node-logger").createLogger("backend_entry.log");
 var multer = require('multer');
 const path = require('path');
 var fs = require('fs');
-var shrinkRay = require('shrink-ray');
 
 //import route module
 const route = require("./route/routes");
@@ -89,9 +88,6 @@ let io = require('socket.io').listen(server)
 
 /*Send front end to client upon entering just ip:port*/
 app.use(express.static('../chat-app/dist/chat-app/'));
-
-// Compress https resposes using Brotli
-app.use(shrinkRay());
 
 /*connection object*/
 let connection = {
