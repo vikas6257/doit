@@ -30,7 +30,7 @@
     "bootstrap": "^4.1.3",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
-    "jquery": "1.9.1",
+    "jquery": "3.5.0",
     "ng-chat": "^1.0.15",
     "popper.js": "1.14.7",
     "rxjs": "^6.4.0",
